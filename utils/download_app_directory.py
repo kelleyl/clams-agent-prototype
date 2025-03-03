@@ -4,10 +4,33 @@ import json
 import os
 from typing import Dict, List, Any, Optional
 import logging
+from urllib.parse import urljoin
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
+def fetch_app_metadata(app_name: str, version: str) -> Dict[str, Any]:
+    """
+    Fetches the metadata.json for a specific app version
+    
+    Args:
+        app_name: Name of the CLAMS app
+        version: Version string (e.g., 'v7.5')
+        
+    Returns:
+        Dictionary containing the app metadata or empty dict if fetch fails
+    """
+    base_url = "https://apps.clams.ai/"
+    metadata_url = urljoin(base_url, f"{app_name}/{version}/metadata.json")
+    
+    try:
+        response = requests.get(metadata_url)
+        response.raise_for_status()
+        return response.json()
+    except Exception as e:
+        logger.error(f"Failed to fetch metadata for {app_name} {version}: {e}")
+        return {}
 
 def download_app_directory(output_file: Optional[str] = None, use_cache: bool = True) -> Dict[str, Dict[str, Any]]:
     """
@@ -76,13 +99,34 @@ def download_app_directory(output_file: Optional[str] = None, use_cache: bool = 
             # Get the latest version (first in the list)
             latest_version = versions[0] if versions else "unknown"
             
-            # Store the metadata
-            app_directory[app_name] = {
+            # Create base app metadata
+            app_metadata = {
                 "name": app_name,
                 "description": description,
                 "latest_version": latest_version,
-                "all_versions": versions
+                "all_versions": versions,
+                "metadata": {}
             }
+            
+            # Fetch detailed metadata for latest version if available
+            if latest_version != "unknown":
+                logger.info(f"Fetching metadata for {app_name} {latest_version}")
+                metadata = fetch_app_metadata(app_name.lower(), latest_version)
+                if metadata:
+                    # Extract relevant metadata fields
+                    app_metadata["metadata"] = {
+                        "description": metadata.get("description", ""),
+                        "input": metadata.get("input", []),
+                        "output": metadata.get("output", []),
+                        "parameters": metadata.get("parameters", []),
+                        "app_version": metadata.get("app_version", ""),
+                        "mmif_version": metadata.get("mmif_version", ""),
+                        "identifier": metadata.get("identifier", ""),
+                        "url": metadata.get("url", "")
+                    }
+            
+            # Store the metadata
+            app_directory[app_name] = app_metadata
         
         logger.info(f"Successfully parsed {len(app_directory)} CLAMS apps")
         
