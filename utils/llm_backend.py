@@ -56,7 +56,7 @@ class LLMBackend:
     Supports multiple models from Hugging Face and handles model loading/unloading.
     """
     
-    def __init__(self, model_name: str = "mistral-7b", **kwargs):
+    def __init__(self, model_name: str = "llama2-7b", **kwargs):
         """
         Initialize the LLM backend.
         
