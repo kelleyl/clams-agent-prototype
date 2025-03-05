@@ -160,13 +160,62 @@ def get_app_metadata(app_name: str = None) -> Dict[str, Any]:
         Dictionary containing the app metadata or all app metadata
     """
     cache_file = os.path.join(os.path.dirname(__file__), '../data/app_directory.json')
+    logger.debug(f"Loading app metadata from cache file: {cache_file}")
     
     # Use download_app_directory with cache option
     app_directory = download_app_directory(output_file=cache_file, use_cache=True)
+    logger.debug(f"App directory type: {type(app_directory)}")
+    logger.debug(f"App directory keys: {list(app_directory.keys()) if isinstance(app_directory, dict) else 'Not a dictionary'}")
     
     if app_name:
         return app_directory.get(app_name, {})
     return app_directory
+
+def get_app_metadata() -> Dict[str, Any]:
+    """
+    Download and parse the CLAMS app directory from GitHub.
+    
+    Returns:
+        Dictionary mapping app URLs to their metadata
+    """
+    # GitHub raw content URL for app-index.json
+    # Using raw.githubusercontent.com instead of github.com/blob/ to get the raw file
+    url = "https://raw.githubusercontent.com/clamsproject/apps/main/docs/_data/app-index.json"
+    
+    try:
+        logger.info(f"Downloading app directory from {url}")
+        response = requests.get(url)
+        response.raise_for_status()
+        
+        app_directory = response.json()
+        logger.info(f"Successfully loaded {len(app_directory)} apps from GitHub")
+        
+        # Convert the app directory into the expected format
+        formatted_apps = {}
+        for app_url, app_info in app_directory.items():
+            # Get the latest version
+            latest_version = app_info["versions"][0][0] if app_info["versions"] else "unknown"
+            
+            formatted_apps[app_url] = {
+                "latest_version": latest_version,
+                "metadata": {
+                    "description": app_info.get("description", ""),
+                    "input": [],  # These will be populated by the pipeline generator as needed
+                    "output": []
+                }
+            }
+        
+        return formatted_apps
+        
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Error downloading app directory: {e}")
+        raise
+    except json.JSONDecodeError as e:
+        logger.error(f"Error parsing app directory JSON: {e}")
+        raise
+    except Exception as e:
+        logger.error(f"Unexpected error: {e}")
+        raise
 
 if __name__ == "__main__":
     # When run directly, download the app directory and save it to a file
