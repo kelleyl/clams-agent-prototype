@@ -79,37 +79,16 @@ class PipelineGenerator:
     def _format_tool_metadata(self) -> str:
         """
         Format tool metadata into a minimal string for the LLM prompt.
-        Includes only essential information: name, version, brief description, and simplified I/O types.
+        Includes only essential information: name, version, brief description.
         """
         metadata_str = "Available CLAMS Tools:\n\n"
         
         logger.info(f"Formatting metadata for {len(self.app_metadata)} tools")
         
-        def simplify_type(type_str: str) -> str:
-            """Extract the base annotation type from the full URI."""
-            if not isinstance(type_str, str):
-                return str(type_str)
-            # Extract the last part after the last '/'
-            parts = type_str.split('/')
-            if len(parts) > 1:
-                # Remove version number if present
-                base_type = parts[-1].split('v')[0]
-                return base_type
-            return type_str
-        
         for app_name, app_info in self.app_metadata.items():
             try:
-                if isinstance(app_info, dict):
-                    metadata = app_info.get("metadata", {})
-                    version = app_info.get("latest_version", "unknown")
-                elif isinstance(app_info, list):
-                    metadata = next((item.get("metadata", {}) for item in app_info if isinstance(item, dict)), {})
-                    version = "unknown"
-                else:
-                    continue
-                
-                if not metadata:
-                    continue
+                version = app_info.get("latest_version", "unknown")
+                metadata = app_info.get("metadata", {})
                 
                 # Get brief description (first 100 characters)
                 description = metadata.get('description', 'No description available')
@@ -117,33 +96,7 @@ class PipelineGenerator:
                 
                 # Format basic info
                 metadata_str += f"Tool: {app_name} (v{version})\n"
-                metadata_str += f"Description: {brief_description}\n"
-                
-                # Format simplified input types
-                inputs = metadata.get("input", [])
-                if inputs:
-                    input_types = set()
-                    for input_type in inputs:
-                        if isinstance(input_type, dict):
-                            type_str = input_type.get('@type', '')
-                            if type_str:
-                                input_types.add(simplify_type(type_str))
-                    if input_types:
-                        metadata_str += f"Inputs: {', '.join(sorted(input_types))}\n"
-                
-                # Format simplified output types
-                outputs = metadata.get("output", [])
-                if outputs:
-                    output_types = set()
-                    for output_type in outputs:
-                        if isinstance(output_type, dict):
-                            type_str = output_type.get('@type', '')
-                            if type_str:
-                                output_types.add(simplify_type(type_str))
-                    if output_types:
-                        metadata_str += f"Outputs: {', '.join(sorted(output_types))}\n"
-                
-                metadata_str += "\n"
+                metadata_str += f"Description: {brief_description}\n\n"
                 
             except Exception as e:
                 logger.error(f"Error processing app {app_name}: {e}")
