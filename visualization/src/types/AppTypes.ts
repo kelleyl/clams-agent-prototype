@@ -1,3 +1,5 @@
+import { Node, Edge } from 'reactflow';
+
 export interface AppMetadata {
   name?: string;
   description: string;
@@ -34,19 +36,14 @@ export interface AppDirectory {
   [key: string]: AppDirectoryEntry;
 }
 
-export interface PipelineNode {
-  id: string;
+export type PipelineNode = Node<{
+  app: AppDirectoryEntry;
+  appId: string;
+}> & {
   type: 'app';
-  data: {
-    app: AppDirectoryEntry;
-    appId: string;
-  };
-  position: { x: number; y: number };
-}
+  dragHandle?: string;
+};
 
-export interface PipelineEdge {
-  id: string;
-  source: string;
-  target: string;
+export type PipelineEdge = Edge & {
   type: 'default' | 'invalid';
-} 
+}; 

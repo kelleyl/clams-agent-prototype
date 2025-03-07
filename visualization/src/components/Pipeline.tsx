@@ -7,6 +7,9 @@ import ReactFlow, {
   Background,
   Controls,
   MiniMap,
+  useNodesState,
+  useEdgesState,
+  XYPosition,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { AppDirectory, PipelineNode, PipelineEdge } from '../types/AppTypes';
@@ -23,8 +26,8 @@ const nodeTypes = {
 };
 
 export const Pipeline: React.FC<PipelineProps> = ({ appDirectory }) => {
-  const [nodes, setNodes] = useState<Node[]>([]);
-  const [edges, setEdges] = useState<Edge[]>([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState<PipelineNode['data']>([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<PipelineEdge>([]);
 
   const onConnect = useCallback(
     (params: Connection) => {
@@ -39,6 +42,8 @@ export const Pipeline: React.FC<PipelineProps> = ({ appDirectory }) => {
       const newEdge: PipelineEdge = {
         ...params,
         id: `${params.source}-${params.target}`,
+        source: params.source,
+        target: params.target,
         type: isValid ? 'default' : 'invalid',
       };
 
@@ -59,9 +64,16 @@ export const Pipeline: React.FC<PipelineProps> = ({ appDirectory }) => {
       const appId = event.dataTransfer.getData('application/clams-app');
       if (!appId || !appDirectory[appId]) return;
 
-      const position = {
-        x: event.clientX - event.currentTarget.getBoundingClientRect().left,
-        y: event.clientY - event.currentTarget.getBoundingClientRect().top,
+      // Get the drop position relative to the ReactFlow viewport
+      const reactFlowBounds = (event.target as Element)
+        .closest('.react-flow')
+        ?.getBoundingClientRect();
+
+      if (!reactFlowBounds) return;
+
+      const position: XYPosition = {
+        x: event.clientX - reactFlowBounds.left,
+        y: event.clientY - reactFlowBounds.top,
       };
 
       const newNode: PipelineNode = {
@@ -72,11 +84,12 @@ export const Pipeline: React.FC<PipelineProps> = ({ appDirectory }) => {
           app: appDirectory[appId],
           appId,
         },
+        dragHandle: '.drag-handle',
       };
 
       setNodes(prevNodes => [...prevNodes, newNode]);
     },
-    [appDirectory, nodes]
+    [appDirectory, nodes, setNodes]
   );
 
   return (
@@ -92,6 +105,8 @@ export const Pipeline: React.FC<PipelineProps> = ({ appDirectory }) => {
         <ReactFlow
           nodes={nodes}
           edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
           onConnect={onConnect}
           onDragOver={onDragOver}
           onDrop={onDrop}

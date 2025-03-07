@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import { Handle, Position } from 'reactflow';
-import { Card, CardContent, Typography } from '@mui/material';
+import { Card, CardContent, CardHeader, Typography, IconButton, styled } from '@mui/material';
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { AppDirectoryEntry } from '../types/AppTypes';
 
 interface AppNodeProps {
@@ -10,37 +11,61 @@ interface AppNodeProps {
   };
 }
 
+const StyledCard = styled(Card)(({ theme }) => ({
+  minWidth: 200,
+  maxWidth: 300,
+  backgroundColor: theme.palette.background.paper,
+  '& .drag-handle': {
+    cursor: 'grab',
+    '&:active': {
+      cursor: 'grabbing',
+    },
+  },
+}));
+
+const StyledCardHeader = styled(CardHeader)(({ theme }) => ({
+  backgroundColor: theme.palette.primary.main,
+  color: theme.palette.primary.contrastText,
+  padding: theme.spacing(1),
+  '& .MuiCardHeader-title': {
+    fontSize: '0.9rem',
+    fontWeight: 'bold',
+  },
+  '& .MuiCardHeader-action': {
+    margin: 0,
+  },
+}));
+
 export const AppNode: React.FC<AppNodeProps> = memo(({ data }) => {
   const { app, appId } = data;
 
   return (
-    <Card
-      sx={{
-        minWidth: 200,
-        maxWidth: 300,
-        bgcolor: 'background.paper',
-        boxShadow: 2,
-      }}
-    >
+    <StyledCard variant="outlined">
       <Handle type="target" position={Position.Top} />
-      <CardContent>
-        <Typography variant="h6" component="div" gutterBottom>
-          {app.metadata.name}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Version: {app.latest_version}
-        </Typography>
+      <StyledCardHeader
+        className="drag-handle"
+        title={app.metadata.name || appId.split('/').pop()}
+        action={
+          <IconButton size="small" className="drag-handle">
+            <DragIndicatorIcon />
+          </IconButton>
+        }
+      />
+      <CardContent sx={{ p: 1, '&:last-child': { pb: 1 } }}>
         <Typography variant="body2" color="text.secondary" noWrap>
+          v{app.latest_version}
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{
+          display: '-webkit-box',
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: 'vertical',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+        }}>
           {app.metadata.description}
-        </Typography>
-        <Typography variant="caption" display="block">
-          Input: {app.metadata.input.map(i => i['@type']).join(', ')}
-        </Typography>
-        <Typography variant="caption" display="block">
-          Output: {app.metadata.output.map(o => o['@type']).join(', ')}
         </Typography>
       </CardContent>
       <Handle type="source" position={Position.Bottom} />
-    </Card>
+    </StyledCard>
   );
 }); 
