@@ -1,9 +1,9 @@
 export interface AppMetadata {
-  name: string;
+  name?: string;
   description: string;
-  app_version: string;
-  mmif_version: string;
-  input: AnnotationType[];
+  app_version?: string;
+  mmif_version?: string;
+  input: (AnnotationType | AnnotationType[])[];
   output: AnnotationType[];
   parameters: Parameter[];
 }
@@ -11,7 +11,11 @@ export interface AppMetadata {
 export interface AnnotationType {
   "@type": string;
   required?: boolean;
-  properties?: Record<string, any>;
+  properties?: {
+    timeUnit?: string;
+    labelset?: string[];
+    [key: string]: any;
+  };
 }
 
 export interface Parameter {
