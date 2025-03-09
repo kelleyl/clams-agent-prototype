@@ -2,7 +2,6 @@ from typing import List, Dict, Any, Optional
 import logging
 from dataclasses import dataclass
 from transformers import ReactCodeAgent, HfApiEngine
-from transformers.tools import Tool
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
