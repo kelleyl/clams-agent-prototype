@@ -1,6 +1,48 @@
 from typing import Dict, Any
-from transformers.tools import Tool
+import json
+from transformers import Tool
 from .download_app_directory import get_app_metadata
+
+class CLAMSTool(Tool):
+    def __init__(self, name: str, description: str):
+        self.name = name
+        self.description = description
+        self.inputs = {
+            "video": {
+                "type": "string",
+                "description": "path to the input video file"
+            },
+            "parameters": {
+                "type": "string",
+                "description": "JSON string containing optional parameters for the tool"
+            }
+        }
+        self.output_type = "string"  # MMIF annotations will be returned as JSON string
+
+    def __call__(self, video: str, parameters: str = None) -> str:
+        """Execute the CLAMS tool on the given video with optional parameters.
+        
+        Args:
+            video: Path to the input video file
+            parameters: JSON string containing optional parameters
+            
+        Returns:
+            JSON string containing MMIF annotations
+        """
+        # Parse parameters if provided
+        params_dict = {}
+        if parameters:
+            try:
+                params_dict = json.loads(parameters)
+            except json.JSONDecodeError:
+                raise ValueError("Parameters must be a valid JSON string")
+                
+        # This is a placeholder - in real implementation this would call the CLAMS app
+        result = {"annotations": f"Processed {video} with {self.name}"}
+        if params_dict:
+            result["parameters_used"] = params_dict
+            
+        return json.dumps(result)
 
 class CLAMSToolbox:
     """Collection of CLAMS tools for use with Transformers Agents."""
@@ -17,28 +59,72 @@ class CLAMSToolbox:
         for app_name, app_info in self.app_metadata.items():
             metadata = app_info.get("metadata", {})
             
+            # Extract and format input types
+            input_types = []
+            for input_type in metadata.get('input', []):
+                if isinstance(input_type, dict):
+                    type_str = input_type.get('@type', 'unknown')
+                    if input_type.get('required', False):
+                        type_str += ' (required)'
+                    input_types.append(type_str)
+                elif isinstance(input_type, list):
+                    # Handle nested lists of input types (alternatives)
+                    alt_types = []
+                    for alt in input_type:
+                        if isinstance(alt, dict):
+                            alt_types.append(alt.get('@type', 'unknown'))
+                    if alt_types:
+                        input_types.append(f"one of [{', '.join(alt_types)}]")
+            
+            # Extract and format output types
+            output_types = []
+            for output_type in metadata.get('output', []):
+                if isinstance(output_type, dict):
+                    type_str = output_type.get('@type', 'unknown')
+                    if 'properties' in output_type:
+                        props = []
+                        if 'timeUnit' in output_type['properties']:
+                            props.append(f"timeUnit={output_type['properties']['timeUnit']}")
+                        if 'labelset' in output_type['properties']:
+                            props.append(f"labelset={output_type['properties']['labelset']}")
+                        if props:
+                            type_str += f" ({', '.join(props)})"
+                    output_types.append(type_str)
+            
+            # Extract and format parameters
+            parameters = []
+            for param in metadata.get('parameters', []):
+                if isinstance(param, dict):
+                    param_str = param.get('name', 'unknown')
+                    param_type = param.get('type', '')
+                    param_desc = param.get('description', '')
+                    param_default = param.get('default', None)
+                    
+                    if param_type:
+                        param_str += f" ({param_type})"
+                    if param_default is not None:
+                        param_str += f" = {param_default}"
+                    if param_desc:
+                        param_str += f": {param_desc}"
+                        
+                    parameters.append(param_str)
+            
             # Create tool description
             description = f"""CLAMS tool for {metadata.get('description', 'video analysis')}.
-            
-Inputs: {[input_type.get('@type') for input_type in metadata.get('input', [])]}
-Outputs: {[output_type.get('@type') for output_type in metadata.get('output', [])]}
-Parameters: {[param.get('name') for param in metadata.get('parameters', [])]}
+
+Inputs:
+{chr(10).join('- ' + inp for inp in input_types)}
+
+Outputs:
+{chr(10).join('- ' + out for out in output_types)}
+
+Parameters:
+{chr(10).join('- ' + param for param in parameters)}
 
 Version: {app_info.get('latest_version', 'unknown')}"""
 
             # Create the tool
-            tool = Tool(
-                name=app_name,
-                description=description,
-                inputs=[
-                    ("video", "path to the input video file"),
-                    ("parameters", "optional parameters for the tool")
-                ],
-                outputs=[
-                    ("annotations", "MMIF annotations produced by the tool")
-                ]
-            )
-            
+            tool = CLAMSTool(name=app_name, description=description)
             tools[app_name] = tool
             
         return tools
