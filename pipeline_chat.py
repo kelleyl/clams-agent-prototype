@@ -27,8 +27,9 @@ def main():
     toolbox = CLAMSToolbox()
     chat = PipelineAgentChat()
     
-    # Add CLAMS tools to the agent
-    chat.agent.toolbox.add_tools(toolbox.get_tools().values())
+    # Add CLAMS tools to the agent one by one
+    for tool in toolbox.get_tools().values():
+        chat.agent.toolbox.add_tool(tool)
     
     print("CLAMS Pipeline Generator")
     print("=======================")
