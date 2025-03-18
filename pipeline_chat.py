@@ -23,40 +23,69 @@ logger = logging.getLogger(__name__)
 
 def main():
     """Command-line interface for the pipeline generator."""
-    # Initialize the toolbox and chat agent
-    toolbox = CLAMSToolbox()
-    chat = PipelineAgentChat()
-    
-    # Add CLAMS tools to the agent one by one
-    for tool in toolbox.get_tools().values():
-        chat.agent.toolbox.add_tool(tool)
-    
-    print("CLAMS Pipeline Generator")
-    print("=======================")
-    print("\nAvailable tools:")
-    for name, tool in toolbox.get_tools().items():
-        print(f"- {name}")
-    
-    while True:
-        try:
-            task = input("\nEnter your task (or 'quit' to exit): ").strip()
-            
-            if task.lower() == 'quit':
+    try:
+        # Initialize the toolbox
+        logger.info("Initializing CLAMS toolbox...")
+        toolbox = CLAMSToolbox()
+        
+        # Get all CLAMS tools
+        tools = toolbox.get_tools()
+        if not tools:
+            logger.warning("No CLAMS tools were found. Please check your app metadata.")
+            print("No CLAMS tools were found. Please check your app metadata.")
+            return
+        
+        logger.info(f"Found {len(tools)} CLAMS tools")
+        
+        # Initialize the chat agent
+        logger.info("Initializing the pipeline agent chat...")
+        chat = PipelineAgentChat()
+        
+        # Add CLAMS tools to the agent one by one
+        logger.info("Adding tools to the agent...")
+        for name, tool in tools.items():
+            try:
+                chat.agent.toolbox.add_tool(tool)
+                logger.info(f"Added tool: {name}")
+            except Exception as e:
+                logger.error(f"Error adding tool {name}: {str(e)}")
+        
+        print("CLAMS Pipeline Generator")
+        print("=======================")
+        print(f"\nAvailable tools ({len(tools)}):")
+        for name in tools.keys():
+            print(f"- {name}")
+        
+        while True:
+            try:
+                task = input("\nEnter your task (or 'quit' to exit): ").strip()
+                
+                if not task:
+                    print("Task description cannot be empty. Please try again.")
+                    continue
+                    
+                if task.lower() == 'quit':
+                    break
+                    
+                # Start interactive session
+                logger.info(f"Starting interactive session for task: {task}")
+                chat.interactive_pipeline_design(task)
+                    
+            except KeyboardInterrupt:
+                logger.info("User interrupted the session")
+                print("\nExiting...")
                 break
-                
-            # Start interactive session
-            pipeline = chat.interactive_pipeline_design(task)
-            if pipeline:
-                print("\nGenerated Pipeline:")
-                print("==================")
-                print(pipeline)
-                
-        except KeyboardInterrupt:
-            print("\nExiting...")
-            break
-        except Exception as e:
-            print(f"\nError: {str(e)}")
-            continue
+            except Exception as e:
+                logger.error(f"Error in interactive session: {str(e)}")
+                print(f"\nError: {str(e)}")
+                continue
+    
+    except Exception as e:
+        logger.critical(f"Fatal error in main: {str(e)}")
+        print(f"Fatal error: {str(e)}")
+        return 1
+    
+    return 0
 
 if __name__ == "__main__":
-    main() 
+    sys.exit(main()) 
