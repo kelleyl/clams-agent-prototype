@@ -8,10 +8,22 @@ import {
   List, 
   ListItem,
   Tooltip,
-  styled
+  styled,
+  AppBar,
+  Toolbar,
+  Button,
+  Menu,
+  MenuItem,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField
 } from '@mui/material';
 import { Pipeline } from './Pipeline';
 import { AppDirectory, AnnotationType } from '../types/AppTypes';
+import { useNavigate, Link, Routes, Route } from 'react-router-dom';
+import { Chat } from './Chat';
 import appDirectoryData from '../../../data/app_directory.json';
 
 const StyledListItem = styled(ListItem)(({ theme }) => ({
@@ -36,10 +48,30 @@ const StyledTooltip = styled(Tooltip)(({ theme }) => ({
   },
 }));
 
+const StyledLink = styled(Link)(({ theme }) => ({
+  color: theme.palette.primary.main,
+  textDecoration: 'none',
+  margin: theme.spacing(0, 1),
+  padding: theme.spacing(0.5, 1),
+  borderRadius: theme.shape.borderRadius,
+  '&:hover': {
+    backgroundColor: theme.palette.action.hover,
+  },
+}));
+
 export const App: React.FC = () => {
   const [appDirectory, setAppDirectory] = useState<AppDirectory>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentPipeline, setCurrentPipeline] = useState<any>(null);
+  const [pipelines, setPipelines] = useState<string[]>([]);
+  const [pipelineMenuAnchor, setPipelineMenuAnchor] = useState<null | HTMLElement>(null);
+  const [exportDialogOpen, setExportDialogOpen] = useState(false);
+  const [saveDialogOpen, setSaveDialogOpen] = useState(false);
+  const [pipelineName, setPipelineName] = useState('');
+  const [yamlContent, setYamlContent] = useState('');
+  
+  const navigate = useNavigate();
 
   useEffect(() => {
     try {
@@ -49,6 +81,18 @@ export const App: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  }, []);
+  
+  useEffect(() => {
+    // Fetch available pipelines
+    fetch('/api/pipelines')
+      .then(response => response.json())
+      .then(data => {
+        setPipelines(data);
+      })
+      .catch(err => {
+        console.error('Failed to fetch pipelines:', err);
+      });
   }, []);
 
   const onDragStart = (event: React.DragEvent<HTMLLIElement>, appId: string) => {
@@ -114,6 +158,92 @@ export const App: React.FC = () => {
       </Box>
     );
   };
+  
+  const handlePipelineMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setPipelineMenuAnchor(event.currentTarget);
+  };
+  
+  const handlePipelineMenuClose = () => {
+    setPipelineMenuAnchor(null);
+  };
+  
+  const loadPipeline = (name: string) => {
+    fetch(`/api/pipeline/${name}`)
+      .then(response => response.json())
+      .then(data => {
+        setCurrentPipeline(data);
+        handlePipelineMenuClose();
+      })
+      .catch(err => {
+        console.error(`Failed to load pipeline ${name}:`, err);
+      });
+  };
+  
+  const loadChatPipeline = () => {
+    fetch('/api/chat/pipeline')
+      .then(response => response.json())
+      .then(data => {
+        setCurrentPipeline(data);
+      })
+      .catch(err => {
+        console.error('Failed to load chat pipeline:', err);
+      });
+  };
+  
+  const exportPipeline = () => {
+    if (!currentPipeline) return;
+    
+    fetch(`/api/pipeline/export/${currentPipeline.name}`)
+      .then(response => response.json())
+      .then(data => {
+        setYamlContent(data.yaml);
+        setExportDialogOpen(true);
+      })
+      .catch(err => {
+        console.error('Failed to export pipeline:', err);
+      });
+  };
+  
+  const savePipeline = () => {
+    if (!currentPipeline) return;
+    
+    setSaveDialogOpen(true);
+    setPipelineName(currentPipeline.name || '');
+  };
+  
+  const handleSavePipeline = () => {
+    if (!currentPipeline || !pipelineName) return;
+    
+    const pipelineToSave = {
+      ...currentPipeline,
+      name: pipelineName
+    };
+    
+    fetch('/api/pipeline', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(pipelineToSave)
+    })
+      .then(response => response.json())
+      .then(data => {
+        setSaveDialogOpen(false);
+        
+        // Refresh pipeline list
+        fetch('/api/pipelines')
+          .then(response => response.json())
+          .then(pipelinesData => {
+            setPipelines(pipelinesData);
+          })
+          .catch(err => {
+            console.error('Failed to fetch pipelines:', err);
+          });
+      })
+      .catch(err => {
+        console.error('Failed to save pipeline:', err);
+      });
+  };
 
   if (loading) {
     return (
@@ -137,49 +267,211 @@ export const App: React.FC = () => {
   };
 
   return (
-    <Container maxWidth="xl">
-      <Box sx={{ flexGrow: 1, mt: 4 }}>
-        <Grid container spacing={2}>
-          {/* Tool Palette */}
-          <Grid item xs={3}>
-            <Paper sx={{ p: 2 }}>
-              <Typography variant="h6" gutterBottom>
-                Available Tools
-              </Typography>
-              <List>
-                {Object.entries(appDirectory)
-                  .sort(([, a], [, b]) => {
-                    const nameA = a.metadata.name || '';
-                    const nameB = b.metadata.name || '';
-                    return nameA.localeCompare(nameB);
-                  })
-                  .map(([appId, app]) => (
-                    <StyledTooltip
-                      key={appId}
-                      title={renderToolMetadata(app)}
-                      placement="right"
-                      arrow
-                    >
-                      <StyledListItem
-                        draggable
-                        onDragStart={(e: React.DragEvent<HTMLLIElement>) => onDragStart(e, appId)}
+    <>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            CLAMS Pipeline Designer
+          </Typography>
+          <StyledLink to="/">Home</StyledLink>
+          <StyledLink to="/visualizer">Pipeline Visualizer</StyledLink>
+          <StyledLink to="/chat">Pipeline Chat</StyledLink>
+          
+          <Button 
+            color="inherit" 
+            onClick={handlePipelineMenuOpen}
+          >
+            Pipelines
+          </Button>
+          <Menu
+            anchorEl={pipelineMenuAnchor}
+            open={Boolean(pipelineMenuAnchor)}
+            onClose={handlePipelineMenuClose}
+          >
+            {pipelines.map(name => (
+              <MenuItem key={name} onClick={() => loadPipeline(name)}>
+                {name}
+              </MenuItem>
+            ))}
+            <MenuItem onClick={loadChatPipeline}>
+              Load from Chat
+            </MenuItem>
+          </Menu>
+          
+          <Button 
+            color="inherit"
+            onClick={exportPipeline}
+            disabled={!currentPipeline}
+          >
+            Export
+          </Button>
+          
+          <Button 
+            color="inherit"
+            onClick={savePipeline}
+            disabled={!currentPipeline}
+          >
+            Save
+          </Button>
+        </Toolbar>
+      </AppBar>
+      
+      <Container maxWidth="xl">
+        <Box sx={{ flexGrow: 1, mt: 4 }}>
+          <Routes>
+            <Route path="/" element={
+              <Box textAlign="center">
+                <Typography variant="h4" gutterBottom>
+                  Welcome to the CLAMS Pipeline Designer
+                </Typography>
+                <Typography variant="body1" paragraph>
+                  This tool allows you to create CLAMS pipelines through visualization or chat.
+                </Typography>
+                <Grid container spacing={4} justifyContent="center">
+                  <Grid item xs={12} md={5}>
+                    <Paper sx={{ p: 3, height: '100%' }}>
+                      <Typography variant="h5" gutterBottom>
+                        Pipeline Visualizer
+                      </Typography>
+                      <Typography variant="body2" paragraph>
+                        Drag and drop CLAMS tools to create a pipeline visually.
+                      </Typography>
+                      <Button 
+                        variant="contained" 
+                        color="primary"
+                        onClick={() => navigate('/visualizer')}
                       >
-                        <Typography>
-                          {getDisplayName(appId, app)}
-                        </Typography>
-                      </StyledListItem>
-                    </StyledTooltip>
-                  ))}
-              </List>
-            </Paper>
-          </Grid>
+                        Open Visualizer
+                      </Button>
+                    </Paper>
+                  </Grid>
+                  <Grid item xs={12} md={5}>
+                    <Paper sx={{ p: 3, height: '100%' }}>
+                      <Typography variant="h5" gutterBottom>
+                        Pipeline Chat
+                      </Typography>
+                      <Typography variant="body2" paragraph>
+                        Describe your needs in natural language to generate a pipeline.
+                      </Typography>
+                      <Button 
+                        variant="contained" 
+                        color="primary"
+                        onClick={() => navigate('/chat')}
+                      >
+                        Open Chat
+                      </Button>
+                    </Paper>
+                  </Grid>
+                </Grid>
+              </Box>
+            } />
+            <Route path="/visualizer" element={
+              <Grid container spacing={2}>
+                {/* Tool Palette */}
+                <Grid item xs={3}>
+                  <Paper sx={{ p: 2 }}>
+                    <Typography variant="h6" gutterBottom>
+                      Available Tools
+                    </Typography>
+                    <List>
+                      {Object.entries(appDirectory)
+                        .sort(([, a], [, b]) => {
+                          const nameA = a.metadata.name || '';
+                          const nameB = b.metadata.name || '';
+                          return nameA.localeCompare(nameB);
+                        })
+                        .map(([appId, app]) => (
+                          <StyledTooltip
+                            key={appId}
+                            title={renderToolMetadata(app)}
+                            placement="right"
+                            arrow
+                          >
+                            <StyledListItem
+                              draggable
+                              onDragStart={(e: React.DragEvent<HTMLLIElement>) => onDragStart(e, appId)}
+                            >
+                              <Typography>
+                                {getDisplayName(appId, app)}
+                              </Typography>
+                            </StyledListItem>
+                          </StyledTooltip>
+                        ))}
+                    </List>
+                  </Paper>
+                </Grid>
 
-          {/* Pipeline Canvas */}
-          <Grid item xs={9}>
-            <Pipeline appDirectory={appDirectory} />
-          </Grid>
-        </Grid>
-      </Box>
-    </Container>
+                {/* Pipeline Canvas */}
+                <Grid item xs={9}>
+                  <Pipeline 
+                    appDirectory={appDirectory} 
+                    initialPipeline={currentPipeline}
+                    onPipelineChange={setCurrentPipeline}
+                  />
+                </Grid>
+              </Grid>
+            } />
+            <Route path="/chat" element={
+              <Chat onPipelineGenerated={setCurrentPipeline} />
+            } />
+          </Routes>
+        </Box>
+      </Container>
+      
+      {/* Export Dialog */}
+      <Dialog
+        open={exportDialogOpen}
+        onClose={() => setExportDialogOpen(false)}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle>Pipeline YAML</DialogTitle>
+        <DialogContent>
+          <TextField
+            multiline
+            fullWidth
+            rows={20}
+            value={yamlContent}
+            variant="outlined"
+            InputProps={{
+              readOnly: true,
+            }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setExportDialogOpen(false)}>Close</Button>
+          <Button 
+            onClick={() => {
+              navigator.clipboard.writeText(yamlContent);
+              alert('YAML copied to clipboard!');
+            }}
+          >
+            Copy to Clipboard
+          </Button>
+        </DialogActions>
+      </Dialog>
+      
+      {/* Save Dialog */}
+      <Dialog
+        open={saveDialogOpen}
+        onClose={() => setSaveDialogOpen(false)}
+      >
+        <DialogTitle>Save Pipeline</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Pipeline Name"
+            fullWidth
+            value={pipelineName}
+            onChange={(e) => setPipelineName(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setSaveDialogOpen(false)}>Cancel</Button>
+          <Button onClick={handleSavePipeline}>Save</Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 }; 

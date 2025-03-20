@@ -3,15 +3,20 @@ import { AppDirectoryEntry, AnnotationType } from '../types/AppTypes';
 /**
  * Checks if two annotation types are compatible
  */
-const areTypesCompatible = (outputType: AnnotationType, inputType: AnnotationType): boolean => {
+const areTypesCompatible = (outputType: AnnotationType, inputType: AnnotationType | AnnotationType[]): boolean => {
   // Remove version numbers from types for comparison
   const normalizeType = (type: string): string => {
     return type.split('/').slice(0, -1).join('/');
   };
 
   const normalizedOutput = normalizeType(outputType['@type']);
+  
+  // Handle both single type and array of types
+  if (Array.isArray(inputType)) {
+    return inputType.some(type => normalizeType(type['@type']) === normalizedOutput);
+  }
+  
   const normalizedInput = normalizeType(inputType['@type']);
-
   return normalizedOutput === normalizedInput;
 };
 

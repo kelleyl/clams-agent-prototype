@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import ReactFlow, {
   Node,
   Edge,
@@ -19,15 +19,75 @@ import { validateConnection } from '../utils/pipelineValidation';
 
 interface PipelineProps {
   appDirectory: AppDirectory;
+  initialPipeline?: any;
+  onPipelineChange?: (pipeline: any) => void;
 }
 
 const nodeTypes = {
   app: AppNode,
 };
 
-export const Pipeline: React.FC<PipelineProps> = ({ appDirectory }) => {
+export const Pipeline: React.FC<PipelineProps> = ({ 
+  appDirectory, 
+  initialPipeline,
+  onPipelineChange 
+}) => {
   const [nodes, setNodes, onNodesChange] = useNodesState<PipelineNode['data']>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<PipelineEdge>([]);
+
+  // Load initial pipeline if provided
+  useEffect(() => {
+    if (initialPipeline && initialPipeline.nodes && initialPipeline.edges) {
+      // Convert the pipeline nodes to ReactFlow nodes
+      const rfNodes = initialPipeline.nodes.map((node: any) => ({
+        id: node.id,
+        type: 'app',
+        position: node.position,
+        data: {
+          app: appDirectory[node.tool_id],
+          appId: node.tool_id,
+        },
+        dragHandle: '.drag-handle',
+      }));
+      
+      // Convert the pipeline edges to ReactFlow edges
+      const rfEdges = initialPipeline.edges.map((edge: any) => ({
+        id: edge.id,
+        source: edge.source,
+        target: edge.target,
+        type: 'default',
+      }));
+      
+      setNodes(rfNodes);
+      setEdges(rfEdges);
+    }
+  }, [initialPipeline, appDirectory, setNodes, setEdges]);
+  
+  // Update the pipeline when nodes or edges change
+  useEffect(() => {
+    if (onPipelineChange) {
+      // Convert ReactFlow nodes to pipeline nodes
+      const pipelineNodes = nodes.map(node => ({
+        id: node.id,
+        tool_id: node.data.appId,
+        data: node.data.app,
+        position: node.position,
+      }));
+      
+      // Convert ReactFlow edges to pipeline edges
+      const pipelineEdges = edges.map(edge => ({
+        id: edge.id,
+        source: edge.source,
+        target: edge.target,
+      }));
+      
+      onPipelineChange({
+        name: initialPipeline?.name || 'New Pipeline',
+        nodes: pipelineNodes,
+        edges: pipelineEdges,
+      });
+    }
+  }, [nodes, edges, onPipelineChange, initialPipeline]);
 
   const onConnect = useCallback(
     (params: Connection) => {
@@ -49,7 +109,7 @@ export const Pipeline: React.FC<PipelineProps> = ({ appDirectory }) => {
 
       setEdges(prevEdges => addEdge(newEdge, prevEdges));
     },
-    [nodes]
+    [nodes, setEdges]
   );
 
   const onDragOver = useCallback((event: React.DragEvent) => {
