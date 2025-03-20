@@ -1,78 +1,235 @@
-import gradio as gr
+import os
+import json
+import yaml
 import re
-import threading
-from mmif import Mmif, DocumentTypes
+import logging
+from flask import Flask, render_template, request, jsonify, redirect, url_for, send_from_directory
+from utils.pipeline_model import PipelineModel, PipelineStore
+from utils.agent_chat import PipelineAgentChat, ChatContext
+from utils.clams_tools import CLAMSToolbox
+from utils.download_app_directory import get_app_metadata
 
-import torch
-from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
-MODEL_NAME = "meta-llama/Meta-Llama-3.1-8B-Instruct"
-quant_config = BitsAndBytesConfig(load_in_8bit=True)
-tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-model = AutoModelForCausalLM.from_pretrained(
-    MODEL_NAME,
-    device_map="auto",
-    torch_dtype=torch.bfloat16,
-    quantization_config=quant_config
-)
+# Initialize app
+app = Flask(__name__, 
+            static_folder='visualization/dist/assets', 
+            template_folder='visualization/dist')
 
-MMIF_PATH = "/home/kmlynch/clams_apps/cas-pipeline/6-llama_summary/Eyewitness_News_at_11pm_-_Boston_Blizzard_of_78_-_WBZ-TV_Complete_Broadcast_2_7_1978.mmif"
+# Initialize pipeline storage
+pipeline_store = PipelineStore(storage_dir="data/pipelines")
 
-def get_mmif_object():
-    with open(MMIF_PATH, 'r') as file:
-        return Mmif(file.read())
+# Initialize CLAMS toolbox and chat agent
+toolbox = CLAMSToolbox()
+chat_agent = PipelineAgentChat()
 
-def load_mmif_annotations():
-    mmif_obj = get_mmif_object()
-    global annotations
-    annotations = []
-    for view in mmif_obj.views:
-        annotations.extend(view.annotations)
-    # print("Annotations loaded", annotations)
+# Add CLAMS tools to the agent one by one
+for name, tool in toolbox.get_tools().items():
+    try:
+        chat_agent.agent.toolbox.add_tool(tool)
+    except Exception as e:
+        print(f"Error adding tool {name}: {str(e)}")
 
-threading.Thread(target=load_mmif_annotations, daemon=True).start()
+# Global state for current chat context
+current_chat_context = None
 
-def chat_respond(message, chat_history):
-    if chat_history is None:
-        chat_history = []
-    chat_history.append(("User", message))
-    # Construct the prompt instructing the model to generate timestamps in mm:ss format
-    prompt = f"Please generate timestamps in the format mm:ss where appropriate in your response.\nUser: {message}\nAssistant:"
-    inputs = tokenizer(prompt, return_tensors='pt').to(model.device)
-    outputs = model.generate(**inputs, max_new_tokens=100, do_sample=True)
-    response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+@app.route('/')
+def index():
+    """Serve the main page with navigation."""
+    return render_template('index.html')
+
+@app.route('/visualizer')
+def visualizer():
+    """Serve the pipeline visualizer page."""
+    return render_template('index.html')
+
+@app.route('/chat')
+def chat():
+    """Serve the pipeline chat page."""
+    return render_template('index.html')
+
+# Add a catch-all route for static files
+@app.route('/assets/<path:filename>')
+def serve_static(filename):
+    """Serve static files from the assets directory."""
+    return send_from_directory('visualization/dist/assets', filename)
+
+@app.route('/api/tools')
+def get_tools():
+    """Get all available CLAMS tools."""
+    return jsonify(toolbox.get_tools())
+
+@app.route('/api/pipelines')
+def get_pipelines():
+    """Get all available pipelines."""
+    pipelines = pipeline_store.list_pipelines()
+    return jsonify(pipelines)
+
+@app.route('/api/pipeline/<name>', methods=['GET'])
+def get_pipeline(name):
+    """Get a specific pipeline by name."""
+    try:
+        pipeline = pipeline_store.load_pipeline(name)
+        return jsonify(pipeline.to_dict())
+    except FileNotFoundError:
+        return jsonify({"error": f"Pipeline '{name}' not found"}), 404
+
+@app.route('/api/pipeline', methods=['POST'])
+def save_pipeline():
+    """Save a pipeline."""
+    try:
+        data = request.json
+        pipeline = PipelineModel.from_dict(data)
+        path = pipeline_store.save_pipeline(pipeline)
+        return jsonify({"message": f"Pipeline saved to {path}", "path": path})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/pipeline/export/<name>', methods=['GET'])
+def export_pipeline(name):
+    """Export a pipeline to YAML."""
+    try:
+        pipeline = pipeline_store.load_pipeline(name)
+        yaml_content = pipeline.to_yaml()
+        return jsonify({"yaml": yaml_content, "name": name})
+    except FileNotFoundError:
+        return jsonify({"error": f"Pipeline '{name}' not found"}), 404
+
+@app.route('/api/chat/start', methods=['POST'])
+def start_chat():
+    """Start a new chat session."""
+    global current_chat_context
     
-    def replace_ts(match):
-        ts = match.group(0)
-        parts = ts.split(":")
-        total_seconds = int(parts[0]) * 60 + int(parts[1])
-        return f'<a href="#" onclick=\'const v=document.getElementsByTagName("video")[0]; if(v){{ v.currentTime={total_seconds}; v.play(); }} return false;\'>{ts}</a>'
+    try:
+        data = request.json
+        task = data.get('task', 'Create a CLAMS pipeline')
+        
+        # Initialize a new chat context
+        current_chat_context = ChatContext(task_description=task)
+        
+        # Generate initial response
+        response = chat_agent.chat_response(
+            current_chat_context,
+            "I want to create a pipeline for: " + task
+        )
+        
+        # Add the response to the context
+        current_chat_context.conversation_history.append({
+            "role": "Assistant",
+            "content": response
+        })
+        
+        return jsonify({
+            "message": f"Chat session started for task: {task}",
+            "response": response
+        })
+    except Exception as e:
+        logger.error(f"Error starting chat: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/chat/message', methods=['POST'])
+def send_message():
+    """Send a message to the chat agent."""
+    global current_chat_context
     
-    processed_response = re.sub(r'(\d{1,2}:\d{2})', replace_ts, response)
-    chat_history.append(("Assistant", processed_response))
-    chat_html = "".join([f'<p><strong>{sender}:</strong> {msg}</p>' for sender, msg in chat_history])
-    return chat_html, chat_history
+    try:
+        data = request.json
+        message = data.get('message', '')
+        
+        if not current_chat_context:
+            return jsonify({"error": "No active chat session. Please start a new chat."}), 400
+        
+        # Add user message to context
+        current_chat_context.conversation_history.append({
+            "role": "User",
+            "content": message
+        })
+        
+        # Generate response
+        response = chat_agent.chat_response(current_chat_context, message)
+        
+        # Add assistant response to context
+        current_chat_context.conversation_history.append({
+            "role": "Assistant",
+            "content": response
+        })
+        
+        # Check for tool suggestion
+        tool_name = None
+        tool_match = re.search(r'I suggest using the "?([a-zA-Z0-9_-]+)"? tool', response)
+        if tool_match and tool_match.group(1) in chat_agent.tool_metadata:
+            tool_name = tool_match.group(1)
+            current_chat_context.add_selected_tool(tool_name, chat_agent.tool_metadata[tool_name])
+        
+        return jsonify({
+            "response": response,
+            "tool_added": tool_name is not None,
+            "tool_name": tool_name,
+            "pipeline_state": current_chat_context.get_pipeline_state()
+        })
+    except Exception as e:
+        logger.error(f"Error generating chat response: {str(e)}")
+        return jsonify({"error": str(e)}), 500
 
-def get_video_url():
-    mmif_obj = get_mmif_object()
-    video_docs = mmif_obj.get_documents_by_type(DocumentTypes.VideoDocument)
-    if video_docs:
-        video_doc = video_docs[0]
-         # remove first 7 characters of the url if necessary
-        return video_doc.get_property("location")[7:]
-    return None
+@app.route('/api/chat/generate', methods=['POST'])
+def generate_pipeline():
+    """Generate a pipeline from the current chat."""
+    global current_chat_context
+    
+    try:
+        if not current_chat_context:
+            return jsonify({"error": "No active chat session. Please start a new chat."}), 400
+        
+        data = request.json
+        name = data.get('name', 'Chat Generated Pipeline')
+        
+        # Update pipeline name
+        current_chat_context.pipeline.name = name
+        
+        # Save pipeline
+        path = pipeline_store.save_pipeline(current_chat_context.pipeline)
+        
+        # Get pipeline data
+        pipeline_data = current_chat_context.pipeline.to_dict()
+        
+        return jsonify({
+            "message": f"Pipeline '{name}' generated and saved to {path}",
+            "name": name,
+            "path": path,
+            "pipeline": pipeline_data
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-with gr.Blocks() as demo:
-    gr.Markdown("# Chatbot and Video Player")
-    with gr.Row():
-        with gr.Column():
-            chat_history_state = gr.State([])
-            chat_display = gr.HTML()
-            message_box = gr.Textbox(placeholder="Type your message here...")
-            message_box.submit(chat_respond, inputs=[message_box, chat_history_state], outputs=[chat_display, chat_history_state])
-        with gr.Column():
-            gr.Markdown("## Video Player")
-            video_url = get_video_url()
-            print("Video URL", video_url)
-            video_component = gr.Video(value=video_url, show_label=False, elem_id="video_player")
-    demo.launch()
+@app.route('/api/chat/export', methods=['GET'])
+def export_chat_pipeline():
+    """Export the current chat pipeline to YAML."""
+    global current_chat_context
+    
+    try:
+        if not current_chat_context:
+            return jsonify({"error": "No active chat session. Please start a new chat."}), 400
+        
+        yaml_content = current_chat_context.export_pipeline()
+        return jsonify({"yaml": yaml_content, "name": current_chat_context.pipeline.name})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/chat/pipeline', methods=['GET'])
+def get_chat_pipeline():
+    """Get the current pipeline from the chat."""
+    global current_chat_context
+    
+    try:
+        if not current_chat_context:
+            return jsonify({"error": "No active chat session. Please start a new chat."}), 400
+        
+        pipeline_data = current_chat_context.pipeline.to_dict()
+        return jsonify(pipeline_data)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True, port=5000)
