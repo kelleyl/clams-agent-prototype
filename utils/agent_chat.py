@@ -114,13 +114,10 @@ class PipelineAgentChat:
         )
         
         # Create the agent with custom system prompt
-        system_prompt = """You are a helpful assistant for designing CLAMS pipelines.
+        system_prompt = """
+        <<authorized_imports>>
+        You are a helpful assistant for designing CLAMS pipelines.
 You have access to various CLAMS tools for video analysis.
-
-<<authorized_imports>>
-import json
-import re
-from typing import Dict, Any, List
 
 Your task is to help users create pipelines of interoperable CLAMS tools. A pipeline is interoperable when:
 1. Each tool's OUTPUT type must be compatible with the INPUT type required by the next tool
@@ -134,9 +131,6 @@ Current pipeline state:
 
 Tool compatibility information:
 {compatibility_info}
-
-Previous conversation:
-{conversation_history}
 
 Available tools:
 {tool_details}
@@ -215,7 +209,7 @@ Assistant:"""
         tool_details = []
         
         for name, tool_info in self.tool_metadata.items():
-            # Create tool detail string
+            # Create simplified tool detail string
             detail = f"Tool: {name}\n"
             detail += f"Description: {tool_info['description']}\n"
             detail += f"Input Types: {', '.join(tool_info['input_types'])}\n"
@@ -248,7 +242,7 @@ Assistant:"""
                             break
             
             if compatible_tools:
-                compatibility.append(f"{name} can be followed by: {', '.join(compatible_tools)}")
+                compatibility.append(f"{name} → {', '.join(compatible_tools)}")
         
         return "\n".join(compatibility)
         
@@ -264,12 +258,6 @@ Assistant:"""
             Assistant's response
         """
         try:
-            # Format conversation history
-            history = "\n".join([
-                f"{msg['role']}: {msg['content']}"
-                for msg in context.conversation_history
-            ])
-            
             # Get pipeline state
             pipeline_state = context.get_pipeline_state()
             
@@ -282,7 +270,6 @@ Assistant:"""
                 task=context.task_description,
                 pipeline_state=pipeline_state,
                 compatibility_info=compatibility_info,
-                conversation_history=history,
                 tool_details=tool_details,
                 user_input=user_input
             )
