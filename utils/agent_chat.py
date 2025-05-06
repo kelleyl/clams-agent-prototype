@@ -117,25 +117,22 @@ class PipelineAgentChat:
         system_prompt = """
         <<authorized_imports>>
         You are a helpful assistant for designing CLAMS pipelines.
-You have access to various CLAMS tools for video analysis.
+        You have access to various CLAMS tools for video analysis.
 
-Your task is to help users create pipelines of interoperable CLAMS tools. A pipeline is interoperable when:
-1. Each tool's OUTPUT type must be compatible with the INPUT type required by the next tool
-2. The first tool in the pipeline must accept the input type that the user has available
-3. The last tool in the pipeline must produce the output type that the user needs
+        Your task is to help users create pipelines of interoperable CLAMS tools. A pipeline is interoperable when:
+        1. Each tool's OUTPUT type must be compatible with the INPUT type required by the next tool
+        2. The first tool in the pipeline must accept the input type that the user has available
+        3. The last tool in the pipeline must produce the output type that the user needs
 
 Current task: {task_description}
 
 Current pipeline state:
 {pipeline_state}
 
-Tool compatibility information:
-{compatibility_info}
-
-Available tools:
+Available tools (Format: Tool: <Name> | Inputs: <Inputs> | Outputs: <Outputs>):
 {tool_details}
 
-IMPORTANT: Always check that consecutive tools are compatible. A tool is compatible with the next one if its output types match or include the input types required by the next tool.
+IMPORTANT: Always check that consecutive tools are compatible by ensuring the output types of one tool match the input types required by the next.
 
 User: {user_input}
 Assistant:"""
@@ -180,7 +177,8 @@ Assistant:"""
                     # Extract the type name from the URI
                     type_uri = input_type['@type']
                     type_name = type_uri.split('/')[-1].replace('v1', '').replace('v2', '').replace('v3', '').replace('v4', '').replace('v5', '')
-                    input_types.append(type_name)
+                    if type_name:
+                        input_types.append(type_name)
             
             # Extract output types
             output_types = []
@@ -189,7 +187,8 @@ Assistant:"""
                     # Extract the type name from the URI
                     type_uri = output_type['@type']
                     type_name = type_uri.split('/')[-1].replace('v1', '').replace('v2', '').replace('v3', '').replace('v4', '').replace('v5', '')
-                    output_types.append(type_name)
+                    if type_name:
+                        output_types.append(type_name)
             
             # Create tool metadata
             self.tool_metadata[app_name] = {
@@ -205,17 +204,14 @@ Assistant:"""
         logger.info(f"Loaded {len(self.tool_metadata)} tools from app directory")
     
     def get_tool_details(self) -> str:
-        """Get detailed information about available tools."""
+        """Get detailed information about available tools in a simplified format."""
         tool_details = []
         
         for name, tool_info in self.tool_metadata.items():
             # Create simplified tool detail string
-            detail = f"Tool: {name}\n"
-            detail += f"Description: {tool_info['description']}\n"
-            detail += f"Input Types: {', '.join(tool_info['input_types'])}\n"
-            detail += f"Output Types: {', '.join(tool_info['output_types'])}\n"
-            detail += "---\n"
-            
+            inputs = ', '.join(tool_info.get('input_types', [])) or 'None'
+            outputs = ', '.join(tool_info.get('output_types', [])) or 'None'
+            detail = f"Tool: {name} | Inputs: {inputs} | Outputs: {outputs}"
             tool_details.append(detail)
             
         return "\n".join(tool_details)
@@ -248,37 +244,64 @@ Assistant:"""
         
     def chat_response(self, context: ChatContext, user_input: str) -> str:
         """
-        Generate a response in the chat conversation using the agent.
+        Generate a response from the agent based on the current context and user input.
         
         Args:
             context: Current chat context
-            user_input: User's message
+            user_input: User's latest message
             
         Returns:
-            Assistant's response
+            Agent's response string
         """
+        # Get current pipeline state and available tools
+        pipeline_state = context.get_pipeline_state()
+        tool_details = self.get_tool_details()
+        
+        # Format conversation history for the prompt
+        formatted_history = ""
+        for entry in context.conversation_history:
+            formatted_history += f"{entry['role']}: {entry['content']}\n"
+            
+        # Update the prompt with current context
+        # Note: ReactCodeAgent handles history internally, but we might need explicit history here
+        # based on the specific model's requirements. Let's assume the system prompt handles it for now.
+        
+        # Prepare the prompt for the LLM engine (might need adjustment based on ReactCodeAgent behavior)
+        # The system prompt expects these variables: task_description, pipeline_state, tool_details, user_input
+        # prompt = self.agent.system_prompt.format(
+        #     task_description=context.task_description,
+        #     pipeline_state=pipeline_state,
+        #     tool_details=tool_details,
+        #     user_input=user_input
+        # )
+
+        # Combine with history if needed (this depends on how ReactCodeAgent uses system_prompt vs history)
+        # full_prompt_for_logging = formatted_history + prompt 
+        # logger.info(f"\\n>>>>> Sending Prompt to Agent >>>>>\\n{full_prompt_for_logging}\\n<<<<< End Prompt <<<<<\\n")
+        
+        # Use the agent's run method
         try:
-            # Get pipeline state
-            pipeline_state = context.get_pipeline_state()
+            # ReactCodeAgent.run expects kwargs corresponding to variables in the system prompt template
+            logger.info(f"\\n>>>>> Calling Agent.run with >>>>>\\nTask: {context.task_description}\\nPipeline State: {pipeline_state}\\nTool Details: {tool_details}\\nUser Input: {user_input}\\n<<<<< End Agent Input <<<<<\\n")
             
-            # Get tool details and compatibility info
-            tool_details = self.get_tool_details()
-            compatibility_info = self.get_compatibility_info()
-            
-            # Generate response
             response = self.agent.run(
-                task=context.task_description,
+                task_description=context.task_description,
                 pipeline_state=pipeline_state,
-                compatibility_info=compatibility_info,
                 tool_details=tool_details,
-                user_input=user_input
+                user_input=user_input 
+                # Note: conversation_history is not explicitly in the prompt template, 
+                # ReactCodeAgent might handle history internally or require a different setup.
             )
             
-            return response
+            # Clean up response (remove potential artifacts like "Assistant:")
+            response = re.sub(r'^Assistant:\\s*', '', response).strip()
             
         except Exception as e:
-            logger.error(f"Error generating chat response: {str(e)}")
-            return f"Error generating response: {str(e)}"
+            logger.error(f"Error during agent run: {str(e)}", exc_info=True) # Add traceback logging
+            response = f"Sorry, I encountered an error: {str(e)}"
+
+        logger.info(f"Agent response: {response}")
+        return response
             
     def suggest_compatible_tools(self, last_tool_name: str) -> List[str]:
         """Suggest tools that are compatible with the last tool in the pipeline."""
