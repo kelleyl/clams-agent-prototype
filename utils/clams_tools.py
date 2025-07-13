@@ -1,30 +1,30 @@
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 import json
-from transformers import Tool
+from langchain.tools import BaseTool
+from langchain.callbacks.manager import CallbackManagerForToolRun
 from .download_app_directory import get_app_metadata
 
-class CLAMSTool(Tool):
-    def __init__(self, name: str, description: str):
+class CLAMSTool(BaseTool):
+    """LangChain tool for CLAMS applications."""
+    
+    def __init__(self, name: str, description: str, app_metadata: Dict[str, Any]):
+        super().__init__()
         self.name = name
         self.description = description
-        self.inputs = {
-            "video": {
-                "type": "string",
-                "description": "path to the input video file"
-            },
-            "parameters": {
-                "type": "string",
-                "description": "JSON string containing optional parameters for the tool"
-            }
-        }
-        self.output_type = "string"  # MMIF annotations will be returned as JSON string
-
-    def __call__(self, video: str, parameters: str = None) -> str:
+        self.app_metadata = app_metadata
+    
+    def _run(
+        self,
+        video: str,
+        parameters: str = None,
+        run_manager: Optional[CallbackManagerForToolRun] = None,
+    ) -> str:
         """Execute the CLAMS tool on the given video with optional parameters.
         
         Args:
             video: Path to the input video file
             parameters: JSON string containing optional parameters
+            run_manager: Callback manager for tool execution
             
         Returns:
             JSON string containing MMIF annotations
@@ -43,17 +43,26 @@ class CLAMSTool(Tool):
             result["parameters_used"] = params_dict
             
         return json.dumps(result)
+    
+    async def _arun(
+        self,
+        video: str,
+        parameters: str = None,
+        run_manager: Optional[CallbackManagerForToolRun] = None,
+    ) -> str:
+        """Async version of _run."""
+        return self._run(video, parameters, run_manager)
 
 class CLAMSToolbox:
-    """Collection of CLAMS tools for use with Transformers Agents."""
+    """Collection of CLAMS tools for use with LangChain agents."""
     
     def __init__(self):
         """Initialize the CLAMS toolbox."""
         self.app_metadata = get_app_metadata()
         self.tools = self._create_tools()
         
-    def _create_tools(self) -> Dict[str, Tool]:
-        """Create Tool instances for each CLAMS app."""
+    def _create_tools(self) -> Dict[str, BaseTool]:
+        """Create BaseTool instances for each CLAMS app."""
         tools = {}
         
         for app_name, app_info in self.app_metadata.items():
@@ -124,15 +133,15 @@ Parameters:
 Version: {app_info.get('latest_version', 'unknown')}"""
 
             # Create the tool
-            tool = CLAMSTool(name=app_name, description=description)
+            tool = CLAMSTool(name=app_name, description=description, app_metadata=app_info)
             tools[app_name] = tool
             
         return tools
     
-    def get_tools(self) -> Dict[str, Tool]:
+    def get_tools(self) -> Dict[str, BaseTool]:
         """Get all available CLAMS tools."""
         return self.tools
     
-    def get_tool(self, name: str) -> Tool:
+    def get_tool(self, name: str) -> BaseTool:
         """Get a specific CLAMS tool by name."""
         return self.tools.get(name) 
