@@ -102,3 +102,7 @@ bitsandbytes>=0.41.0  # For 8-bit quantization
 python-dotenv>=1.0.0
 sentencepiece>=0.1.99  # Required for some tokenizers
 protobuf>=4.25.0  # Required for some model configs
+langchain>=0.1.0
+langchain-openai>=0.1.0
+langgraph>=0.1.0
+openai>=1.0.0
