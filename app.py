@@ -5,7 +5,7 @@ import re
 import logging
 from flask import Flask, render_template, request, jsonify, redirect, url_for, send_from_directory
 from utils.pipeline_model import PipelineModel, PipelineStore
-from utils.agent_chat import PipelineAgentChat, ChatContext
+from utils.langgraph_agent import LangGraphPipelineAgent, ChatContext
 from utils.clams_tools import CLAMSToolbox
 from utils.download_app_directory import get_app_metadata
 
@@ -23,14 +23,7 @@ pipeline_store = PipelineStore(storage_dir="data/pipelines")
 
 # Initialize CLAMS toolbox and chat agent
 toolbox = CLAMSToolbox()
-chat_agent = PipelineAgentChat()
-
-# Add CLAMS tools to the agent one by one
-for name, tool in toolbox.get_tools().items():
-    try:
-        chat_agent.agent.toolbox.add_tool(tool)
-    except Exception as e:
-        print(f"Error adding tool {name}: {str(e)}")
+chat_agent = LangGraphPipelineAgent()
 
 # Global state for current chat context
 current_chat_context = None

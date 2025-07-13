@@ -14,7 +14,7 @@ project_root = os.path.dirname(os.path.abspath(__file__))
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
-from utils.agent_chat import PipelineAgentChat
+from utils.langgraph_agent import LangGraphPipelineAgent
 from utils.clams_tools import CLAMSToolbox
 
 # Configure logging
@@ -39,16 +39,9 @@ def main():
         
         # Initialize the chat agent
         logger.info("Initializing the pipeline agent chat...")
-        chat = PipelineAgentChat()
+        chat = LangGraphPipelineAgent()
         
-        # Add CLAMS tools to the agent one by one
-        logger.info("Adding tools to the agent...")
-        for name, tool in tools.items():
-            try:
-                chat.agent.toolbox.add_tool(tool)
-                logger.info(f"Added tool: {name}")
-            except Exception as e:
-                logger.error(f"Error adding tool {name}: {str(e)}")
+        logger.info("LangGraph agent initialized successfully")
         
         print("CLAMS Pipeline Generator")
         print("=======================")
