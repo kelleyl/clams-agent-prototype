@@ -46,6 +46,68 @@ The system consists of:
 - A visualization interface for exploring MMIF data
 - A video player component for content viewing
 
+## Installation and Setup
+
+### Prerequisites
+- Python 3.8 or higher
+- Node.js 16.x or higher (for frontend visualization)
+- npm or yarn package manager
+
+### 1. Environment Setup
+```bash
+# Clone the repository (if not already done)
+cd clams-agent-prototype
+
+# Create and activate virtual environment
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# Install Python dependencies
+pip install -r requirements.txt
+```
+
+### 2. Frontend Build (Required for Web Interface)
+```bash
+# Navigate to visualization directory
+cd visualization
+
+# Install Node.js dependencies
+npm install
+
+# Build the frontend
+npm run build
+
+# Return to project root
+cd ..
+```
+
+### 3. Running the Application
+
+#### Option A: Web Interface (Recommended)
+```bash
+# Ensure you're in the project root with virtual environment activated
+python app.py
+```
+The web interface will be available at `http://localhost:5000`
+
+#### Option B: Command Line Interface
+```bash
+# Ensure you're in the project root with virtual environment activated
+python pipeline_chat.py
+```
+This provides an interactive command-line chat interface.
+
+### 4. Configuration (Optional)
+The application uses default configuration settings. To customize:
+- LLM model parameters can be configured in `utils/config.py`
+- Default settings work for most use cases
+- Configuration is automatically saved to `config.json` when modified
+
+### 5. Troubleshooting
+- **Port 5000 in use**: Change the port in `app.py` (line 228): `app.run(debug=True, port=5001)`
+- **Frontend build errors**: Ensure Node.js 16+ is installed, delete `node_modules` and `package-lock.json`, then run `npm install` again
+- **Python dependency errors**: Ensure you're using the correct virtual environment and all dependencies are installed
+
 ## Usage Examples
 
 ### Sample Queries
