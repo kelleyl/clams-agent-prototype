@@ -1,17 +1,16 @@
 from typing import Dict, Any, Optional
 import json
-from langchain.tools import BaseTool
-from langchain.callbacks.manager import CallbackManagerForToolRun
+from langchain_core.tools import BaseTool
+from langchain_core.callbacks.manager import CallbackManagerForToolRun
 from .download_app_directory import get_app_metadata
 
 class CLAMSTool(BaseTool):
     """LangChain tool for CLAMS applications."""
     
+    app_metadata: Dict[str, Any]
+    
     def __init__(self, name: str, description: str, app_metadata: Dict[str, Any]):
-        super().__init__()
-        self.name = name
-        self.description = description
-        self.app_metadata = app_metadata
+        super().__init__(name=name, description=description, app_metadata=app_metadata)
     
     def _run(
         self,
