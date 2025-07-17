@@ -4,12 +4,14 @@ import re
 import operator
 from dataclasses import dataclass
 
-from langchain.chat_models import ChatOpenAI
-from langchain.schema import HumanMessage, AIMessage, SystemMessage
-from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
-from langchain.tools import BaseTool
-from langchain.agents import AgentExecutor, create_openai_tools_agent
-from langchain.memory import ConversationBufferMemory
+from langchain_huggingface import HuggingFacePipeline, ChatHuggingFace
+from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
+
+from langchain_core.tools import BaseTool
+
+
+from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
+import torch
 
 from langgraph.graph import StateGraph, END
 from langgraph.prebuilt import ToolNode, tools_condition
@@ -101,15 +103,31 @@ class LangGraphPipelineAgent:
     LangGraph-based pipeline agent for CLAMS pipeline generation.
     """
     
-    def __init__(self, model_name: str = "gpt-3.5-turbo"):
+    def __init__(self, model_name: str = "microsoft/DialoGPT-medium"):
         """
         Initialize the LangGraph pipeline agent.
         
         Args:
-            model_name: Name of the OpenAI model to use
+            model_name: Name of the Hugging Face model to use
         """
         self.model_name = model_name
-        self.llm = ChatOpenAI(model=model_name, temperature=0.7)
+        
+        # Initialize Hugging Face pipeline
+        device = 0 if torch.cuda.is_available() else -1
+        hf_pipeline = pipeline(
+            "text-generation",
+            model=model_name,
+            tokenizer=model_name,
+            device=device,
+            max_new_tokens=512,
+            do_sample=True,
+            temperature=0.7,
+            pad_token_id=50256  # Common pad token id
+        )
+        
+        # Create LangChain-compatible model
+        llm = HuggingFacePipeline(pipeline=hf_pipeline)
+        self.llm = ChatHuggingFace(llm=llm, verbose=True)
         
         # Initialize CLAMS toolbox
         self.toolbox = CLAMSToolbox()
@@ -176,37 +194,14 @@ class LangGraphPipelineAgent:
 
         Your task is to help users create pipelines of interoperable CLAMS tools. A pipeline is interoperable when:
         1. Each tool's OUTPUT type must be compatible with the INPUT type required by the next tool
-        2. The first tool in the pipeline must accept the input type that the user has available
+        2. The first tool in the pipeline must accept the input type that the user has available (typically VideoDocument)
         3. The last tool in the pipeline must produce the output type that the user needs
 
-        Current task: {task_description}
+        IMPORTANT: When a user provides a clear task description, directly suggest appropriate tools without asking for clarification.
 
-        Current pipeline state:
-        {pipeline_state}
+        TOOL COMPATIBILITY: Always check that consecutive tools are compatible by ensuring the output types of one tool match the input types required by the next.
 
-        Available tools (Format: Tool: <Name> | Inputs: <Inputs> | Outputs: <Outputs>):
-        {tool_details}
-
-        IMPORTANT: Always check that consecutive tools are compatible by ensuring the output types of one tool match the input types required by the next.
-
-        When suggesting tools, explain why each tool is suitable and how it fits into the pipeline."""
-        
-        # Create prompt template
-        prompt = ChatPromptTemplate.from_messages([
-            ("system", system_prompt),
-            MessagesPlaceholder(variable_name="messages"),
-        ])
-        
-        # Create agent
-        agent = create_openai_tools_agent(self.llm, self.tools, prompt)
-        
-        # Create agent executor
-        agent_executor = AgentExecutor(
-            agent=agent,
-            tools=self.tools,
-            verbose=True,
-            max_iterations=10
-        )
+        When suggesting tools, explain why each tool is suitable and how it fits into the pipeline. Be specific about the tool names and their order."""
         
         # Define nodes
         def agent_node(state: AgentState) -> AgentState:
@@ -221,28 +216,31 @@ class LangGraphPipelineAgent:
             # Format the prompt with current state
             tool_details = self.get_tool_details()
             
-            # Create context message
+            # Create context message  
             context_msg = f"""
-            Current task: {state.get('task_description', 'Create a CLAMS pipeline')}
+            Task: {state.get('task_description', 'Create a CLAMS pipeline')}
             
-            Current pipeline state:
-            {state.get('pipeline_state', 'No tools selected yet.')}
+            Pipeline State: {state.get('pipeline_state', 'No tools selected yet.')}
             
-            Available tools:
+            Available CLAMS Tools:
             {tool_details}
-            """
             
-            # Execute the agent
+            Please suggest specific tools for this task and explain how they work together in a pipeline."""
+            
+            # Execute the LLM directly
             try:
-                result = agent_executor.invoke({
-                    "messages": [
-                        SystemMessage(content=context_msg),
-                        HumanMessage(content=messages[-1]["content"])
-                    ]
-                })
+                # Create message list for LLM
+                message_list = [
+                    SystemMessage(content=system_prompt),
+                    SystemMessage(content=context_msg),
+                    HumanMessage(content=messages[-1]["content"])
+                ]
+                
+                # Get response from LLM
+                response = self.llm.invoke(message_list)
                 
                 # Add the response to messages
-                new_messages = [{"role": "assistant", "content": result["output"]}]
+                new_messages = [{"role": "assistant", "content": response.content}]
                 
                 # Update state
                 updated_state = {
@@ -329,11 +327,14 @@ class LangGraphPipelineAgent:
         """Get detailed information about available tools."""
         tool_details = []
         
-        for name, tool_info in self.tool_metadata.items():
-            inputs = ', '.join(tool_info.get('input_types', [])) or 'None'
-            outputs = ', '.join(tool_info.get('output_types', [])) or 'None'
-            detail = f"Tool: {name} | Inputs: {inputs} | Outputs: {outputs}"
-            tool_details.append(detail)
+        # Get the full tool descriptions from the toolbox
+        tools = self.toolbox.get_tools()
+        
+        for name, tool in tools.items():
+            # Use the full description that includes inputs, outputs, parameters, and version
+            tool_details.append(f"=== {name} ===")
+            tool_details.append(tool.description)
+            tool_details.append("")  # Add spacing between tools
             
         return "\n".join(tool_details)
     
@@ -361,7 +362,9 @@ class LangGraphPipelineAgent:
         
         # Execute the graph
         try:
-            result = self.app.invoke(state)
+            # Create configuration for checkpointer
+            config = {"configurable": {"thread_id": "default"}}
+            result = self.app.invoke(state, config=config)
             
             # Extract the response
             messages = result.get("messages", [])

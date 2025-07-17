@@ -102,10 +102,11 @@ def start_chat():
         # Initialize a new chat context
         current_chat_context = ChatContext(task_description=task)
         
-        # Generate initial response
+        # Generate initial response that directly addresses the task
+        initial_message = f"Help me create a CLAMS pipeline to {task}. Please suggest appropriate tools and explain the pipeline structure."
         response = chat_agent.chat_response(
             current_chat_context,
-            "I want to create a pipeline for: " + task
+            initial_message
         )
         
         # Add the response to the context
