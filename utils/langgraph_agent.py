@@ -1,19 +1,14 @@
 from typing import List, Dict, Any, Optional, TypedDict, Annotated
 import logging
 import re
-import operator
+import json
 from dataclasses import dataclass
 
-from langchain_huggingface import HuggingFacePipeline, ChatHuggingFace
-from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
-
+from langchain_openai import ChatOpenAI
+from langchain_core.messages import AnyMessage, SystemMessage, HumanMessage
 from langchain_core.tools import BaseTool
-
-
-from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
-import torch
-
-from langgraph.graph import StateGraph, END
+from langgraph.graph.message import add_messages
+from langgraph.graph import START, StateGraph
 from langgraph.prebuilt import ToolNode, tools_condition
 from langgraph.checkpoint.memory import MemorySaver
 
@@ -25,50 +20,38 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 class AgentState(TypedDict):
-    """State of the LangGraph agent."""
-    messages: Annotated[List[dict], operator.add]
-    task_description: str
-    current_step: int
-    selected_tools: List[Dict[str, Any]]
-    pipeline_state: str
-    tool_metadata: Dict[str, Any]
+    """Simplified state following the ReAct pattern from the example."""
+    messages: Annotated[list[AnyMessage], add_messages]
+    task_description: Optional[str]
+    selected_tools: List[str]  # List of tool names used in pipeline
     pipeline: PipelineModel
-    conversation_history: List[Dict[str, str]]
 
 @dataclass
 class ChatContext:
     """Stores context for pipeline construction."""
     task_description: str
-    current_step: int = 1
-    selected_tools: List[Dict[str, Any]] = None
-    pipeline_state: Dict[str, Any] = None
+    selected_tools: List[str] = None
     conversation_history: List[Dict[str, str]] = None
     pipeline: Optional[PipelineModel] = None
     
     def __post_init__(self):
         self.selected_tools = self.selected_tools or []
-        self.pipeline_state = self.pipeline_state or {}
         self.conversation_history = self.conversation_history or []
         self.pipeline = self.pipeline or PipelineModel(name="Chat Generated Pipeline")
     
-    def add_selected_tool(self, tool_name: str, tool_info: Dict[str, Any]):
+    def add_selected_tool(self, tool_name: str, tool_metadata: Dict[str, Any]):
         """Add a selected tool to the pipeline."""
-        self.selected_tools.append({
-            "step": self.current_step,
-            "name": tool_name,
-            "info": tool_info
-        })
-        
-        # Add to the pipeline model as well
-        node_id = self.pipeline.add_node(tool_name, tool_info)
-        
-        # If this isn't the first tool, connect it to the previous one
-        if len(self.selected_tools) > 1:
-            prev_tool = self.selected_tools[-2]
-            prev_node_id = f"{prev_tool['name']}-{self.current_step - 2}"
-            self.pipeline.add_edge(prev_node_id, node_id)
+        if tool_name not in self.selected_tools:
+            self.selected_tools.append(tool_name)
             
-        self.current_step += 1
+            # Add to the pipeline model
+            node_id = self.pipeline.add_node(tool_name, tool_metadata)
+            
+            # If this isn't the first tool, connect it to the previous one
+            if len(self.selected_tools) > 1:
+                prev_tool = self.selected_tools[-2]
+                prev_node_id = f"{prev_tool}-{len(self.selected_tools) - 2}"
+                self.pipeline.add_edge(prev_node_id, node_id)
     
     def get_pipeline_state(self) -> str:
         """Get current pipeline state as a formatted string."""
@@ -76,12 +59,9 @@ class ChatContext:
             return "No tools selected yet."
             
         state = "Current pipeline:\n"
-        for tool in self.selected_tools:
-            state += f"Step {tool['step']}: {tool['name']}\n"
-            if 'input_types' in tool['info']:
-                state += f"  - Inputs: {', '.join(tool['info']['input_types'])}\n"
-            if 'output_types' in tool['info']:
-                state += f"  - Outputs: {', '.join(tool['info']['output_types'])}\n"
+        for i, tool_name in enumerate(self.selected_tools, 1):
+            state += f"Step {i}: {tool_name}\n"
+        
         return state
     
     def export_pipeline(self, name: Optional[str] = None) -> str:
@@ -89,58 +69,39 @@ class ChatContext:
         if name:
             self.pipeline.name = name
         return self.pipeline.to_yaml()
-    
-    def save_pipeline(self, storage_dir: str = "data/pipelines", name: Optional[str] = None) -> str:
-        """Save the current pipeline to a file."""
-        if name:
-            self.pipeline.name = name
-            
-        store = PipelineStore(storage_dir)
-        return store.save_pipeline(self.pipeline)
 
 class LangGraphPipelineAgent:
     """
-    LangGraph-based pipeline agent for CLAMS pipeline generation.
+    LangGraph-based pipeline agent for CLAMS pipeline generation using ReAct pattern.
     """
     
-    def __init__(self, model_name: str = "microsoft/DialoGPT-medium"):
+    def __init__(self, model_name: str = "gpt-4o-mini"):
         """
         Initialize the LangGraph pipeline agent.
         
         Args:
-            model_name: Name of the Hugging Face model to use
+            model_name: Name of the OpenAI model to use
         """
         self.model_name = model_name
         
-        # Initialize Hugging Face pipeline
-        device = 0 if torch.cuda.is_available() else -1
-        hf_pipeline = pipeline(
-            "text-generation",
-            model=model_name,
-            tokenizer=model_name,
-            device=device,
-            max_new_tokens=512,
-            do_sample=True,
-            temperature=0.7,
-            pad_token_id=50256  # Common pad token id
-        )
-        
-        # Create LangChain-compatible model
-        llm = HuggingFacePipeline(pipeline=hf_pipeline)
-        self.llm = ChatHuggingFace(llm=llm, verbose=True)
+        # Initialize OpenAI model (following the example)
+        self.llm = ChatOpenAI(model=model_name)
         
         # Initialize CLAMS toolbox
         self.toolbox = CLAMSToolbox()
         self.tools = list(self.toolbox.get_tools().values())
         
-        # Tool metadata cache
+        # Tool metadata cache for pipeline generation
         self.tool_metadata = self._initialize_tool_metadata()
+        
+        # Bind tools to the model
+        self.llm_with_tools = self.llm.bind_tools(self.tools, parallel_tool_calls=False)
         
         # Pipeline storage
         self.pipeline_store = PipelineStore()
         
-        # Create the LangGraph
-        self.graph = self._create_graph()
+        # Create the ReAct graph
+        self.graph = self._create_react_graph()
         
         # Create memory checkpoint
         self.checkpointer = MemorySaver()
@@ -183,164 +144,72 @@ class LangGraphPipelineAgent:
         
         return metadata
     
-    def _create_graph(self) -> StateGraph:
-        """Create the LangGraph workflow."""
-        # Create a workflow
-        workflow = StateGraph(AgentState)
+    def _create_react_graph(self) -> StateGraph:
+        """Create the ReAct graph following the example pattern."""
+        # Create the graph
+        builder = StateGraph(AgentState)
         
-        # Create system prompt
-        system_prompt = """You are a helpful assistant for designing CLAMS pipelines.
-        You have access to various CLAMS tools for video analysis.
+        # Define the assistant node
+        def assistant(state: AgentState):
+            # Create system message for CLAMS pipeline assistance
+            textual_description_of_tools = self._get_textual_tool_descriptions()
+            
+            task = state.get("task_description", "Create a CLAMS pipeline")
+            selected_tools = state.get("selected_tools", [])
+            
+            sys_msg = SystemMessage(content=f"""You are a helpful assistant that helps users create CLAMS (Computational Language and Multimodal Analytics Studio) pipelines.
 
-        Your task is to help users create pipelines of interoperable CLAMS tools. A pipeline is interoperable when:
-        1. Each tool's OUTPUT type must be compatible with the INPUT type required by the next tool
-        2. The first tool in the pipeline must accept the input type that the user has available (typically VideoDocument)
-        3. The last tool in the pipeline must produce the output type that the user needs
+You have access to these CLAMS tools:
+{textual_description_of_tools}
 
-        IMPORTANT: When a user provides a clear task description, directly suggest appropriate tools without asking for clarification.
+Current task: {task}
+Selected tools so far: {', '.join(selected_tools) if selected_tools else 'None'}
 
-        TOOL COMPATIBILITY: Always check that consecutive tools are compatible by ensuring the output types of one tool match the input types required by the next.
+Your job is to:
+1. Understand what the user wants to accomplish
+2. Suggest appropriate CLAMS tools for their task
+3. Use the tools to demonstrate pipeline creation
+4. Explain how tools work together in a pipeline
 
-        When suggesting tools, explain why each tool is suitable and how it fits into the pipeline. Be specific about the tool names and their order."""
+When suggesting tools, explain why each tool is suitable and how it fits into the pipeline. Always consider tool compatibility - the output types of one tool should match the input types of the next tool.
+
+If a user asks you to use a specific tool or create a pipeline, go ahead and call the appropriate tools to demonstrate the pipeline.""")
+
+            return {
+                "messages": [self.llm_with_tools.invoke([sys_msg] + state["messages"])]
+            }
         
-        # Define nodes
-        def agent_node(state: AgentState) -> AgentState:
-            """Agent node that processes user input and generates responses."""
-            logger.info(f"Agent node processing: {state}")
-            
-            # Get the latest message
-            messages = state["messages"]
-            if not messages:
-                return state
-                
-            # Format the prompt with current state
-            tool_details = self.get_tool_details()
-            
-            # Create context message  
-            context_msg = f"""
-            Task: {state.get('task_description', 'Create a CLAMS pipeline')}
-            
-            Pipeline State: {state.get('pipeline_state', 'No tools selected yet.')}
-            
-            Available CLAMS Tools:
-            {tool_details}
-            
-            Please suggest specific tools for this task and explain how they work together in a pipeline."""
-            
-            # Execute the LLM directly
-            try:
-                # Create message list for LLM
-                message_list = [
-                    SystemMessage(content=system_prompt),
-                    SystemMessage(content=context_msg),
-                    HumanMessage(content=messages[-1]["content"])
-                ]
-                
-                # Get response from LLM
-                response = self.llm.invoke(message_list)
-                
-                # Add the response to messages
-                new_messages = [{"role": "assistant", "content": response.content}]
-                
-                # Update state
-                updated_state = {
-                    **state,
-                    "messages": new_messages
-                }
-                
-                return updated_state
-                
-            except Exception as e:
-                logger.error(f"Error in agent node: {e}")
-                error_msg = f"Sorry, I encountered an error: {str(e)}"
-                return {
-                    **state,
-                    "messages": [{"role": "assistant", "content": error_msg}]
-                }
+        # Define nodes: these do the work
+        builder.add_node("assistant", assistant)
+        builder.add_node("tools", ToolNode(self.tools))
         
-        def tool_selection_node(state: AgentState) -> AgentState:
-            """Node that processes tool selection and updates pipeline state."""
-            logger.info("Tool selection node processing")
-            
-            # Check if the latest message contains a tool suggestion
-            messages = state["messages"]
-            if not messages:
-                return state
-                
-            latest_message = messages[-1]["content"]
-            
-            # Look for tool suggestions in the message
-            tool_match = re.search(r'I suggest using the "?([a-zA-Z0-9_-]+)"? tool', latest_message)
-            if tool_match:
-                tool_name = tool_match.group(1)
-                if tool_name in self.tool_metadata:
-                    # Add the tool to selected tools
-                    selected_tools = state.get("selected_tools", [])
-                    current_step = state.get("current_step", 1)
-                    
-                    selected_tools.append({
-                        "step": current_step,
-                        "name": tool_name,
-                        "info": self.tool_metadata[tool_name]
-                    })
-                    
-                    # Update pipeline state
-                    pipeline_state = self._format_pipeline_state(selected_tools)
-                    
-                    return {
-                        **state,
-                        "selected_tools": selected_tools,
-                        "current_step": current_step + 1,
-                        "pipeline_state": pipeline_state
-                    }
-            
-            return state
+        # Define edges: these determine how the control flow moves
+        builder.add_edge(START, "assistant")
+        builder.add_conditional_edges(
+            "assistant",
+            # If the latest message requires a tool, route to tools
+            # Otherwise, provide a direct response
+            tools_condition,
+        )
+        builder.add_edge("tools", "assistant")
         
-        # Add nodes to the workflow
-        workflow.add_node("agent", agent_node)
-        workflow.add_node("tool_selection", tool_selection_node)
-        
-        # Set entry point
-        workflow.set_entry_point("agent")
-        
-        # Add edges
-        workflow.add_edge("agent", "tool_selection")
-        workflow.add_edge("tool_selection", END)
-        
-        return workflow
+        return builder
     
-    def _format_pipeline_state(self, selected_tools: List[Dict[str, Any]]) -> str:
-        """Format pipeline state for display."""
-        if not selected_tools:
-            return "No tools selected yet."
-            
-        state = "Current pipeline:\n"
-        for tool in selected_tools:
-            state += f"Step {tool['step']}: {tool['name']}\n"
-            if 'input_types' in tool['info']:
-                state += f"  - Inputs: {', '.join(tool['info']['input_types'])}\n"
-            if 'output_types' in tool['info']:
-                state += f"  - Outputs: {', '.join(tool['info']['output_types'])}\n"
-        return state
-    
-    def get_tool_details(self) -> str:
-        """Get detailed information about available tools."""
-        tool_details = []
+    def _get_textual_tool_descriptions(self) -> str:
+        """Get textual descriptions of all tools."""
+        descriptions = []
         
-        # Get the full tool descriptions from the toolbox
-        tools = self.toolbox.get_tools()
-        
-        for name, tool in tools.items():
-            # Use the full description that includes inputs, outputs, parameters, and version
-            tool_details.append(f"=== {name} ===")
-            tool_details.append(tool.description)
-            tool_details.append("")  # Add spacing between tools
+        for tool in self.tools:
+            # Get the first few lines of the description for brevity
+            desc_lines = tool.description.split('\n')
+            short_desc = desc_lines[0] if desc_lines else f"CLAMS tool: {tool.name}"
+            descriptions.append(f"{tool.name}: {short_desc}")
             
-        return "\n".join(tool_details)
+        return "\n".join(descriptions)
     
     def chat_response(self, context: ChatContext, user_input: str) -> str:
         """
-        Generate a response using the LangGraph agent.
+        Generate a response using the ReAct pattern.
         
         Args:
             context: Current chat context
@@ -351,13 +220,10 @@ class LangGraphPipelineAgent:
         """
         # Create initial state
         state = {
-            "messages": [{"role": "user", "content": user_input}],
+            "messages": [HumanMessage(content=user_input)],
             "task_description": context.task_description,
-            "current_step": context.current_step,
             "selected_tools": context.selected_tools,
-            "pipeline_state": context.get_pipeline_state(),
-            "tool_metadata": self.tool_metadata,
-            "conversation_history": context.conversation_history
+            "pipeline": context.pipeline
         }
         
         # Execute the graph
@@ -366,17 +232,34 @@ class LangGraphPipelineAgent:
             config = {"configurable": {"thread_id": "default"}}
             result = self.app.invoke(state, config=config)
             
-            # Extract the response
+            # Extract the final assistant message
             messages = result.get("messages", [])
             if messages:
-                response = messages[-1]["content"]
-                return response
+                # Get the last assistant message
+                for msg in reversed(messages):
+                    if hasattr(msg, 'type') and msg.type == 'ai':
+                        # Update context with any tools that were used
+                        self._update_context_from_messages(context, messages)
+                        return msg.content
+                        
+                # Fallback to last message content
+                return messages[-1].content if hasattr(messages[-1], 'content') else str(messages[-1])
             else:
                 return "I'm sorry, I couldn't generate a response."
                 
         except Exception as e:
             logger.error(f"Error in chat_response: {e}")
             return f"Sorry, I encountered an error: {str(e)}"
+    
+    def _update_context_from_messages(self, context: ChatContext, messages: List[AnyMessage]):
+        """Update the chat context based on tool calls in the message history."""
+        for msg in messages:
+            # Check for tool calls
+            if hasattr(msg, 'tool_calls') and msg.tool_calls:
+                for tool_call in msg.tool_calls:
+                    tool_name = tool_call['name']
+                    if tool_name in self.tool_metadata:
+                        context.add_selected_tool(tool_name, self.tool_metadata[tool_name])
     
     def suggest_compatible_tools(self, last_tool_name: str) -> List[str]:
         """Suggest tools that are compatible with the last tool in the pipeline."""
@@ -405,90 +288,9 @@ class LangGraphPipelineAgent:
     
     def save_pipeline(self, context: ChatContext, name: Optional[str] = None) -> str:
         """Save the current pipeline to a file."""
-        return context.save_pipeline(name=name)
-    
-    def interactive_pipeline_design(self, task_description: str) -> Optional[PipelineModel]:
-        """
-        Start an interactive chat session to design a pipeline.
-        
-        Args:
-            task_description: Initial task description
-            
-        Returns:
-            The generated pipeline model if completed successfully, None otherwise
-        """
-        context = ChatContext(
-            task_description=task_description,
-            pipeline_state={},
-            conversation_history=[]
-        )
-        
-        print("\nWelcome to the CLAMS Pipeline Designer!")
-        print("Describe your task and I'll help you create an optimal pipeline.")
-        print("Type 'done' when you're ready to generate the pipeline.")
-        print("Type 'export' to export the pipeline to YAML.")
-        print("Type 'save' to save the pipeline to a file.")
-        print("Type 'quit' to exit.\n")
-        
-        while True:
-            try:
-                user_input = input("User: ").strip()
-                
-                if user_input.lower() == 'quit':
-                    break
-                    
-                if user_input.lower() == 'done':
-                    print("\nGenerating pipeline...")
-                    final_pipeline = context.get_pipeline_state()
-                    print(f"\nFinal Pipeline:\n{final_pipeline}")
-                    return context.pipeline
-                
-                if user_input.lower() == 'export':
-                    name = input("Enter pipeline name (or press Enter to use default): ").strip()
-                    yaml_str = self.export_pipeline(context, name or None)
-                    print(f"\nPipeline YAML:\n{yaml_str}")
-                    continue
-                
-                if user_input.lower() == 'save':
-                    name = input("Enter pipeline name (or press Enter to use default): ").strip()
-                    path = self.save_pipeline(context, name or None)
-                    print(f"\nPipeline saved to: {path}")
-                    continue
-                
-                # Add user message to history
-                context.conversation_history.append({
-                    "role": "User",
-                    "content": user_input
-                })
-                
-                # Generate and print response
-                response = self.chat_response(context, user_input)
-                print(f"\nAssistant: {response}\n")
-                
-                # Add assistant response to history
-                context.conversation_history.append({
-                    "role": "Assistant",
-                    "content": response
-                })
-                
-                # Check if response contains a tool suggestion
-                tool_match = re.search(r'I suggest using the "?([a-zA-Z0-9_-]+)"? tool', response)
-                if tool_match and tool_match.group(1) in self.tool_metadata:
-                    tool_name = tool_match.group(1)
-                    context.add_selected_tool(tool_name, self.tool_metadata[tool_name])
-                    
-                    compatible_tools = self.suggest_compatible_tools(tool_name)
-                    if compatible_tools:
-                        print(f"\nTools compatible with {tool_name}: {', '.join(compatible_tools)}\n")
-                
-            except KeyboardInterrupt:
-                print("\nExiting...")
-                break
-            except Exception as e:
-                print(f"\nError: {str(e)}")
-                continue
-                
-        return None
+        store = PipelineStore()
+        if name:
+            context.pipeline.name = name
+        return store.save_pipeline(context.pipeline)
 
-# Alias for backward compatibility
 PipelineAgentChat = LangGraphPipelineAgent 
