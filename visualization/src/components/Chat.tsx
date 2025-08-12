@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Box,
   Paper,
@@ -9,18 +9,38 @@ import {
   ListItem,
   ListItemText,
   styled,
-  Divider,
   CircularProgress,
   Alert,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   Grid,
   IconButton,
   Tooltip,
+  Chip,
+  LinearProgress,
 } from '@mui/material';
-import { VideoLibrary, Upload, Send, PlayArrow, Pause } from '@mui/icons-material';
+import { 
+  VideoLibrary, 
+  Upload, 
+  Send, 
+  PlayArrow, 
+  Pause, 
+  Settings,
+  Timeline,
+  SmartToy 
+} from '@mui/icons-material';
+
+// AG-UI integration (with fallback for development)
+interface AGUIEvent {
+  type: string;
+  data: any;
+  timestamp?: string;
+  session_id: string;
+}
+
+interface StreamingUpdate {
+  type: string;
+  content: any;
+  timestamp: string;
+}
 
 interface ChatProps {
   onPipelineGenerated: (pipeline: any) => void;
@@ -45,6 +65,7 @@ const MessageList = styled(List)(({ theme }) => ({
   flex: 1,
   overflowY: 'auto',
   padding: theme.spacing(2),
+  maxHeight: '60vh',
 }));
 
 const MessageItem = styled(ListItem)<{ isuser: string }>(({ theme, isuser }) => ({
@@ -61,11 +82,19 @@ const MessageContent = styled(Paper)<{ isuser: string }>(({ theme, isuser }) => 
   maxWidth: '80%',
 }));
 
-const PipelineState = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(2),
-  marginTop: theme.spacing(2),
-  backgroundColor: theme.palette.grey[50],
-  whiteSpace: 'pre-wrap',
+const ToolChip = styled(Chip)(({ theme }) => ({
+  margin: theme.spacing(0.5),
+  backgroundColor: theme.palette.success.light,
+  color: theme.palette.success.contrastText,
+}));
+
+const StreamingIndicator = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  padding: theme.spacing(1),
+  backgroundColor: theme.palette.info.light,
+  borderRadius: theme.shape.borderRadius,
+  margin: theme.spacing(1, 0),
 }));
 
 const VideoPlayer = styled('video')({
@@ -75,29 +104,145 @@ const VideoPlayer = styled('video')({
 });
 
 export const Chat: React.FC<ChatProps> = ({ onPipelineGenerated }) => {
-  const [messages, setMessages] = useState<Array<{ role: string; content: string }>>([]);
+  // State management
+  const [messages, setMessages] = useState<Array<{ role: string; content: string; timestamp?: string; tools?: string[] }>>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [streaming, setStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [task, setTask] = useState('');
   const [chatStarted, setChatStarted] = useState(false);
-  const [pipelineState, setPipelineState] = useState('No pipeline yet.');
-  const [saveDialogOpen, setSaveDialogOpen] = useState(false);
-  const [pipelineName, setPipelineName] = useState('');
+  const [sessionId] = useState(() => `session-${Date.now()}`);
+  const [selectedTools, setSelectedTools] = useState<string[]>([]);
+  const [pipelineNodes, setPipelineNodes] = useState(0);
+  
+  // Video state
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   
+  // Refs
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const eventSourceRef = useRef<EventSource | null>(null);
 
-  // Scroll to bottom when messages change
+  // Auto-scroll to bottom when messages change
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
 
+  // AG-UI SSE connection for real-time updates
+  useEffect(() => {
+    if (chatStarted && !eventSourceRef.current) {
+      const eventSource = new EventSource(`/api/agui/stream/${sessionId}`);
+      eventSourceRef.current = eventSource;
+      
+      eventSource.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          handleStreamingUpdate(data);
+        } catch (e) {
+          console.error('Error parsing SSE data:', e);
+        }
+      };
+      
+      eventSource.onerror = (error) => {
+        console.error('SSE error:', error);
+        setError('Connection to agent lost. Please refresh the page.');
+      };
+      
+      return () => {
+        eventSource.close();
+        eventSourceRef.current = null;
+      };
+    }
+  }, [chatStarted, sessionId]);
+
+  // Handle streaming updates from AG-UI
+  const handleStreamingUpdate = useCallback((update: StreamingUpdate | AGUIEvent) => {
+    const updateType = 'type' in update ? update.type : update.type;
+    const content = 'content' in update ? update.content : update.data;
+    
+    switch (updateType) {
+      case 'assistant_message':
+        setMessages(prev => [
+          ...prev,
+          {
+            role: 'assistant',
+            content: content.content || content.message || '',
+            timestamp: update.timestamp || new Date().toISOString()
+          }
+        ]);
+        setStreaming(false);
+        break;
+        
+      case 'tool_selected':
+        const toolName = content.tool_name || content.name || 'Unknown Tool';
+        setSelectedTools(prev => prev.includes(toolName) ? prev : [...prev, toolName]);
+        
+        setMessages(prev => [
+          ...prev,
+          {
+            role: 'system',
+            content: `🔧 Selected tool: ${toolName}`,
+            tools: [toolName],
+            timestamp: update.timestamp || new Date().toISOString()
+          }
+        ]);
+        break;
+        
+      case 'tool_result':
+        setMessages(prev => [
+          ...prev,
+          {
+            role: 'system',
+            content: `✅ Tool executed: ${content.tool_name || 'Unknown'} - ${content.result || 'Success'}`,
+            timestamp: update.timestamp || new Date().toISOString()
+          }
+        ]);
+        break;
+        
+      case 'pipeline_updated':
+        setPipelineNodes(content.nodes || 0);
+        if (content.nodes > 0) {
+          setMessages(prev => [
+            ...prev,
+            {
+              role: 'system',
+              content: `📋 Pipeline updated: ${content.nodes} tools, ${content.edges || 0} connections`,
+              timestamp: update.timestamp || new Date().toISOString()
+            }
+          ]);
+        }
+        break;
+        
+      case 'streaming_start':
+        setStreaming(true);
+        break;
+        
+      case 'streaming_end':
+        setStreaming(false);
+        break;
+        
+      case 'conversation_complete':
+        setStreaming(false);
+        setLoading(false);
+        break;
+        
+      case 'error':
+        setError(content.error || content.message || 'Unknown error');
+        setStreaming(false);
+        setLoading(false);
+        break;
+        
+      default:
+        console.log('Unhandled update type:', updateType, content);
+    }
+  }, []);
+
+  // Video upload handler
   const handleVideoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -107,6 +252,7 @@ export const Chat: React.FC<ChatProps> = ({ onPipelineGenerated }) => {
     }
   };
 
+  // Video play/pause toggle
   const togglePlayPause = () => {
     if (videoRef.current) {
       if (isPlaying) {
@@ -118,6 +264,7 @@ export const Chat: React.FC<ChatProps> = ({ onPipelineGenerated }) => {
     }
   };
 
+  // Start chat session
   const startChat = async () => {
     if (!task.trim()) {
       setError('Please enter a task description.');
@@ -126,133 +273,118 @@ export const Chat: React.FC<ChatProps> = ({ onPipelineGenerated }) => {
 
     setLoading(true);
     setError(null);
+    setChatStarted(true);
 
     try {
-      const response = await fetch('/api/chat/start', {
+      // Send initial AG-UI event
+      const initialEvent: AGUIEvent = {
+        type: 'user_message',
+        data: {
+          message: `I want to create a CLAMS pipeline for: ${task}`,
+          task_description: task
+        },
+        session_id: sessionId
+      };
+
+      const response = await fetch('/api/agui/events', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ task }),
+        body: JSON.stringify(initialEvent),
       });
 
       if (!response.ok) {
         throw new Error('Failed to start chat session');
       }
 
-      setChatStarted(true);
-      // Add system welcome message
-      setMessages([
-        {
-          role: 'Assistant',
-          content: `I'll help you create a pipeline for: ${task}. What kind of video analysis do you need to perform?`,
-        },
-      ]);
+      // Add initial user message to UI
+      setMessages([{
+        role: 'user',
+        content: task,
+        timestamp: new Date().toISOString()
+      }]);
+
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
+      setChatStarted(false);
     } finally {
       setLoading(false);
     }
   };
 
+  // Send message
   const sendMessage = async () => {
-    if (!input.trim() || !chatStarted) return;
+    if (!input.trim() || !chatStarted || loading) return;
 
-    // Add user message to UI
-    setMessages([...messages, { role: 'User', content: input }]);
     const userMessage = input;
     setInput('');
     setLoading(true);
     setError(null);
 
+    // Add user message to UI immediately
+    setMessages(prev => [
+      ...prev,
+      {
+        role: 'user',
+        content: userMessage,
+        timestamp: new Date().toISOString()
+      }
+    ]);
+
     try {
-      const response = await fetch('/api/chat/message', {
+      // Send AG-UI event
+      const messageEvent: AGUIEvent = {
+        type: 'user_message',
+        data: {
+          message: userMessage,
+          task_description: task
+        },
+        session_id: sessionId
+      };
+
+      const response = await fetch('/api/agui/events', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ message: userMessage }),
+        body: JSON.stringify(messageEvent),
       });
 
       if (!response.ok) {
         throw new Error('Failed to send message');
       }
 
-      const data = await response.json();
-      
-      // Add assistant's response to the UI
-      setMessages(msgs => [...msgs, { role: 'Assistant', content: data.response }]);
-      
-      // Update pipeline state if provided
-      if (data.pipeline_state) {
-        setPipelineState(data.pipeline_state);
-      }
-      
-      // If a tool was added, indicate it in the UI
-      if (data.tool_added) {
-        setMessages(msgs => [
-          ...msgs,
-          { 
-            role: 'System', 
-            content: `Added ${data.tool_name} to the pipeline.` 
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Generate pipeline from conversation
+  const generatePipeline = async () => {
+    try {
+      const response = await fetch(`/api/chat/pipeline/${sessionId}`);
+      if (response.ok) {
+        const pipelineData = await response.json();
+        onPipelineGenerated(pipelineData);
+        
+        setMessages(prev => [
+          ...prev,
+          {
+            role: 'system',
+            content: '🎯 Pipeline generated successfully! You can now view it in the visualizer.',
+            timestamp: new Date().toISOString()
           }
         ]);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
-    } finally {
-      setLoading(false);
+      setError(err instanceof Error ? err.message : 'Failed to generate pipeline');
     }
   };
 
-  const generatePipeline = async () => {
-    setSaveDialogOpen(true);
-  };
-  
-  const handleGeneratePipeline = async () => {
-    if (!pipelineName.trim()) {
-      setError('Please enter a pipeline name.');
-      return;
-    }
-    
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const response = await fetch('/api/chat/generate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name: pipelineName }),
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to generate pipeline');
-      }
-      
-      const data = await response.json();
-      
-      // Call the callback with the generated pipeline
-      onPipelineGenerated(data.pipeline);
-      
-      // Add system message about successful generation
-      setMessages(msgs => [
-        ...msgs,
-        { 
-          role: 'System', 
-          content: `Pipeline "${data.name}" generated successfully! You can now view it in the visualizer.` 
-        }
-      ]);
-      
-      setSaveDialogOpen(false);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // Handle enter key press
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -325,14 +457,44 @@ export const Chat: React.FC<ChatProps> = ({ onPipelineGenerated }) => {
       {/* Chat Section */}
       <Grid item xs={12} md={6}>
         <ChatContainer>
-          <Typography variant="h4" gutterBottom>
-            Pipeline Chat
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+            <SmartToy sx={{ mr: 1 }} />
+            <Typography variant="h4">
+              AI Pipeline Assistant
+            </Typography>
+            {selectedTools.length > 0 && (
+              <Box sx={{ ml: 2, display: 'flex', alignItems: 'center' }}>
+                <Timeline sx={{ mr: 1, fontSize: 20 }} />
+                <Typography variant="caption">
+                  {selectedTools.length} tools selected
+                </Typography>
+              </Box>
+            )}
+          </Box>
+
+          {/* Selected Tools */}
+          {selectedTools.length > 0 && (
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="subtitle2" gutterBottom>
+                Pipeline Tools:
+              </Typography>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                {selectedTools.map((tool, index) => (
+                  <ToolChip
+                    key={index}
+                    label={tool}
+                    size="small"
+                    icon={<Settings />}
+                  />
+                ))}
+              </Box>
+            </Box>
+          )}
           
           {!chatStarted ? (
             <Box sx={{ mb: 2 }}>
               <Typography variant="body1" gutterBottom>
-                Describe the pipeline you want to create:
+                Describe the video analysis pipeline you want to create:
               </Typography>
               <TextField
                 fullWidth
@@ -343,31 +505,53 @@ export const Chat: React.FC<ChatProps> = ({ onPipelineGenerated }) => {
                 onKeyPress={handleKeyPress}
                 disabled={loading}
                 multiline
-                rows={2}
+                rows={3}
                 sx={{ mb: 2 }}
+                placeholder="e.g., Extract text from video, transcribe speech, detect objects..."
               />
               <Button
                 variant="contained"
                 color="primary"
                 onClick={startChat}
                 disabled={loading || !task.trim()}
+                startIcon={loading ? <CircularProgress size={20} /> : <SmartToy />}
               >
-                {loading ? <CircularProgress size={24} color="inherit" /> : 'Start Chat'}
+                {loading ? 'Starting...' : 'Start AI Assistant'}
               </Button>
             </Box>
           ) : (
             <>
+              {/* Streaming Indicator */}
+              {streaming && (
+                <StreamingIndicator>
+                  <CircularProgress size={16} sx={{ mr: 1 }} />
+                  <Typography variant="body2">
+                    AI is thinking...
+                  </Typography>
+                  <LinearProgress sx={{ ml: 2, flex: 1 }} />
+                </StreamingIndicator>
+              )}
+
+              {/* Message List */}
               <MessageList>
                 {messages.map((message, index) => (
-                  <MessageItem key={index} isuser={message.role === 'User' ? 'true' : 'false'}>
-                    <MessageContent isuser={message.role === 'User' ? 'true' : 'false'}>
+                  <MessageItem key={index} isuser={message.role === 'user' ? 'true' : 'false'}>
+                    <MessageContent isuser={message.role === 'user' ? 'true' : 'false'}>
                       <Typography variant="body1">{message.content}</Typography>
+                      {message.tools && (
+                        <Box sx={{ mt: 1 }}>
+                          {message.tools.map((tool, i) => (
+                            <ToolChip key={i} label={tool} size="small" />
+                          ))}
+                        </Box>
+                      )}
                     </MessageContent>
                   </MessageItem>
                 ))}
                 <div ref={messagesEndRef} />
               </MessageList>
 
+              {/* Input Area */}
               <Box sx={{ mt: 2, display: 'flex', gap: 1 }}>
                 <TextField
                   fullWidth
@@ -376,61 +560,42 @@ export const Chat: React.FC<ChatProps> = ({ onPipelineGenerated }) => {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  disabled={loading}
+                  disabled={loading || streaming}
                   multiline
                   maxRows={4}
                 />
                 <IconButton
                   color="primary"
                   onClick={sendMessage}
-                  disabled={loading || !input.trim()}
+                  disabled={loading || streaming || !input.trim()}
+                  sx={{ alignSelf: 'flex-end' }}
                 >
-                  {loading ? <CircularProgress size={24} /> : <Send />}
+                  {loading || streaming ? <CircularProgress size={24} /> : <Send />}
                 </IconButton>
               </Box>
 
-              <Box sx={{ mt: 2, display: 'flex', gap: 1 }}>
+              {/* Action Buttons */}
+              <Box sx={{ mt: 2, display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
                 <Button
                   variant="outlined"
-                  color="primary"
                   onClick={generatePipeline}
-                  disabled={loading}
+                  disabled={loading || selectedTools.length === 0}
+                  startIcon={<Timeline />}
                 >
-                  Generate Pipeline
+                  Generate Pipeline ({pipelineNodes} nodes)
                 </Button>
               </Box>
             </>
           )}
 
+          {/* Error Display */}
           {error && (
-            <Alert severity="error" sx={{ mt: 2 }}>
+            <Alert severity="error" sx={{ mt: 2 }} onClose={() => setError(null)}>
               {error}
             </Alert>
           )}
         </ChatContainer>
       </Grid>
-
-      {/* Save Pipeline Dialog */}
-      <Dialog open={saveDialogOpen} onClose={() => setSaveDialogOpen(false)}>
-        <DialogTitle>Save Pipeline</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            label="Pipeline Name"
-            fullWidth
-            value={pipelineName}
-            onChange={(e) => setPipelineName(e.target.value)}
-            disabled={loading}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setSaveDialogOpen(false)}>Cancel</Button>
-          <Button onClick={handleGeneratePipeline} color="primary" disabled={loading}>
-            {loading ? <CircularProgress size={24} /> : 'Save'}
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Grid>
   );
-}; 
+};

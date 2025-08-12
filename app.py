@@ -1,229 +1,398 @@
+"""
+Flask application with AG-UI integration for CLAMS Agent Prototype.
+Provides streaming, event-driven communication for real-time pipeline generation.
+"""
+
 import os
 import json
-import yaml
-import re
+import asyncio
 import logging
-from flask import Flask, render_template, request, jsonify, redirect, url_for, send_from_directory
-from utils.pipeline_model import PipelineModel, PipelineStore
-from utils.langgraph_agent import LangGraphPipelineAgent, ChatContext
+from typing import AsyncGenerator
+from flask import Flask, render_template, request, jsonify, Response, stream_template
+from flask_cors import CORS
+
+from utils.langgraph_agent import CLAMSAgent
+from utils.agui_integration import AGUIServer, AGUIEvent, EventType
+from utils.pipeline_model import PipelineStore
 from utils.clams_tools import CLAMSToolbox
-from utils.download_app_directory import get_app_metadata
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-# Initialize app
+# Initialize Flask app
 app = Flask(__name__, 
             static_folder='visualization/dist/assets', 
             template_folder='visualization/dist')
 
-# Initialize pipeline storage
-pipeline_store = PipelineStore(storage_dir="data/pipelines")
+# Enable CORS for development
+CORS(app)
 
-# Initialize CLAMS toolbox and chat agent
-toolbox = CLAMSToolbox()
-chat_agent = LangGraphPipelineAgent()
+# Initialize core components
+try:
+    agent = CLAMSAgent()
+    agui_server = AGUIServer(agent)
+    pipeline_store = PipelineStore(storage_dir="data/pipelines")
+    toolbox = CLAMSToolbox()
+    
+    logger.info("Successfully initialized CLAMS agent and AG-UI server")
+except Exception as e:
+    logger.error(f"Failed to initialize components: {e}")
+    # Create dummy components for fallback
+    agent = None
+    agui_server = None
 
-# Global state for current chat context
-current_chat_context = None
 
 @app.route('/')
 def index():
     """Serve the main page with navigation."""
     return render_template('index.html')
 
+
 @app.route('/visualizer')
 def visualizer():
     """Serve the pipeline visualizer page."""
     return render_template('index.html')
+
 
 @app.route('/chat')
 def chat():
     """Serve the pipeline chat page."""
     return render_template('index.html')
 
-# Add a catch-all route for static files
+
 @app.route('/assets/<path:filename>')
 def serve_static(filename):
     """Serve static files from the assets directory."""
     return send_from_directory('visualization/dist/assets', filename)
 
+
+# Legacy API endpoints for backward compatibility
 @app.route('/api/tools')
 def get_tools():
     """Get all available CLAMS tools."""
-    return jsonify(toolbox.get_tools())
+    try:
+        if toolbox:
+            return jsonify(toolbox.get_tools())
+        return jsonify({})
+    except Exception as e:
+        logger.error(f"Error getting tools: {e}")
+        return jsonify({"error": str(e)}), 500
+
 
 @app.route('/api/pipelines')
 def get_pipelines():
     """Get all available pipelines."""
-    pipelines = pipeline_store.list_pipelines()
-    return jsonify(pipelines)
+    try:
+        if pipeline_store:
+            pipelines = pipeline_store.list_pipelines()
+            return jsonify(pipelines)
+        return jsonify([])
+    except Exception as e:
+        logger.error(f"Error getting pipelines: {e}")
+        return jsonify({"error": str(e)}), 500
+
 
 @app.route('/api/pipeline/<name>', methods=['GET'])
 def get_pipeline(name):
     """Get a specific pipeline by name."""
     try:
-        pipeline = pipeline_store.load_pipeline(name)
-        return jsonify(pipeline.to_dict())
+        if pipeline_store:
+            pipeline = pipeline_store.load_pipeline(name)
+            return jsonify(pipeline.to_dict())
+        return jsonify({"error": "Pipeline store not available"}), 500
     except FileNotFoundError:
         return jsonify({"error": f"Pipeline '{name}' not found"}), 404
-
-@app.route('/api/pipeline', methods=['POST'])
-def save_pipeline():
-    """Save a pipeline."""
-    try:
-        data = request.json
-        pipeline = PipelineModel.from_dict(data)
-        path = pipeline_store.save_pipeline(pipeline)
-        return jsonify({"message": f"Pipeline saved to {path}", "path": path})
     except Exception as e:
+        logger.error(f"Error getting pipeline {name}: {e}")
         return jsonify({"error": str(e)}), 500
 
-@app.route('/api/pipeline/export/<name>', methods=['GET'])
-def export_pipeline(name):
-    """Export a pipeline to YAML."""
-    try:
-        pipeline = pipeline_store.load_pipeline(name)
-        yaml_content = pipeline.to_yaml()
-        return jsonify({"yaml": yaml_content, "name": name})
-    except FileNotFoundError:
-        return jsonify({"error": f"Pipeline '{name}' not found"}), 404
 
-@app.route('/api/chat/start', methods=['POST'])
-def start_chat():
-    """Start a new chat session."""
-    global current_chat_context
+# Modern AG-UI endpoints
+@app.route('/api/agui/events', methods=['POST'])
+def handle_agui_event():
+    """Handle incoming AG-UI events."""
+    try:
+        if not agui_server:
+            return jsonify({"error": "AG-UI server not available"}), 500
+        
+        event_data = request.get_json()
+        
+        # Process event asynchronously and return immediate response
+        async def process_event():
+            try:
+                event_json = json.dumps(event_data)
+                response_events = await agui_server.process_user_event(event_json)
+                return response_events
+            except Exception as e:
+                logger.error(f"Error processing AG-UI event: {e}")
+                return []
+        
+        # Run async processing
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            response_events = loop.run_until_complete(process_event())
+            return jsonify({
+                "status": "processed",
+                "events_generated": len(response_events),
+                "message": "Event processed successfully"
+            })
+        finally:
+            loop.close()
+            
+    except Exception as e:
+        logger.error(f"Error handling AG-UI event: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/agui/stream/<session_id>')
+def stream_agui_events(session_id):
+    """Stream AG-UI events via Server-Sent Events."""
+    if not agui_server:
+        return jsonify({"error": "AG-UI server not available"}), 500
     
+    async def event_generator():
+        """Generate SSE events."""
+        try:
+            async for event in agui_server.handle_sse_connection(session_id):
+                yield event
+        except Exception as e:
+            logger.error(f"Error in SSE stream: {e}")
+            yield f"data: {json.dumps({'type': 'error', 'data': {'error': str(e)}})}\n\n"
+    
+    def sync_generator():
+        """Synchronous wrapper for async generator."""
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            async_gen = event_generator()
+            while True:
+                try:
+                    yield loop.run_until_complete(async_gen.__anext__())
+                except StopAsyncIteration:
+                    break
+        finally:
+            loop.close()
+    
+    return Response(sync_generator(), 
+                   mimetype='text/event-stream',
+                   headers={
+                       'Cache-Control': 'no-cache',
+                       'Connection': 'keep-alive',
+                       'Access-Control-Allow-Origin': '*',
+                       'Access-Control-Allow-Headers': 'Cache-Control'
+                   })
+
+
+# Modern chat API with streaming
+@app.route('/api/chat/stream', methods=['POST'])
+def stream_chat_response():
+    """Stream chat responses in real-time."""
     try:
-        data = request.json
-        task = data.get('task', 'Create a CLAMS pipeline')
+        if not agent:
+            return jsonify({"error": "Agent not available"}), 500
         
-        # Initialize a new chat context
-        current_chat_context = ChatContext(task_description=task)
+        data = request.get_json()
+        user_message = data.get('message', '')
+        task_description = data.get('task_description', '')
+        session_id = data.get('session_id', 'default')
         
-        # Generate initial response that directly addresses the task
-        initial_message = f"Help me create a CLAMS pipeline to {task}. Please suggest appropriate tools and explain the pipeline structure."
-        response = chat_agent.chat_response(
-            current_chat_context,
-            initial_message
-        )
+        if not user_message:
+            return jsonify({"error": "Message is required"}), 400
         
-        # Add the response to the context
-        current_chat_context.conversation_history.append({
-            "role": "Assistant",
-            "content": response
-        })
+        async def chat_generator():
+            """Generate streaming chat responses."""
+            try:
+                async for update in agent.stream_response(
+                    user_input=user_message,
+                    task_description=task_description,
+                    thread_id=session_id
+                ):
+                    # Convert to SSE format
+                    event_data = {
+                        'type': update.type,
+                        'content': update.content,
+                        'timestamp': update.timestamp
+                    }
+                    yield f"data: {json.dumps(event_data)}\n\n"
+                    
+            except Exception as e:
+                logger.error(f"Error in chat streaming: {e}")
+                error_data = {
+                    'type': 'error',
+                    'content': {'error': str(e)},
+                    'timestamp': str(asyncio.get_event_loop().time())
+                }
+                yield f"data: {json.dumps(error_data)}\n\n"
         
-        return jsonify({
-            "message": f"Chat session started for task: {task}",
-            "response": response
-        })
+        def sync_chat_generator():
+            """Synchronous wrapper for async chat generator."""
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            try:
+                async_gen = chat_generator()
+                while True:
+                    try:
+                        yield loop.run_until_complete(async_gen.__anext__())
+                    except StopAsyncIteration:
+                        break
+            finally:
+                loop.close()
+        
+        return Response(sync_chat_generator(),
+                       mimetype='text/event-stream',
+                       headers={
+                           'Cache-Control': 'no-cache',
+                           'Connection': 'keep-alive',
+                           'Access-Control-Allow-Origin': '*',
+                           'Access-Control-Allow-Headers': 'Cache-Control'
+                       })
+                       
     except Exception as e:
-        logger.error(f"Error starting chat: {str(e)}")
+        logger.error(f"Error in stream chat: {e}")
         return jsonify({"error": str(e)}), 500
 
+
+# Non-streaming chat endpoint for backward compatibility
 @app.route('/api/chat/message', methods=['POST'])
-def send_message():
-    """Send a message to the chat agent."""
-    global current_chat_context
-    
+def send_chat_message():
+    """Send a chat message and get complete response."""
     try:
-        data = request.json
-        message = data.get('message', '')
+        if not agent:
+            return jsonify({"error": "Agent not available"}), 500
         
-        if not current_chat_context:
-            return jsonify({"error": "No active chat session. Please start a new chat."}), 400
+        data = request.get_json()
+        user_message = data.get('message', '')
+        task_description = data.get('task_description', '')
+        session_id = data.get('session_id', 'default')
         
-        # Add user message to context
-        current_chat_context.conversation_history.append({
-            "role": "User",
-            "content": message
-        })
+        if not user_message:
+            return jsonify({"error": "Message is required"}), 400
         
-        # Generate response
-        response = chat_agent.chat_response(current_chat_context, message)
+        async def get_response():
+            """Get complete chat response."""
+            return await agent.get_response(
+                user_input=user_message,
+                task_description=task_description,
+                thread_id=session_id
+            )
         
-        # Add assistant response to context
-        current_chat_context.conversation_history.append({
-            "role": "Assistant",
-            "content": response
-        })
+        # Run async operation
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            response = loop.run_until_complete(get_response())
+            return jsonify({
+                "response": response.get("content", ""),
+                "tool_calls": response.get("tool_calls", []),
+                "session_id": session_id,
+                "tool_added": len(response.get("tool_calls", [])) > 0
+            })
+        finally:
+            loop.close()
+            
+    except Exception as e:
+        logger.error(f"Error in chat message: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/chat/pipeline/<session_id>', methods=['GET'])
+def get_session_pipeline(session_id):
+    """Get pipeline for a specific session."""
+    try:
+        if not agui_server:
+            return jsonify({"error": "AG-UI server not available"}), 500
         
-        # Check for tool suggestion
-        tool_name = None
-        tool_match = re.search(r'I suggest using the "?([a-zA-Z0-9_-]+)"? tool', response)
-        if tool_match and tool_match.group(1) in chat_agent.tool_metadata:
-            tool_name = tool_match.group(1)
-            current_chat_context.add_selected_tool(tool_name, chat_agent.tool_metadata[tool_name])
+        session_state = agui_server.event_handler.get_session_state(session_id)
+        if not session_state:
+            return jsonify({"error": "Session not found"}), 404
         
+        pipeline = session_state.get("pipeline")
+        if pipeline:
+            return jsonify(pipeline.to_dict())
+        else:
+            return jsonify({"error": "No pipeline found for session"}), 404
+            
+    except Exception as e:
+        logger.error(f"Error getting session pipeline: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/chat/export/<session_id>', methods=['GET'])
+def export_session_pipeline(session_id):
+    """Export session pipeline to YAML."""
+    try:
+        if not agui_server:
+            return jsonify({"error": "AG-UI server not available"}), 500
+        
+        name = request.args.get('name', f'Pipeline-{session_id}')
+        yaml_content = agui_server.event_handler.export_session_pipeline(session_id, name)
+        
+        if yaml_content:
+            return jsonify({
+                "yaml": yaml_content,
+                "name": name,
+                "session_id": session_id
+            })
+        else:
+            return jsonify({"error": "No pipeline found for session"}), 404
+            
+    except Exception as e:
+        logger.error(f"Error exporting session pipeline: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+# Health check endpoint
+@app.route('/api/health')
+def health_check():
+    """Health check endpoint."""
+    try:
+        status = {
+            "status": "healthy",
+            "agent_available": agent is not None,
+            "agui_server_available": agui_server is not None,
+            "toolbox_available": toolbox is not None,
+            "pipeline_store_available": pipeline_store is not None
+        }
+        
+        if agent:
+            # Test agent connectivity
+            tools = toolbox.get_tools() if toolbox else {}
+            status["tools_count"] = len(tools)
+        
+        return jsonify(status)
+        
+    except Exception as e:
+        logger.error(f"Health check error: {e}")
         return jsonify({
-            "response": response,
-            "tool_added": tool_name is not None,
-            "tool_name": tool_name,
-            "pipeline_state": current_chat_context.get_pipeline_state()
-        })
-    except Exception as e:
-        logger.error(f"Error generating chat response: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+            "status": "unhealthy",
+            "error": str(e)
+        }), 500
 
-@app.route('/api/chat/generate', methods=['POST'])
-def generate_pipeline():
-    """Generate a pipeline from the current chat."""
-    global current_chat_context
-    
-    try:
-        if not current_chat_context:
-            return jsonify({"error": "No active chat session. Please start a new chat."}), 400
-        
-        data = request.json
-        name = data.get('name', 'Chat Generated Pipeline')
-        
-        # Update pipeline name
-        current_chat_context.pipeline.name = name
-        
-        # Save pipeline
-        path = pipeline_store.save_pipeline(current_chat_context.pipeline)
-        
-        # Get pipeline data
-        pipeline_data = current_chat_context.pipeline.to_dict()
-        
-        return jsonify({
-            "message": f"Pipeline '{name}' generated and saved to {path}",
-            "name": name,
-            "path": path,
-            "pipeline": pipeline_data
-        })
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
 
-@app.route('/api/chat/export', methods=['GET'])
-def export_chat_pipeline():
-    """Export the current chat pipeline to YAML."""
-    global current_chat_context
-    
-    try:
-        if not current_chat_context:
-            return jsonify({"error": "No active chat session. Please start a new chat."}), 400
-        
-        yaml_content = current_chat_context.export_pipeline()
-        return jsonify({"yaml": yaml_content, "name": current_chat_context.pipeline.name})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+# Error handlers
+@app.errorhandler(404)
+def not_found(error):
+    """Handle 404 errors."""
+    return jsonify({"error": "Not found"}), 404
 
-@app.route('/api/chat/pipeline', methods=['GET'])
-def get_chat_pipeline():
-    """Get the current pipeline from the chat."""
-    global current_chat_context
-    
-    try:
-        if not current_chat_context:
-            return jsonify({"error": "No active chat session. Please start a new chat."}), 400
-        
-        pipeline_data = current_chat_context.pipeline.to_dict()
-        return jsonify(pipeline_data)
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+
+@app.errorhandler(500)
+def internal_error(error):
+    """Handle 500 errors."""
+    logger.error(f"Internal server error: {error}")
+    return jsonify({"error": "Internal server error"}), 500
+
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    # Check if running in development mode
+    debug_mode = os.getenv('FLASK_ENV') == 'development'
+    port = int(os.getenv('PORT', 5000))
+    
+    logger.info(f"Starting CLAMS Agent Prototype server on port {port}")
+    logger.info(f"Debug mode: {debug_mode}")
+    logger.info(f"Agent available: {agent is not None}")
+    logger.info(f"AG-UI server available: {agui_server is not None}")
+    
+    app.run(debug=debug_mode, port=port, host='0.0.0.0')
