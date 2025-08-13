@@ -1,6 +1,7 @@
 # Core web framework
 Flask
 Flask-RESTful
+Flask-CORS
 
 # CLAMS ecosystem
 clams-python
@@ -8,6 +9,7 @@ mmif-python
 
 # LLM and AI frameworks - Updated LangChain structure
 langchain-core
+langchain-openai
 langchain-huggingface
 langchain-community
 langchain
@@ -15,6 +17,9 @@ langgraph
 transformers
 torch
 accelerate
+
+# AG-UI for agent-user interaction protocol
+ag-ui-protocol
 
 # Data processing
 pandas
