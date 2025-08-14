@@ -8,13 +8,14 @@ import json
 import asyncio
 import logging
 from typing import AsyncGenerator
-from flask import Flask, render_template, request, jsonify, Response, stream_template
+from flask import Flask, render_template, request, jsonify, Response, stream_template, send_from_directory
 from flask_cors import CORS
 
 from utils.langgraph_agent import CLAMSAgent
-from utils.agui_integration import AGUIServer, AGUIEvent, EventType
+from utils.agui_integration import AGUIServer, AGUIEvent, AGUIEventType
 from utils.pipeline_model import PipelineStore
 from utils.clams_tools import CLAMSToolbox
+from utils.config import ConfigManager
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -30,17 +31,21 @@ CORS(app)
 
 # Initialize core components
 try:
-    agent = CLAMSAgent()
+    config_manager = ConfigManager()
+    agent = CLAMSAgent(config_manager=config_manager)
     agui_server = AGUIServer(agent)
     pipeline_store = PipelineStore(storage_dir="data/pipelines")
     toolbox = CLAMSToolbox()
     
     logger.info("Successfully initialized CLAMS agent and AG-UI server")
+    logger.info(f"Using LLM provider: {config_manager.get_config().llm.provider}")
+    logger.info(f"Model: {config_manager.get_config().llm.model_name}")
 except Exception as e:
     logger.error(f"Failed to initialize components: {e}")
     # Create dummy components for fallback
     agent = None
     agui_server = None
+    config_manager = None
 
 
 @app.route('/')

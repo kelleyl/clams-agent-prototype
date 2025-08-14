@@ -221,7 +221,7 @@ class AGUIEventHandler:
         
         # Process validation request
         yield AGUIEvent(
-            type=EventType.STATUS_UPDATE.value,
+            type=AGUIEventType.CUSTOM_EVENT.value,
             data={
                 "message": "Processing validation request",
                 "validation": validation_data
@@ -232,7 +232,7 @@ class AGUIEventHandler:
         # Here you would implement actual validation logic
         # For now, just acknowledge the request
         yield AGUIEvent(
-            type=EventType.ASSISTANT_MESSAGE.value,
+            type=AGUIEventType.TEXT_MESSAGE_CONTENT.value,
             data={
                 "content": f"I understand you want to validate: {validation_data.get('item', 'unknown')}. Please confirm if this looks correct.",
                 "requires_human_input": True
@@ -255,7 +255,7 @@ class AGUIEventHandler:
         
         if approved:
             yield AGUIEvent(
-                type=EventType.ASSISTANT_MESSAGE.value,
+                type=AGUIEventType.TEXT_MESSAGE_CONTENT.value,
                 data={
                     "content": "Great! I'll proceed with your approved pipeline. " + 
                               (f"Note: {comments}" if comments else "")
@@ -265,7 +265,7 @@ class AGUIEventHandler:
             
             # Continue with approved pipeline
             yield AGUIEvent(
-                type=EventType.PIPELINE_UPDATED.value,
+                type=AGUIEventType.STATE_DELTA.value,
                 data={
                     "status": "approved",
                     "pipeline": session["pipeline"].to_dict() if session.get("pipeline") else {}
@@ -274,7 +274,7 @@ class AGUIEventHandler:
             )
         else:
             yield AGUIEvent(
-                type=EventType.ASSISTANT_MESSAGE.value,
+                type=AGUIEventType.TEXT_MESSAGE_CONTENT.value,
                 data={
                     "content": f"I understand. Let me revise the approach. {comments if comments else 'What would you like me to change?'}"
                 },
@@ -374,7 +374,7 @@ class AGUIServer:
         try:
             # Send initial connection event
             initial_event = AGUIEvent(
-                type=EventType.STATUS_UPDATE.value,
+                type=AGUIEventType.CUSTOM_EVENT.value,
                 data={"message": "Connected to CLAMS agent", "session_id": session_id},
                 session_id=session_id
             )
@@ -439,7 +439,7 @@ class AGUIServer:
         except Exception as e:
             logger.error(f"Error processing user event: {e}")
             error_event = AGUIEvent(
-                type=EventType.ERROR.value,
+                type=AGUIEventType.RUN_ERROR.value,
                 data={"error": str(e)},
                 session_id="unknown"
             )

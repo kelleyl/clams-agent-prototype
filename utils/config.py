@@ -1,16 +1,17 @@
 from typing import Dict, Any
 import os
 import json
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass, asdict, field
 
 @dataclass
 class LLMConfig:
     """Configuration for the LLM component."""
-    model_name: str = "llama2-7b"  # Default model
+    model_name: str = "deepseek-r1:8b"  # Default Ollama model
+    base_url: str = "http://localhost:11434"  # Ollama default URL
     temperature: float = 0.7
     top_p: float = 0.9
     max_length: int = 2048
-    load_in_8bit: bool = False
+    provider: str = "ollama"  # "ollama" or "openai"
     system_prompt: str = """You are an AI assistant helping to analyze video content using CLAMS tools. 
 Your goal is to understand user requests about video content and create appropriate pipelines of CLAMS tools to process the videos.
 You have access to various CLAMS tools that can analyze different aspects of videos, such as:
@@ -30,14 +31,11 @@ When responding to user queries:
 @dataclass
 class AppConfig:
     """Configuration for the CLAMS Agent application."""
-    llm: LLMConfig = LLMConfig()
+    llm: LLMConfig = field(default_factory=LLMConfig)
     cache_dir: str = "data/cache"
     max_video_size: int = 500 * 1024 * 1024  # 500MB
-    supported_video_formats: list = None
+    supported_video_formats: list = field(default_factory=lambda: [".mp4", ".avi", ".mov", ".mkv"])
     
-    def __post_init__(self):
-        if self.supported_video_formats is None:
-            self.supported_video_formats = [".mp4", ".avi", ".mov", ".mkv"]
 
 class ConfigManager:
     """Manages application configuration."""

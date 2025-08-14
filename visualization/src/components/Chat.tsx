@@ -162,7 +162,7 @@ export const Chat: React.FC<ChatProps> = ({ onPipelineGenerated }) => {
 
   // Handle streaming updates from AG-UI
   const handleStreamingUpdate = useCallback((update: StreamingUpdate | AGUIEvent) => {
-    const updateType = 'type' in update ? update.type : update.type;
+    const updateType = update.type;
     const content = 'content' in update ? update.content : update.data;
     
     switch (updateType) {

@@ -9,7 +9,7 @@ import json
 import asyncio
 from dataclasses import dataclass, field
 
-from langchain_openai import ChatOpenAI
+from langchain_ollama import ChatOllama
 from langchain_core.messages import AnyMessage, SystemMessage, HumanMessage, AIMessage, ToolMessage
 from langchain_core.tools import BaseTool
 from langgraph.graph.message import add_messages
@@ -20,6 +20,7 @@ from langgraph.prebuilt import create_react_agent
 
 from .pipeline_model import PipelineModel, PipelineStore
 from .clams_tools import CLAMSToolbox
+from .config import ConfigManager
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -51,17 +52,35 @@ class CLAMSAgent:
     LangGraph-based CLAMS pipeline agent with streaming capabilities.
     """
     
-    def __init__(self, model_name: str = "gpt-4o-mini"):
+    def __init__(self, config_manager: ConfigManager = None):
         """
         Initialize the CLAMS agent.
         
         Args:
-            model_name: OpenAI model name to use
+            config_manager: Configuration manager instance
         """
-        self.model_name = model_name
+        # Initialize configuration
+        self.config_manager = config_manager or ConfigManager()
+        self.llm_config = self.config_manager.get_config().llm
+        
+        # Initialize LLM based on provider
+        if self.llm_config.provider == "ollama":
+            self.llm = ChatOllama(
+                model=self.llm_config.model_name,
+                base_url=self.llm_config.base_url,
+                temperature=self.llm_config.temperature,
+                top_p=self.llm_config.top_p
+            )
+        else:
+            # Fallback to OpenAI if specified
+            from langchain_openai import ChatOpenAI
+            self.llm = ChatOpenAI(
+                model=self.llm_config.model_name, 
+                streaming=True,
+                temperature=self.llm_config.temperature
+            )
         
         # Initialize core components
-        self.llm = ChatOpenAI(model=model_name, streaming=True)
         self.toolbox = CLAMSToolbox()
         self.pipeline_store = PipelineStore()
         
@@ -82,9 +101,8 @@ class CLAMSAgent:
         """Initialize CLAMS tools as proper LangChain tools."""
         tools = []
         
-        for tool_name, tool_data in self.toolbox.get_tools().items():
-            # Convert CLAMS tool to LangChain tool format
-            clams_tool = self._create_langgraph_tool(tool_name, tool_data)
+        for tool_name, clams_tool in self.toolbox.get_tools().items():
+            # CLAMS tools are already LangChain BaseTool instances
             tools.append(clams_tool)
         
         return tools
@@ -112,8 +130,8 @@ class CLAMSAgent:
         """Initialize tool metadata for pipeline construction."""
         metadata = {}
         
-        for tool_name, tool_data in self.toolbox.get_tools().items():
-            app_info = tool_data.get('app_metadata', {})
+        for tool_name, clams_tool in self.toolbox.get_tools().items():
+            app_info = clams_tool.app_metadata
             tool_metadata = app_info.get('metadata', {})
             
             # Extract and clean input/output types
@@ -153,7 +171,7 @@ class CLAMSAgent:
         agent = create_react_agent(
             self.llm,
             self.tools,
-            state_modifier=system_message
+            prompt=system_message
         )
         
         return agent
