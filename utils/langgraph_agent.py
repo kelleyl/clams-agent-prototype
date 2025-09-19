@@ -1,6 +1,6 @@
 """
-LangGraph-based CLAMS Pipeline Agent with streaming and AG-UI integration.
-Uses modern LangGraph patterns with AG-UI for real-time communication.
+Hybrid CLAMS Pipeline Agent with separated planning and execution.
+Uses conversational planning + direct tool execution for reliability.
 """
 
 from typing import List, Dict, Any, Optional, TypedDict, Annotated, AsyncGenerator
@@ -21,6 +21,8 @@ from langgraph.prebuilt import create_react_agent
 from .pipeline_model import PipelineModel, PipelineStore
 from .clams_tools import CLAMSToolbox
 from .config import ConfigManager
+from .planning_agent import CLAMSPlanningAgent
+from .pipeline_execution import CLAMSExecutionEngine, PipelinePlan, ExecutionProgress
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -31,7 +33,7 @@ class CLAMSAgentState(TypedDict):
     """Modern LangGraph state with proper annotations."""
     messages: Annotated[List[AnyMessage], add_messages]
     task_description: str
-    pipeline_model: PipelineModel
+    pipeline_dict: Dict[str, Any]  # Serializable pipeline representation
     selected_tools: List[str]
     execution_context: Dict[str, Any]
     streaming_updates: List[Dict[str, Any]]
@@ -49,7 +51,8 @@ class StreamingUpdate:
 
 class CLAMSAgent:
     """
-    LangGraph-based CLAMS pipeline agent with streaming capabilities.
+    Hybrid CLAMS pipeline agent with separated planning and execution.
+    Combines conversational planning with direct tool execution for reliability.
     """
     
     def __init__(self, config_manager: ConfigManager = None):
@@ -63,7 +66,7 @@ class CLAMSAgent:
         self.config_manager = config_manager or ConfigManager()
         self.llm_config = self.config_manager.get_config().llm
         
-        # Initialize LLM based on provider
+        # Initialize LLM for backward compatibility
         if self.llm_config.provider == "ollama":
             self.llm = ChatOllama(
                 model=self.llm_config.model_name,
@@ -72,7 +75,6 @@ class CLAMSAgent:
                 top_p=self.llm_config.top_p
             )
         else:
-            # Fallback to OpenAI if specified
             from langchain_openai import ChatOpenAI
             self.llm = ChatOpenAI(
                 model=self.llm_config.model_name, 
@@ -81,21 +83,20 @@ class CLAMSAgent:
             )
         
         # Initialize core components
-        self.toolbox = CLAMSToolbox()
+        self.planner = CLAMSPlanningAgent(config_manager)
+        self.executor = CLAMSExecutionEngine()
         self.pipeline_store = PipelineStore()
         
-        # Initialize tools and metadata
+        # Legacy support - initialize tools for backward compatibility
+        self.toolbox = CLAMSToolbox()
         self.tools = self._initialize_clams_tools()
         self.tool_metadata = self._initialize_tool_metadata()
-        
-        # Create the agent using modern patterns
-        self.agent = self._create_modern_agent()
         
         # Memory for conversation persistence
         self.memory = MemorySaver()
         
-        # Compile with checkpointing
-        self.app = self.agent.compile(checkpointer=self.memory)
+        # Create the agent using modern patterns (for legacy support)
+        self.app = self._create_modern_agent()
     
     def _initialize_clams_tools(self) -> List[BaseTool]:
         """Initialize CLAMS tools as proper LangChain tools."""
@@ -167,11 +168,15 @@ class CLAMSAgent:
         # Create system message for CLAMS pipeline assistance
         system_message = self._create_system_message()
         
-        # Use create_react_agent for modern pattern
+        # Bind tools directly to the LLM first
+        llm_with_tools = self.llm.bind_tools(self.tools)
+        
+        # Use create_react_agent for modern pattern with checkpointer
         agent = create_react_agent(
-            self.llm,
+            llm_with_tools,
             self.tools,
-            prompt=system_message
+            prompt=system_message,
+            checkpointer=self.memory
         )
         
         return agent
@@ -200,12 +205,14 @@ Pipeline Construction Rules:
 - Text analysis tools need transcribed text
 - Always explain your tool selection reasoning
 
+IMPORTANT: When users ask you to use specific tools or demonstrate pipelines, you MUST call the actual tool functions. Do not just describe them. Use the tool calling mechanism to execute the tools with appropriate parameters.
+
 When suggesting tools:
 1. First understand what the user wants to accomplish
 2. Identify the required input type (video, audio, image, text)
 3. Select tools that produce the needed analysis
 4. Chain tools logically (output of one becomes input of next)
-5. Use actual tool calls to demonstrate the pipeline
+5. CALL the actual tools using function calls to demonstrate the pipeline
 
 Be conversational but precise. Ask clarifying questions if the user's requirements are unclear.
 """)
@@ -245,7 +252,7 @@ Be conversational but precise. Ask clarifying questions if the user's requiremen
             initial_state = {
                 "messages": [HumanMessage(content=user_input)],
                 "task_description": task_description,
-                "pipeline_model": PipelineModel(name="Streaming Pipeline"),
+                "pipeline_dict": {"name": "Streaming Pipeline", "nodes": [], "edges": []},
                 "selected_tools": [],
                 "execution_context": {},
                 "streaming_updates": [],
@@ -298,13 +305,13 @@ Be conversational but precise. Ask clarifying questions if the user's requiremen
                                 )
                     
                     # Stream pipeline updates
-                    if "pipeline_model" in node_state:
-                        pipeline = node_state["pipeline_model"]
+                    if "pipeline_dict" in node_state:
+                        pipeline = node_state["pipeline_dict"]
                         yield StreamingUpdate(
                             type="pipeline_updated",
                             content={
-                                "nodes": len(pipeline.nodes),
-                                "edges": len(pipeline.edges),
+                                "nodes": len(pipeline.get("nodes", [])),
+                                "edges": len(pipeline.get("edges", [])),
                                 "status": "updated"
                             }
                         )
@@ -366,6 +373,115 @@ Be conversational but precise. Ask clarifying questions if the user's requiremen
                 "updates": [],
                 "thread_id": thread_id
             }
+    
+    # New hybrid approach methods
+    async def plan_pipeline(self, user_query: str) -> PipelinePlan:
+        """
+        Generate a structured pipeline plan for the user's request.
+        
+        Args:
+            user_query: User's description of what they want to accomplish
+            
+        Returns:
+            PipelinePlan: Structured pipeline plan with tools and reasoning
+        """
+        return await self.planner.suggest_pipeline(user_query)
+    
+    async def explain_pipeline(self, user_query: str) -> str:
+        """
+        Generate a conversational explanation of the suggested pipeline.
+        
+        Args:
+            user_query: User's request
+            
+        Returns:
+            Conversational explanation of the pipeline plan
+        """
+        return await self.planner.conversational_planning(user_query)
+    
+    async def execute_pipeline(self, 
+                              plan: PipelinePlan, 
+                              input_mmif: str) -> AsyncGenerator[ExecutionProgress, None]:
+        """
+        Execute a pipeline plan with progress streaming.
+        
+        Args:
+            plan: The pipeline plan to execute
+            input_mmif: Input MMIF data or file path
+            
+        Yields:
+            ExecutionProgress: Real-time progress updates
+        """
+        async for progress in self.executor.execute_plan(plan, input_mmif):
+            yield progress
+    
+    async def process_request(self, 
+                             user_query: str, 
+                             input_mmif: Optional[str] = None,
+                             auto_execute: bool = False) -> Dict[str, Any]:
+        """
+        Complete hybrid processing: planning + optional execution.
+        
+        Args:
+            user_query: User's request description
+            input_mmif: Optional MMIF input for execution
+            auto_execute: If True, automatically execute the plan
+            
+        Returns:
+            Dictionary with plan, explanation, and execution results
+        """
+        try:
+            # Phase 1: Planning
+            plan = await self.plan_pipeline(user_query)
+            explanation = await self.explain_pipeline(user_query)
+            
+            result = {
+                "plan": plan,
+                "explanation": explanation,
+                "execution_results": None,
+                "status": "planned"
+            }
+            
+            # Phase 2: Optional execution
+            if auto_execute and input_mmif:
+                # Validate plan first
+                issues = self.executor.validate_plan(plan)
+                if issues:
+                    result["status"] = "validation_failed"
+                    result["validation_issues"] = issues
+                    return result
+                
+                # Execute with progress collection
+                execution_updates = []
+                async for progress in self.execute_pipeline(plan, input_mmif):
+                    execution_updates.append(progress)
+                
+                result["execution_results"] = execution_updates
+                final_progress = execution_updates[-1] if execution_updates else None
+                if final_progress and final_progress.status == "completed":
+                    result["status"] = "completed"
+                else:
+                    result["status"] = "execution_failed"
+            
+            return result
+            
+        except Exception as e:
+            logger.error(f"Request processing failed: {e}")
+            return {
+                "plan": None,
+                "explanation": f"Sorry, I encountered an error: {str(e)}",
+                "execution_results": None,
+                "status": "error",
+                "error": str(e)
+            }
+    
+    def validate_pipeline(self, plan: PipelinePlan) -> List[str]:
+        """Validate a pipeline plan and return any issues."""
+        return self.executor.validate_plan(plan)
+    
+    def get_available_tools(self) -> List[str]:
+        """Get list of available tool names."""
+        return self.executor.get_available_tools()
     
     def suggest_compatible_tools(self, last_tool_name: str) -> List[str]:
         """Suggest tools compatible with the last tool in pipeline."""

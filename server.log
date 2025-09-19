@@ -1,0 +1,287 @@
+2025-09-18 22:52:38,273 - INFO - Downloading app directory from https://raw.githubusercontent.com/clamsproject/apps/main/docs/_data/app-index.json
+2025-09-18 22:52:38,346 - INFO - Successfully loaded 26 apps from GitHub
+2025-09-18 22:52:38,402 - INFO - Processed tesseract (vv2.1)
+2025-09-18 22:52:38,470 - INFO - Processed parakeet-wrapper (vv1.0)
+2025-09-18 22:52:38,531 - INFO - Processed swt-detection (vv7.7)
+2025-09-18 22:52:38,587 - INFO - Processed spacy-wrapper (vv2.1)
+2025-09-18 22:52:38,645 - INFO - Processed doctr-wrapper (vv1.2)
+2025-09-18 22:52:38,705 - INFO - Processed llava-captioner (vv1.2)
+2025-09-18 22:52:38,764 - INFO - Processed whisper-wrapper (vv12)
+2025-09-18 22:52:38,835 - INFO - Processed distil-whisper-wrapper (vv1.2)
+2025-09-18 22:52:38,893 - INFO - Processed simple-timepoints-stitcher (vv3.0)
+2025-09-18 22:52:38,946 - INFO - Processed tfidf-keywordextractor (vv1.0)
+2025-09-18 22:52:39,007 - INFO - Processed text-slicer (vv1.0)
+2025-09-18 22:52:39,074 - INFO - Processed east-textdetection (vv1.2)
+2025-09-18 22:52:39,140 - INFO - Processed inaspeechsegmenter-wrapper (vv2.0)
+2025-09-18 22:52:39,190 - INFO - Processed pyscenedetect-wrapper (vv3)
+2025-09-18 22:52:39,245 - INFO - Processed easyocr-wrapper (vv1.1)
+2025-09-18 22:52:39,298 - INFO - Processed dbpedia-spotlight-wrapper (vv1.2)
+2025-09-18 22:52:39,369 - INFO - Processed slatedetection (vv2.1)
+2025-09-18 22:52:39,424 - INFO - Processed fewshotclassifier (vv1.0)
+2025-09-18 22:52:39,480 - INFO - Processed barsdetection (vv1.1)
+2025-09-18 22:52:39,540 - INFO - Processed parseqocr-wrapper (vv1.0)
+2025-09-18 22:52:39,595 - INFO - Processed tesseractocr-wrapper (vv1.0)
+2025-09-18 22:52:39,653 - INFO - Processed chyron-detection (vv1.0)
+2025-09-18 22:52:39,720 - INFO - Processed gentle-forced-aligner-wrapper (vv1.0)
+2025-09-18 22:52:39,776 - INFO - Processed tonedetection (vv1.0)
+2025-09-18 22:52:39,835 - INFO - Processed brandeis-acs-wrapper (vv2)
+2025-09-18 22:52:39,893 - INFO - Processed aapb-pua-kaldi-wrapper (vv2)
+2025-09-18 22:52:39,895 - INFO - Downloading app directory from https://raw.githubusercontent.com/clamsproject/apps/main/docs/_data/app-index.json
+2025-09-18 22:52:39,942 - INFO - Successfully loaded 26 apps from GitHub
+2025-09-18 22:52:39,988 - INFO - Processed tesseract (vv2.1)
+2025-09-18 22:52:40,035 - INFO - Processed parakeet-wrapper (vv1.0)
+2025-09-18 22:52:40,080 - INFO - Processed swt-detection (vv7.7)
+2025-09-18 22:52:40,131 - INFO - Processed spacy-wrapper (vv2.1)
+2025-09-18 22:52:40,178 - INFO - Processed doctr-wrapper (vv1.2)
+2025-09-18 22:52:40,223 - INFO - Processed llava-captioner (vv1.2)
+2025-09-18 22:52:40,282 - INFO - Processed whisper-wrapper (vv12)
+2025-09-18 22:52:40,333 - INFO - Processed distil-whisper-wrapper (vv1.2)
+2025-09-18 22:52:40,387 - INFO - Processed simple-timepoints-stitcher (vv3.0)
+2025-09-18 22:52:40,472 - INFO - Processed tfidf-keywordextractor (vv1.0)
+2025-09-18 22:52:40,521 - INFO - Processed text-slicer (vv1.0)
+2025-09-18 22:52:40,577 - INFO - Processed east-textdetection (vv1.2)
+2025-09-18 22:52:40,625 - INFO - Processed inaspeechsegmenter-wrapper (vv2.0)
+2025-09-18 22:52:40,672 - INFO - Processed pyscenedetect-wrapper (vv3)
+2025-09-18 22:52:40,719 - INFO - Processed easyocr-wrapper (vv1.1)
+2025-09-18 22:52:40,767 - INFO - Processed dbpedia-spotlight-wrapper (vv1.2)
+2025-09-18 22:52:40,817 - INFO - Processed slatedetection (vv2.1)
+2025-09-18 22:52:40,862 - INFO - Processed fewshotclassifier (vv1.0)
+2025-09-18 22:52:40,910 - INFO - Processed barsdetection (vv1.1)
+2025-09-18 22:52:40,958 - INFO - Processed parseqocr-wrapper (vv1.0)
+2025-09-18 22:52:41,002 - INFO - Processed tesseractocr-wrapper (vv1.0)
+2025-09-18 22:52:41,049 - INFO - Processed chyron-detection (vv1.0)
+2025-09-18 22:52:41,096 - INFO - Processed gentle-forced-aligner-wrapper (vv1.0)
+2025-09-18 22:52:41,141 - INFO - Processed tonedetection (vv1.0)
+2025-09-18 22:52:41,190 - INFO - Processed brandeis-acs-wrapper (vv2)
+2025-09-18 22:52:41,238 - INFO - Processed aapb-pua-kaldi-wrapper (vv2)
+2025-09-18 22:52:41,240 - INFO - Downloading app directory from https://raw.githubusercontent.com/clamsproject/apps/main/docs/_data/app-index.json
+2025-09-18 22:52:41,283 - INFO - Successfully loaded 26 apps from GitHub
+2025-09-18 22:52:41,335 - INFO - Processed tesseract (vv2.1)
+2025-09-18 22:52:41,382 - INFO - Processed parakeet-wrapper (vv1.0)
+2025-09-18 22:52:41,428 - INFO - Processed swt-detection (vv7.7)
+2025-09-18 22:52:41,472 - INFO - Processed spacy-wrapper (vv2.1)
+2025-09-18 22:52:41,521 - INFO - Processed doctr-wrapper (vv1.2)
+2025-09-18 22:52:41,567 - INFO - Processed llava-captioner (vv1.2)
+2025-09-18 22:52:41,614 - INFO - Processed whisper-wrapper (vv12)
+2025-09-18 22:52:41,661 - INFO - Processed distil-whisper-wrapper (vv1.2)
+2025-09-18 22:52:41,714 - INFO - Processed simple-timepoints-stitcher (vv3.0)
+2025-09-18 22:52:41,757 - INFO - Processed tfidf-keywordextractor (vv1.0)
+2025-09-18 22:52:41,804 - INFO - Processed text-slicer (vv1.0)
+2025-09-18 22:52:41,851 - INFO - Processed east-textdetection (vv1.2)
+2025-09-18 22:52:41,903 - INFO - Processed inaspeechsegmenter-wrapper (vv2.0)
+2025-09-18 22:52:41,961 - INFO - Processed pyscenedetect-wrapper (vv3)
+2025-09-18 22:52:42,015 - INFO - Processed easyocr-wrapper (vv1.1)
+2025-09-18 22:52:42,058 - INFO - Processed dbpedia-spotlight-wrapper (vv1.2)
+2025-09-18 22:52:42,129 - INFO - Processed slatedetection (vv2.1)
+2025-09-18 22:52:42,175 - INFO - Processed fewshotclassifier (vv1.0)
+2025-09-18 22:52:42,227 - INFO - Processed barsdetection (vv1.1)
+2025-09-18 22:52:42,287 - INFO - Processed parseqocr-wrapper (vv1.0)
+2025-09-18 22:52:42,335 - INFO - Processed tesseractocr-wrapper (vv1.0)
+2025-09-18 22:52:42,382 - INFO - Processed chyron-detection (vv1.0)
+2025-09-18 22:52:42,427 - INFO - Processed gentle-forced-aligner-wrapper (vv1.0)
+2025-09-18 22:52:42,474 - INFO - Processed tonedetection (vv1.0)
+2025-09-18 22:52:42,525 - INFO - Processed brandeis-acs-wrapper (vv2)
+2025-09-18 22:52:42,642 - INFO - Processed aapb-pua-kaldi-wrapper (vv2)
+2025-09-18 22:52:42,959 - INFO - Downloading app directory from https://raw.githubusercontent.com/clamsproject/apps/main/docs/_data/app-index.json
+2025-09-18 22:52:43,005 - INFO - Successfully loaded 26 apps from GitHub
+2025-09-18 22:52:43,053 - INFO - Processed tesseract (vv2.1)
+2025-09-18 22:52:43,099 - INFO - Processed parakeet-wrapper (vv1.0)
+2025-09-18 22:52:43,144 - INFO - Processed swt-detection (vv7.7)
+2025-09-18 22:52:43,200 - INFO - Processed spacy-wrapper (vv2.1)
+2025-09-18 22:52:43,251 - INFO - Processed doctr-wrapper (vv1.2)
+2025-09-18 22:52:43,297 - INFO - Processed llava-captioner (vv1.2)
+2025-09-18 22:52:43,347 - INFO - Processed whisper-wrapper (vv12)
+2025-09-18 22:52:43,395 - INFO - Processed distil-whisper-wrapper (vv1.2)
+2025-09-18 22:52:43,441 - INFO - Processed simple-timepoints-stitcher (vv3.0)
+2025-09-18 22:52:43,494 - INFO - Processed tfidf-keywordextractor (vv1.0)
+2025-09-18 22:52:43,543 - INFO - Processed text-slicer (vv1.0)
+2025-09-18 22:52:43,590 - INFO - Processed east-textdetection (vv1.2)
+2025-09-18 22:52:43,642 - INFO - Processed inaspeechsegmenter-wrapper (vv2.0)
+2025-09-18 22:52:43,688 - INFO - Processed pyscenedetect-wrapper (vv3)
+2025-09-18 22:52:43,736 - INFO - Processed easyocr-wrapper (vv1.1)
+2025-09-18 22:52:43,785 - INFO - Processed dbpedia-spotlight-wrapper (vv1.2)
+2025-09-18 22:52:43,830 - INFO - Processed slatedetection (vv2.1)
+2025-09-18 22:52:43,880 - INFO - Processed fewshotclassifier (vv1.0)
+2025-09-18 22:52:43,927 - INFO - Processed barsdetection (vv1.1)
+2025-09-18 22:52:43,976 - INFO - Processed parseqocr-wrapper (vv1.0)
+2025-09-18 22:52:44,021 - INFO - Processed tesseractocr-wrapper (vv1.0)
+2025-09-18 22:52:44,067 - INFO - Processed chyron-detection (vv1.0)
+2025-09-18 22:52:44,114 - INFO - Processed gentle-forced-aligner-wrapper (vv1.0)
+2025-09-18 22:52:44,163 - INFO - Processed tonedetection (vv1.0)
+2025-09-18 22:52:44,212 - INFO - Processed brandeis-acs-wrapper (vv2)
+2025-09-18 22:52:44,260 - INFO - Processed aapb-pua-kaldi-wrapper (vv2)
+2025-09-18 22:52:44,261 - INFO - Successfully initialized CLAMS agent and AG-UI server
+2025-09-18 22:52:44,262 - INFO - Using LLM provider: ollama
+2025-09-18 22:52:44,263 - INFO - Model: llama3.2:3b
+2025-09-18 22:52:44,268 - INFO - Starting CLAMS Agent Prototype server on port 5000
+2025-09-18 22:52:44,269 - INFO - Debug mode: False
+2025-09-18 22:52:44,269 - INFO - Agent available: True
+2025-09-18 22:52:44,270 - INFO - AG-UI server available: True
+ * Serving Flask app 'app'
+ * Debug mode: off
+2025-09-18 22:52:44,339 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://129.64.46.224:5000
+2025-09-18 22:52:44,340 - INFO - [33mPress CTRL+C to quit[0m
+2025-09-18 22:54:41,024 - INFO - 127.0.0.1 - - [18/Sep/2025 22:54:41] "GET /api/health HTTP/1.1" 200 -
+2025-09-18 22:54:48,276 - INFO - [frontend-test-456] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "test frontend response",
+    "task_description": "test"
+  },
+  "session_id": "frontend-test-456"
+}
+2025-09-18 22:54:48,277 - INFO - [frontend-test-456] NEW_SESSION: Initializing new chat session
+2025-09-18 22:54:48,278 - INFO - [frontend-test-456] SESSION_COUNT: Total active sessions: 1
+2025-09-18 22:54:48,279 - INFO - [frontend-test-456] USER_MESSAGE: 'test frontend response' (task: 'test')
+2025-09-18 22:54:48,280 - INFO - [frontend-test-456] WELCOME_SENT: Initial greeting message delivered
+2025-09-18 22:54:48,280 - INFO - [frontend-test-456] AGENT_CALL: Starting stream_response with user_input='test frontend response'
+2025-09-18 22:54:52,602 - INFO - HTTP Request: POST http://localhost:11434/api/chat "HTTP/1.1 200 OK"
+2025-09-18 22:54:52,605 - INFO - [frontend-test-456] AGENT_UPDATE: assistant_message - {'content': 'It looks like you\'re testing the formatting of a JSON response from a CLAMS (CLASsification and Machine Learning for Speech) API.\n\nThe response appears to be a simple JSON object with ...
+2025-09-18 22:54:52,606 - INFO - [frontend-test-456] FRONTEND_EVENT: text_message_content - {'content': 'It looks like you\'re testing the formatting of a JSON response from a CLAMS (CLASsification and Machine Learning for Speech) API.\n\nThe response appears to be a simple JSON object with ...
+2025-09-18 22:54:52,607 - INFO - [frontend-test-456] AGENT_UPDATE: conversation_complete - {'status': 'completed'}...
+2025-09-18 22:54:52,608 - INFO - [frontend-test-456] FRONTEND_EVENT: run_finished - {'status': 'completed'}...
+2025-09-18 22:54:52,610 - INFO - 127.0.0.1 - - [18/Sep/2025 22:54:52] "POST /api/agui/events HTTP/1.1" 200 -
+2025-09-18 22:55:41,425 - INFO - 127.0.0.1 - - [18/Sep/2025 22:55:41] "GET /chat HTTP/1.1" 200 -
+2025-09-18 22:55:42,238 - INFO - 127.0.0.1 - - [18/Sep/2025 22:55:42] "GET /assets/index-a6bc0da9.js HTTP/1.1" 200 -
+2025-09-18 22:55:42,238 - INFO - 127.0.0.1 - - [18/Sep/2025 22:55:42] "GET /assets/index-07d7a772.css HTTP/1.1" 200 -
+2025-09-18 22:55:43,958 - INFO - 127.0.0.1 - - [18/Sep/2025 22:55:43] "GET /api/pipelines HTTP/1.1" 200 -
+2025-09-18 22:55:48,187 - INFO - [session-1758250542866] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "I want to create a CLAMS pipeline for: transcribe",
+    "task_description": "transcribe"
+  },
+  "session_id": "session-1758250542866"
+}
+2025-09-18 22:55:48,189 - INFO - [session-1758250542866] NEW_SESSION: Initializing new chat session
+2025-09-18 22:55:48,191 - INFO - [session-1758250542866] SESSION_COUNT: Total active sessions: 2
+2025-09-18 22:55:48,191 - INFO - [session-1758250542866] USER_MESSAGE: 'I want to create a CLAMS pipeline for: transcribe' (task: 'transcribe')
+2025-09-18 22:55:48,192 - INFO - [session-1758250542866] WELCOME_SENT: Initial greeting message delivered
+2025-09-18 22:55:48,193 - INFO - [session-1758250542866] AGENT_CALL: Starting stream_response with user_input='I want to create a CLAMS pipeline for: transcribe'
+2025-09-18 22:55:48,200 - ERROR - Error in stream_response: Event loop is closed
+2025-09-18 22:55:48,201 - INFO - [session-1758250542866] AGENT_UPDATE: error - {'error': 'Event loop is closed'}...
+2025-09-18 22:55:48,202 - INFO - [session-1758250542866] FRONTEND_EVENT: run_error - {'error': 'Event loop is closed'}...
+2025-09-18 22:55:48,203 - INFO - 127.0.0.1 - - [18/Sep/2025 22:55:48] "POST /api/agui/events HTTP/1.1" 200 -
+2025-09-18 22:56:00,400 - INFO - [session-1758250542866] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "extract text from chyrons",
+    "task_description": "transcribe"
+  },
+  "session_id": "session-1758250542866"
+}
+2025-09-18 22:56:00,402 - INFO - [session-1758250542866] USER_MESSAGE: 'extract text from chyrons' (task: 'transcribe')
+2025-09-18 22:56:00,403 - INFO - [session-1758250542866] AGENT_CALL: Starting stream_response with user_input='extract text from chyrons'
+2025-09-18 22:56:02,389 - INFO - HTTP Request: POST http://localhost:11434/api/chat "HTTP/1.1 200 OK"
+2025-09-18 22:56:02,398 - INFO - [session-1758250542866] AGENT_UPDATE: assistant_message - {'content': 'To extract text from chyrons, you can use the following function:\n\n`tonedetection`\n\nThis function takes an audio file as input and returns a list of time ranges where the audio is mon...
+2025-09-18 22:56:02,399 - INFO - [session-1758250542866] FRONTEND_EVENT: text_message_content - {'content': 'To extract text from chyrons, you can use the following function:\n\n`tonedetection`\n\nThis function takes an audio file as input and returns a list of time ranges where the audio is mon...
+2025-09-18 22:56:02,400 - INFO - [session-1758250542866] AGENT_UPDATE: conversation_complete - {'status': 'completed'}...
+2025-09-18 22:56:02,401 - INFO - [session-1758250542866] FRONTEND_EVENT: run_finished - {'status': 'completed'}...
+2025-09-18 22:56:02,403 - INFO - 127.0.0.1 - - [18/Sep/2025 22:56:02] "POST /api/agui/events HTTP/1.1" 200 -
+2025-09-18 22:56:25,498 - INFO - [session-1758250542866] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "are there any tools specific to chyrons",
+    "task_description": "transcribe"
+  },
+  "session_id": "session-1758250542866"
+}
+2025-09-18 22:56:25,500 - INFO - [session-1758250542866] USER_MESSAGE: 'are there any tools specific to chyrons' (task: 'transcribe')
+2025-09-18 22:56:25,501 - INFO - [session-1758250542866] AGENT_CALL: Starting stream_response with user_input='are there any tools specific to chyrons'
+2025-09-18 22:56:25,506 - ERROR - Error in stream_response: Event loop is closed
+2025-09-18 22:56:25,507 - INFO - [session-1758250542866] AGENT_UPDATE: error - {'error': 'Event loop is closed'}...
+2025-09-18 22:56:25,508 - INFO - [session-1758250542866] FRONTEND_EVENT: run_error - {'error': 'Event loop is closed'}...
+2025-09-18 22:56:25,509 - INFO - 127.0.0.1 - - [18/Sep/2025 22:56:25] "POST /api/agui/events HTTP/1.1" 200 -
+2025-09-18 22:56:32,423 - INFO - [session-1758250542866] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "?",
+    "task_description": "transcribe"
+  },
+  "session_id": "session-1758250542866"
+}
+2025-09-18 22:56:32,425 - INFO - [session-1758250542866] USER_MESSAGE: '?' (task: 'transcribe')
+2025-09-18 22:56:32,426 - INFO - [session-1758250542866] AGENT_CALL: Starting stream_response with user_input='?'
+2025-09-18 22:56:33,988 - INFO - HTTP Request: POST http://localhost:11434/api/chat "HTTP/1.1 200 OK"
+2025-09-18 22:56:33,990 - INFO - [session-1758250542866] AGENT_UPDATE: assistant_message - {'content': 'It appears that you are providing a list of functions or tools, likely from the CLAMS (Community Language Analysis and Modeling System) framework. Each function is defined with an input p...
+2025-09-18 22:56:33,999 - INFO - [session-1758250542866] FRONTEND_EVENT: text_message_content - {'content': 'It appears that you are providing a list of functions or tools, likely from the CLAMS (Community Language Analysis and Modeling System) framework. Each function is defined with an input p...
+2025-09-18 22:56:34,000 - INFO - [session-1758250542866] AGENT_UPDATE: conversation_complete - {'status': 'completed'}...
+2025-09-18 22:56:34,003 - INFO - [session-1758250542866] FRONTEND_EVENT: run_finished - {'status': 'completed'}...
+2025-09-18 22:56:34,004 - INFO - 127.0.0.1 - - [18/Sep/2025 22:56:34] "POST /api/agui/events HTTP/1.1" 200 -
+2025-09-18 22:56:47,785 - INFO - [session-1758250542866] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "id like to detect chyrons",
+    "task_description": "transcribe"
+  },
+  "session_id": "session-1758250542866"
+}
+2025-09-18 22:56:47,787 - INFO - [session-1758250542866] USER_MESSAGE: 'id like to detect chyrons' (task: 'transcribe')
+2025-09-18 22:56:47,788 - INFO - [session-1758250542866] AGENT_CALL: Starting stream_response with user_input='id like to detect chyrons'
+2025-09-18 22:56:47,792 - ERROR - Error in stream_response: Event loop is closed
+2025-09-18 22:56:47,793 - INFO - [session-1758250542866] AGENT_UPDATE: error - {'error': 'Event loop is closed'}...
+2025-09-18 22:56:47,794 - INFO - [session-1758250542866] FRONTEND_EVENT: run_error - {'error': 'Event loop is closed'}...
+2025-09-18 22:56:47,795 - INFO - 127.0.0.1 - - [18/Sep/2025 22:56:47] "POST /api/agui/events HTTP/1.1" 200 -
+2025-09-18 22:56:57,563 - INFO - [session-1758250542866] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "id like to detect chyrons",
+    "task_description": "transcribe"
+  },
+  "session_id": "session-1758250542866"
+}
+2025-09-18 22:56:57,565 - INFO - [session-1758250542866] USER_MESSAGE: 'id like to detect chyrons' (task: 'transcribe')
+2025-09-18 22:56:57,565 - INFO - [session-1758250542866] AGENT_CALL: Starting stream_response with user_input='id like to detect chyrons'
+2025-09-18 22:56:59,968 - INFO - HTTP Request: POST http://localhost:11434/api/chat "HTTP/1.1 200 OK"
+2025-09-18 22:56:59,970 - INFO - [session-1758250542866] AGENT_UPDATE: assistant_message - {'content': "To detect chyrons, you can use the `tonedetection` function. Here's an example of how you can do it:\n\n```bash\ncurl -X GET \\\n  https://api.clams.io/v1/tonedetection?input=audio_file.m...
+2025-09-18 22:56:59,971 - INFO - [session-1758250542866] FRONTEND_EVENT: text_message_content - {'content': "To detect chyrons, you can use the `tonedetection` function. Here's an example of how you can do it:\n\n```bash\ncurl -X GET \\\n  https://api.clams.io/v1/tonedetection?input=audio_file.m...
+2025-09-18 22:56:59,972 - INFO - [session-1758250542866] AGENT_UPDATE: conversation_complete - {'status': 'completed'}...
+2025-09-18 22:56:59,973 - INFO - [session-1758250542866] FRONTEND_EVENT: run_finished - {'status': 'completed'}...
+2025-09-18 22:56:59,974 - INFO - 127.0.0.1 - - [18/Sep/2025 22:56:59] "POST /api/agui/events HTTP/1.1" 200 -
+2025-09-18 22:57:28,604 - INFO - [session-1758250542866] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "detect scenes with text",
+    "task_description": "transcribe"
+  },
+  "session_id": "session-1758250542866"
+}
+2025-09-18 22:57:28,606 - INFO - [session-1758250542866] USER_MESSAGE: 'detect scenes with text' (task: 'transcribe')
+2025-09-18 22:57:28,607 - INFO - [session-1758250542866] AGENT_CALL: Starting stream_response with user_input='detect scenes with text'
+2025-09-18 22:57:28,612 - ERROR - Error in stream_response: Event loop is closed
+2025-09-18 22:57:28,613 - INFO - [session-1758250542866] AGENT_UPDATE: error - {'error': 'Event loop is closed'}...
+2025-09-18 22:57:28,613 - INFO - [session-1758250542866] FRONTEND_EVENT: run_error - {'error': 'Event loop is closed'}...
+2025-09-18 22:57:28,614 - INFO - 127.0.0.1 - - [18/Sep/2025 22:57:28] "POST /api/agui/events HTTP/1.1" 200 -
+2025-09-18 22:57:34,702 - INFO - [session-1758250542866] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "detect scenes with text",
+    "task_description": "transcribe"
+  },
+  "session_id": "session-1758250542866"
+}
+2025-09-18 22:57:34,704 - INFO - [session-1758250542866] USER_MESSAGE: 'detect scenes with text' (task: 'transcribe')
+2025-09-18 22:57:34,705 - INFO - [session-1758250542866] AGENT_CALL: Starting stream_response with user_input='detect scenes with text'
+2025-09-18 22:57:36,403 - INFO - HTTP Request: POST http://localhost:11434/api/chat "HTTP/1.1 200 OK"
+2025-09-18 22:57:36,406 - INFO - [session-1758250542866] AGENT_UPDATE: assistant_message - {'content': 'It looks like you want to detect scenes in a video where there is also text present, likely for the purpose of automatic speech recognition (ASR) or other NLP tasks.\n\nBased on your requ...
+2025-09-18 22:57:36,407 - INFO - [session-1758250542866] FRONTEND_EVENT: text_message_content - {'content': 'It looks like you want to detect scenes in a video where there is also text present, likely for the purpose of automatic speech recognition (ASR) or other NLP tasks.\n\nBased on your requ...
+2025-09-18 22:57:36,408 - INFO - [session-1758250542866] AGENT_UPDATE: conversation_complete - {'status': 'completed'}...
+2025-09-18 22:57:36,409 - INFO - [session-1758250542866] FRONTEND_EVENT: run_finished - {'status': 'completed'}...
+2025-09-18 22:57:36,410 - INFO - 127.0.0.1 - - [18/Sep/2025 22:57:36] "POST /api/agui/events HTTP/1.1" 200 -
+2025-09-18 22:57:53,790 - INFO - [session-1758250542866] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "scenes with text",
+    "task_description": "transcribe"
+  },
+  "session_id": "session-1758250542866"
+}
+2025-09-18 22:57:53,792 - INFO - [session-1758250542866] USER_MESSAGE: 'scenes with text' (task: 'transcribe')
+2025-09-18 22:57:53,793 - INFO - [session-1758250542866] AGENT_CALL: Starting stream_response with user_input='scenes with text'
+2025-09-18 22:57:53,797 - ERROR - Error in stream_response: Event loop is closed
+2025-09-18 22:57:53,798 - INFO - [session-1758250542866] AGENT_UPDATE: error - {'error': 'Event loop is closed'}...
+2025-09-18 22:57:53,799 - INFO - [session-1758250542866] FRONTEND_EVENT: run_error - {'error': 'Event loop is closed'}...
+2025-09-18 22:57:53,799 - INFO - 127.0.0.1 - - [18/Sep/2025 22:57:53] "POST /api/agui/events HTTP/1.1" 200 -

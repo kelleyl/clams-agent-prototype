@@ -1,0 +1,503 @@
+2025-09-18 01:29:01,478 - INFO - [session-1758173336060] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "I want to create a CLAMS pipeline for: who is in this video?",
+    "task_description": "who is in this video?"
+  },
+  "session_id": "session-1758173336060"
+}
+2025-09-18 03:43:28,336 - INFO - [session-1758181392858] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "I want to create a CLAMS pipeline for: who is in this video",
+    "task_description": "who is in this video"
+  },
+  "session_id": "session-1758181392858"
+}
+2025-09-18 03:44:47,226 - INFO - [session-1758181392858] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "hello",
+    "task_description": "who is in this video"
+  },
+  "session_id": "session-1758181392858"
+}
+2025-09-18 03:45:07,161 - INFO - [session-1758181392858] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "who is in this video\n\n",
+    "task_description": "who is in this video"
+  },
+  "session_id": "session-1758181392858"
+}
+2025-09-18 03:46:08,414 - INFO - [session-1758181392858] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "help",
+    "task_description": "who is in this video"
+  },
+  "session_id": "session-1758181392858"
+}
+2025-09-18 03:46:42,246 - INFO - [session-1758181392858] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "is there a chyron tool?",
+    "task_description": "who is in this video"
+  },
+  "session_id": "session-1758181392858"
+}
+2025-09-18 03:48:19,706 - INFO - [session-1758181392858] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "hello",
+    "task_description": "who is in this video"
+  },
+  "session_id": "session-1758181392858"
+}
+2025-09-18 03:48:34,741 - INFO - [session-1758181392858] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "hello",
+    "task_description": "who is in this video"
+  },
+  "session_id": "session-1758181392858"
+}
+2025-09-18 03:48:37,058 - INFO - [session-1758181392858] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "is there a chyron tool?\n\n",
+    "task_description": "who is in this video"
+  },
+  "session_id": "session-1758181392858"
+}
+2025-09-18 03:59:42,933 - INFO - [session-1758182380166] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "I want to create a CLAMS pipeline for: hello",
+    "task_description": "hello"
+  },
+  "session_id": "session-1758182380166"
+}
+2025-09-18 04:00:11,734 - INFO - [session-1758182380166] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "is there a chyron app?",
+    "task_description": "hello"
+  },
+  "session_id": "session-1758182380166"
+}
+2025-09-18 07:26:43,821 - INFO - [test-session-1758194803] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "hello",
+    "task_description": "test task"
+  },
+  "session_id": "test-session-1758194803"
+}
+2025-09-18 07:26:49,437 - INFO - [test-session-1758194803] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "can you help me?",
+    "task_description": "test task"
+  },
+  "session_id": "test-session-1758194803"
+}
+2025-09-18 07:26:51,243 - INFO - [test-session-1758194803] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "what tools are available?",
+    "task_description": "test task"
+  },
+  "session_id": "test-session-1758194803"
+}
+2025-09-18 07:26:53,149 - INFO - [test-session-1758194803] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "is there a chyron tool?",
+    "task_description": "test task"
+  },
+  "session_id": "test-session-1758194803"
+}
+2025-09-18 07:26:55,855 - INFO - [test-session-1758194803] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "create a pipeline for video analysis",
+    "task_description": "test task"
+  },
+  "session_id": "test-session-1758194803"
+}
+2025-09-18 07:33:13,786 - INFO - [web-test-1758195193] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "hello there",
+    "task_description": "test task"
+  },
+  "session_id": "web-test-1758195193"
+}
+2025-09-18 07:33:17,894 - INFO - [web-test-1758195193] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "can you help me create a pipeline?",
+    "task_description": "test task"
+  },
+  "session_id": "web-test-1758195193"
+}
+2025-09-18 07:33:20,001 - INFO - [web-test-1758195193] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "what CLAMS tools are available?",
+    "task_description": "test task"
+  },
+  "session_id": "web-test-1758195193"
+}
+2025-09-18 07:33:23,210 - INFO - [web-test-1758195193] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "do you have any chyron detection tools?",
+    "task_description": "test task"
+  },
+  "session_id": "web-test-1758195193"
+}
+2025-09-18 07:33:25,917 - INFO - [web-test-1758195193] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "I need to analyze video content",
+    "task_description": "test task"
+  },
+  "session_id": "web-test-1758195193"
+}
+2025-09-18 20:51:18,043 - INFO - [session-1758243054612] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "I want to create a CLAMS pipeline for: id like to extract chyrons from this video",
+    "task_description": "id like to extract chyrons from this video"
+  },
+  "session_id": "session-1758243054612"
+}
+2025-09-18 21:04:44,874 - INFO - [session-1758243054612] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "test",
+    "task_description": "id like to extract chyrons from this video"
+  },
+  "session_id": "session-1758243054612"
+}
+2025-09-18 21:04:57,858 - INFO - [session-1758243894362] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "I want to create a CLAMS pipeline for: hell",
+    "task_description": "hell"
+  },
+  "session_id": "session-1758243894362"
+}
+2025-09-18 21:05:33,473 - INFO - [session-1758243894362] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "I want to create a CLAMS pipeline for: test",
+    "task_description": "test"
+  },
+  "session_id": "session-1758243894362"
+}
+2025-09-18 21:14:05,853 - INFO - [test-session] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "hello",
+    "task_description": "test"
+  },
+  "session_id": "test-session"
+}
+2025-09-18 21:14:58,014 - INFO - [session-1758244494794] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "I want to create a CLAMS pipeline for: hello",
+    "task_description": "hello"
+  },
+  "session_id": "session-1758244494794"
+}
+2025-09-18 21:16:08,089 - INFO - [session-1758244494794] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "evaluating chyrons",
+    "task_description": "hello"
+  },
+  "session_id": "session-1758244494794"
+}
+2025-09-18 21:17:56,172 - INFO - [session-1758244668167] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "I want to create a CLAMS pipeline for: extract text from video",
+    "task_description": "extract text from video"
+  },
+  "session_id": "session-1758244668167"
+}
+2025-09-18 21:18:46,696 - INFO - [welcome-test-session] WELCOME_REQUEST: {
+  "type": "session_start",
+  "data": {
+    "message": "Welcome to CLAMS Pipeline Assistant"
+  },
+  "session_id": "welcome-test-session"
+}
+2025-09-18 21:18:53,736 - INFO - [first-message-test] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "hello",
+    "task_description": "test"
+  },
+  "session_id": "first-message-test"
+}
+2025-09-18 21:42:23,203 - INFO - [ui-test-session] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "hello",
+    "task_description": "test"
+  },
+  "session_id": "ui-test-session"
+}
+2025-09-18 21:51:48,667 - INFO - [restart-test] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "test message",
+    "task_description": "testing"
+  },
+  "session_id": "restart-test"
+}
+2025-09-18 21:52:20,345 - INFO - [session-1758246737454] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "I want to create a CLAMS pipeline for: hello",
+    "task_description": "hello"
+  },
+  "session_id": "session-1758246737454"
+}
+2025-09-18 21:52:49,321 - INFO - [session-1758246737454] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "are you there?",
+    "task_description": "hello"
+  },
+  "session_id": "session-1758246737454"
+}
+2025-09-18 21:55:01,479 - INFO - [session-1758246894714] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "I want to create a CLAMS pipeline for: extract text from video",
+    "task_description": "extract text from video"
+  },
+  "session_id": "session-1758246894714"
+}
+2025-09-18 21:58:52,569 - INFO - [timeout-test] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "hello test",
+    "task_description": "test"
+  },
+  "session_id": "timeout-test"
+}
+2025-09-18 21:59:27,236 - INFO - [session-1758247159801] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "I want to create a CLAMS pipeline for: transcribe speech",
+    "task_description": "transcribe speech"
+  },
+  "session_id": "session-1758247159801"
+}
+2025-09-18 22:04:34,178 - INFO - [session-1758247451059] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "I want to create a CLAMS pipeline for: transcribe",
+    "task_description": "transcribe"
+  },
+  "session_id": "session-1758247451059"
+}
+2025-09-18 22:11:13,944 - INFO - [simple-test] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "simple test",
+    "task_description": "test"
+  },
+  "session_id": "simple-test"
+}
+2025-09-18 22:18:04,453 - INFO - [session-1758248280685] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "I want to create a CLAMS pipeline for: transcribe",
+    "task_description": "transcribe"
+  },
+  "session_id": "session-1758248280685"
+}
+2025-09-18 22:24:10,690 - INFO - [session-1758248647258] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "I want to create a CLAMS pipeline for: transcribe",
+    "task_description": "transcribe"
+  },
+  "session_id": "session-1758248647258"
+}
+2025-09-18 22:26:00,965 - INFO - [session-1758248647258] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "hello",
+    "task_description": "transcribe"
+  },
+  "session_id": "session-1758248647258"
+}
+2025-09-18 22:26:16,073 - INFO - [session-1758248647258] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "are you getting this?",
+    "task_description": "transcribe"
+  },
+  "session_id": "session-1758248647258"
+}
+2025-09-18 22:30:04,773 - INFO - [session-1758249000876] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "I want to create a CLAMS pipeline for: transcribe",
+    "task_description": "transcribe"
+  },
+  "session_id": "session-1758249000876"
+}
+2025-09-18 22:30:52,392 - INFO - [session-1758249000876] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "hello",
+    "task_description": "transcribe"
+  },
+  "session_id": "session-1758249000876"
+}
+2025-09-18 22:30:57,368 - INFO - [session-1758249000876] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "respond please",
+    "task_description": "transcribe"
+  },
+  "session_id": "session-1758249000876"
+}
+2025-09-18 22:31:04,463 - INFO - [session-1758249000876] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "are yo uthere",
+    "task_description": "transcribe"
+  },
+  "session_id": "session-1758249000876"
+}
+2025-09-18 22:42:40,850 - INFO - [curl-test-123] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "test message",
+    "task_description": "test"
+  },
+  "session_id": "curl-test-123"
+}
+2025-09-18 22:47:30,218 - INFO - [test-response-123] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "hello test",
+    "task_description": "test"
+  },
+  "session_id": "test-response-123"
+}
+2025-09-18 22:49:07,320 - INFO - [session-1758250101170] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "I want to create a CLAMS pipeline for: transcribe",
+    "task_description": "transcribe"
+  },
+  "session_id": "session-1758250101170"
+}
+2025-09-18 22:49:22,072 - INFO - [session-1758250101170] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "hello",
+    "task_description": "transcribe"
+  },
+  "session_id": "session-1758250101170"
+}
+2025-09-18 22:49:39,226 - INFO - [session-1758250101170] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "??",
+    "task_description": "transcribe"
+  },
+  "session_id": "session-1758250101170"
+}
+2025-09-18 22:54:48,276 - INFO - [frontend-test-456] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "test frontend response",
+    "task_description": "test"
+  },
+  "session_id": "frontend-test-456"
+}
+2025-09-18 22:55:48,187 - INFO - [session-1758250542866] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "I want to create a CLAMS pipeline for: transcribe",
+    "task_description": "transcribe"
+  },
+  "session_id": "session-1758250542866"
+}
+2025-09-18 22:56:00,400 - INFO - [session-1758250542866] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "extract text from chyrons",
+    "task_description": "transcribe"
+  },
+  "session_id": "session-1758250542866"
+}
+2025-09-18 22:56:25,498 - INFO - [session-1758250542866] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "are there any tools specific to chyrons",
+    "task_description": "transcribe"
+  },
+  "session_id": "session-1758250542866"
+}
+2025-09-18 22:56:32,423 - INFO - [session-1758250542866] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "?",
+    "task_description": "transcribe"
+  },
+  "session_id": "session-1758250542866"
+}
+2025-09-18 22:56:47,785 - INFO - [session-1758250542866] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "id like to detect chyrons",
+    "task_description": "transcribe"
+  },
+  "session_id": "session-1758250542866"
+}
+2025-09-18 22:56:57,563 - INFO - [session-1758250542866] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "id like to detect chyrons",
+    "task_description": "transcribe"
+  },
+  "session_id": "session-1758250542866"
+}
+2025-09-18 22:57:28,604 - INFO - [session-1758250542866] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "detect scenes with text",
+    "task_description": "transcribe"
+  },
+  "session_id": "session-1758250542866"
+}
+2025-09-18 22:57:34,702 - INFO - [session-1758250542866] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "detect scenes with text",
+    "task_description": "transcribe"
+  },
+  "session_id": "session-1758250542866"
+}
+2025-09-18 22:57:53,790 - INFO - [session-1758250542866] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "scenes with text",
+    "task_description": "transcribe"
+  },
+  "session_id": "session-1758250542866"
+}

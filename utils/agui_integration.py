@@ -127,12 +127,15 @@ class AGUIEventHandler:
             
             # Initialize session if needed
             if session_id not in self.active_sessions:
+                logger.info(f"[{session_id}] NEW_SESSION: Initializing new chat session")
                 self.active_sessions[session_id] = {
                     "task_description": "",
                     "conversation_history": [],
                     "pipeline": PipelineModel(name=f"Pipeline-{session_id}"),
-                    "created_at": datetime.utcnow().isoformat()
+                    "created_at": datetime.utcnow().isoformat(),
+                    "welcome_sent": False
                 }
+                logger.info(f"[{session_id}] SESSION_COUNT: Total active sessions: {len(self.active_sessions)}")
             
             session = self.active_sessions[session_id]
             
@@ -140,6 +143,14 @@ class AGUIEventHandler:
             if event.type == "user_message":
                 async for response_event in self._handle_user_message(event, session):
                     yield response_event
+                    
+            elif event.type == "session_start":
+                # Session start - just acknowledge, welcome message will be sent with first user message
+                yield AGUIEvent(
+                    type=AGUIEventType.CUSTOM_EVENT.value,
+                    data={"message": "Session started successfully"},
+                    session_id=session_id
+                )
                     
             elif event.type == "validation_request":
                 async for response_event in self._handle_validation_request(event, session):
@@ -170,6 +181,36 @@ class AGUIEventHandler:
         user_message = event.data.get("message", "")
         task_description = event.data.get("task_description", session.get("task_description", ""))
         
+        # Log user message for debugging
+        logger.info(f"[{event.session_id}] USER_MESSAGE: '{user_message}' (task: '{task_description}')")
+        
+        # Send welcome message if this is the first user message
+        if not session.get("welcome_sent", False):
+            welcome_message = (
+                "👋 Hello! I'm your CLAMS pipeline assistant. I can help you create multimedia analysis pipelines using CLAMS tools.\n\n"
+                "**What would you like to do?**\n"
+                "• Analyze video content (chyrons, scenes, objects)\n"
+                "• Process audio (transcription, speech detection)\n"
+                "• Extract text from images (OCR)\n"
+                "• Create custom analysis pipelines\n\n"
+                "Just describe what you'd like to analyze and I'll suggest the right tools!"
+            )
+            
+            yield AGUIEvent(
+                type=AGUIEventType.TEXT_MESSAGE_CONTENT.value,
+                data={"content": welcome_message},
+                session_id=event.session_id
+            )
+            
+            session["welcome_sent"] = True
+            session["conversation_history"].append({
+                "role": "assistant",
+                "content": welcome_message,
+                "timestamp": datetime.utcnow().isoformat()
+            })
+            
+            logger.info(f"[{event.session_id}] WELCOME_SENT: Initial greeting message delivered")
+        
         # Update session
         session["task_description"] = task_description
         session["conversation_history"].append({
@@ -187,13 +228,22 @@ class AGUIEventHandler:
         
         try:
             # Stream agent response
+            logger.info(f"[{event.session_id}] AGENT_CALL: Starting stream_response with user_input='{user_message}'")
+            
             async for update in self.agent.stream_response(
                 user_input=user_message,
                 task_description=task_description,
                 thread_id=event.session_id
             ):
+                # Log agent streaming updates
+                logger.info(f"[{event.session_id}] AGENT_UPDATE: {update.type} - {str(update.content)[:200]}...")
+                
                 # Convert StreamingUpdate to AG-UI event
                 agui_event = self._streaming_update_to_agui_event(update, event.session_id)
+                
+                # Log what we're sending to frontend
+                logger.info(f"[{event.session_id}] FRONTEND_EVENT: {agui_event.type} - {str(agui_event.data)[:200]}...")
+                
                 yield agui_event
                 
                 # Update session state based on event

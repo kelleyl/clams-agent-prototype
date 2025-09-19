@@ -1,0 +1,146 @@
+2025-09-18 22:10:58,053 - INFO - Downloading app directory from https://raw.githubusercontent.com/clamsproject/apps/main/docs/_data/app-index.json
+2025-09-18 22:10:58,121 - INFO - Successfully loaded 26 apps from GitHub
+2025-09-18 22:10:58,179 - INFO - Processed tesseract (vv2.1)
+2025-09-18 22:10:58,245 - INFO - Processed parakeet-wrapper (vv1.0)
+2025-09-18 22:10:58,307 - INFO - Processed swt-detection (vv7.7)
+2025-09-18 22:10:58,361 - INFO - Processed spacy-wrapper (vv2.1)
+2025-09-18 22:10:58,422 - INFO - Processed doctr-wrapper (vv1.2)
+2025-09-18 22:10:58,510 - INFO - Processed llava-captioner (vv1.2)
+2025-09-18 22:10:58,576 - INFO - Processed whisper-wrapper (vv12)
+2025-09-18 22:10:58,640 - INFO - Processed distil-whisper-wrapper (vv1.2)
+2025-09-18 22:10:58,710 - INFO - Processed simple-timepoints-stitcher (vv3.0)
+2025-09-18 22:10:58,793 - INFO - Processed tfidf-keywordextractor (vv1.0)
+2025-09-18 22:10:58,862 - INFO - Processed text-slicer (vv1.0)
+2025-09-18 22:10:58,914 - INFO - Processed east-textdetection (vv1.2)
+2025-09-18 22:10:58,979 - INFO - Processed inaspeechsegmenter-wrapper (vv2.0)
+2025-09-18 22:10:59,043 - INFO - Processed pyscenedetect-wrapper (vv3)
+2025-09-18 22:10:59,101 - INFO - Processed easyocr-wrapper (vv1.1)
+2025-09-18 22:10:59,157 - INFO - Processed dbpedia-spotlight-wrapper (vv1.2)
+2025-09-18 22:10:59,226 - INFO - Processed slatedetection (vv2.1)
+2025-09-18 22:10:59,297 - INFO - Processed fewshotclassifier (vv1.0)
+2025-09-18 22:10:59,368 - INFO - Processed barsdetection (vv1.1)
+2025-09-18 22:10:59,439 - INFO - Processed parseqocr-wrapper (vv1.0)
+2025-09-18 22:10:59,519 - INFO - Processed tesseractocr-wrapper (vv1.0)
+2025-09-18 22:10:59,572 - INFO - Processed chyron-detection (vv1.0)
+2025-09-18 22:10:59,785 - INFO - Processed gentle-forced-aligner-wrapper (vv1.0)
+2025-09-18 22:10:59,842 - INFO - Processed tonedetection (vv1.0)
+2025-09-18 22:10:59,902 - INFO - Processed brandeis-acs-wrapper (vv2)
+2025-09-18 22:10:59,958 - INFO - Processed aapb-pua-kaldi-wrapper (vv2)
+2025-09-18 22:10:59,959 - INFO - Downloading app directory from https://raw.githubusercontent.com/clamsproject/apps/main/docs/_data/app-index.json
+2025-09-18 22:11:00,016 - INFO - Successfully loaded 26 apps from GitHub
+2025-09-18 22:11:00,070 - INFO - Processed tesseract (vv2.1)
+2025-09-18 22:11:00,128 - INFO - Processed parakeet-wrapper (vv1.0)
+2025-09-18 22:11:00,186 - INFO - Processed swt-detection (vv7.7)
+2025-09-18 22:11:00,233 - INFO - Processed spacy-wrapper (vv2.1)
+2025-09-18 22:11:00,279 - INFO - Processed doctr-wrapper (vv1.2)
+2025-09-18 22:11:00,329 - INFO - Processed llava-captioner (vv1.2)
+2025-09-18 22:11:00,390 - INFO - Processed whisper-wrapper (vv12)
+2025-09-18 22:11:00,445 - INFO - Processed distil-whisper-wrapper (vv1.2)
+2025-09-18 22:11:00,489 - INFO - Processed simple-timepoints-stitcher (vv3.0)
+2025-09-18 22:11:00,538 - INFO - Processed tfidf-keywordextractor (vv1.0)
+2025-09-18 22:11:00,597 - INFO - Processed text-slicer (vv1.0)
+2025-09-18 22:11:00,648 - INFO - Processed east-textdetection (vv1.2)
+2025-09-18 22:11:00,694 - INFO - Processed inaspeechsegmenter-wrapper (vv2.0)
+2025-09-18 22:11:00,773 - INFO - Processed pyscenedetect-wrapper (vv3)
+2025-09-18 22:11:00,820 - INFO - Processed easyocr-wrapper (vv1.1)
+2025-09-18 22:11:00,871 - INFO - Processed dbpedia-spotlight-wrapper (vv1.2)
+2025-09-18 22:11:00,921 - INFO - Processed slatedetection (vv2.1)
+2025-09-18 22:11:00,969 - INFO - Processed fewshotclassifier (vv1.0)
+2025-09-18 22:11:01,016 - INFO - Processed barsdetection (vv1.1)
+2025-09-18 22:11:01,069 - INFO - Processed parseqocr-wrapper (vv1.0)
+2025-09-18 22:11:01,113 - INFO - Processed tesseractocr-wrapper (vv1.0)
+2025-09-18 22:11:01,166 - INFO - Processed chyron-detection (vv1.0)
+2025-09-18 22:11:01,212 - INFO - Processed gentle-forced-aligner-wrapper (vv1.0)
+2025-09-18 22:11:01,259 - INFO - Processed tonedetection (vv1.0)
+2025-09-18 22:11:01,328 - INFO - Processed brandeis-acs-wrapper (vv2)
+2025-09-18 22:11:01,374 - INFO - Processed aapb-pua-kaldi-wrapper (vv2)
+2025-09-18 22:11:01,376 - INFO - Downloading app directory from https://raw.githubusercontent.com/clamsproject/apps/main/docs/_data/app-index.json
+2025-09-18 22:11:01,421 - INFO - Successfully loaded 26 apps from GitHub
+2025-09-18 22:11:01,466 - INFO - Processed tesseract (vv2.1)
+2025-09-18 22:11:01,514 - INFO - Processed parakeet-wrapper (vv1.0)
+2025-09-18 22:11:01,563 - INFO - Processed swt-detection (vv7.7)
+2025-09-18 22:11:01,618 - INFO - Processed spacy-wrapper (vv2.1)
+2025-09-18 22:11:01,662 - INFO - Processed doctr-wrapper (vv1.2)
+2025-09-18 22:11:01,713 - INFO - Processed llava-captioner (vv1.2)
+2025-09-18 22:11:01,766 - INFO - Processed whisper-wrapper (vv12)
+2025-09-18 22:11:01,810 - INFO - Processed distil-whisper-wrapper (vv1.2)
+2025-09-18 22:11:01,864 - INFO - Processed simple-timepoints-stitcher (vv3.0)
+2025-09-18 22:11:01,909 - INFO - Processed tfidf-keywordextractor (vv1.0)
+2025-09-18 22:11:01,954 - INFO - Processed text-slicer (vv1.0)
+2025-09-18 22:11:02,003 - INFO - Processed east-textdetection (vv1.2)
+2025-09-18 22:11:02,058 - INFO - Processed inaspeechsegmenter-wrapper (vv2.0)
+2025-09-18 22:11:02,102 - INFO - Processed pyscenedetect-wrapper (vv3)
+2025-09-18 22:11:02,150 - INFO - Processed easyocr-wrapper (vv1.1)
+2025-09-18 22:11:02,194 - INFO - Processed dbpedia-spotlight-wrapper (vv1.2)
+2025-09-18 22:11:02,241 - INFO - Processed slatedetection (vv2.1)
+2025-09-18 22:11:02,288 - INFO - Processed fewshotclassifier (vv1.0)
+2025-09-18 22:11:02,340 - INFO - Processed barsdetection (vv1.1)
+2025-09-18 22:11:02,386 - INFO - Processed parseqocr-wrapper (vv1.0)
+2025-09-18 22:11:02,434 - INFO - Processed tesseractocr-wrapper (vv1.0)
+2025-09-18 22:11:02,498 - INFO - Processed chyron-detection (vv1.0)
+2025-09-18 22:11:02,546 - INFO - Processed gentle-forced-aligner-wrapper (vv1.0)
+2025-09-18 22:11:02,597 - INFO - Processed tonedetection (vv1.0)
+2025-09-18 22:11:02,649 - INFO - Processed brandeis-acs-wrapper (vv2)
+2025-09-18 22:11:02,716 - INFO - Processed aapb-pua-kaldi-wrapper (vv2)
+2025-09-18 22:11:03,034 - INFO - Downloading app directory from https://raw.githubusercontent.com/clamsproject/apps/main/docs/_data/app-index.json
+2025-09-18 22:11:03,091 - INFO - Successfully loaded 26 apps from GitHub
+2025-09-18 22:11:03,172 - INFO - Processed tesseract (vv2.1)
+2025-09-18 22:11:03,227 - INFO - Processed parakeet-wrapper (vv1.0)
+2025-09-18 22:11:03,309 - INFO - Processed swt-detection (vv7.7)
+2025-09-18 22:11:03,358 - INFO - Processed spacy-wrapper (vv2.1)
+2025-09-18 22:11:03,406 - INFO - Processed doctr-wrapper (vv1.2)
+2025-09-18 22:11:03,457 - INFO - Processed llava-captioner (vv1.2)
+2025-09-18 22:11:03,503 - INFO - Processed whisper-wrapper (vv12)
+2025-09-18 22:11:03,551 - INFO - Processed distil-whisper-wrapper (vv1.2)
+2025-09-18 22:11:03,599 - INFO - Processed simple-timepoints-stitcher (vv3.0)
+2025-09-18 22:11:03,646 - INFO - Processed tfidf-keywordextractor (vv1.0)
+2025-09-18 22:11:03,692 - INFO - Processed text-slicer (vv1.0)
+2025-09-18 22:11:03,750 - INFO - Processed east-textdetection (vv1.2)
+2025-09-18 22:11:03,843 - INFO - Processed inaspeechsegmenter-wrapper (vv2.0)
+2025-09-18 22:11:03,923 - INFO - Processed pyscenedetect-wrapper (vv3)
+2025-09-18 22:11:03,975 - INFO - Processed easyocr-wrapper (vv1.1)
+2025-09-18 22:11:04,025 - INFO - Processed dbpedia-spotlight-wrapper (vv1.2)
+2025-09-18 22:11:04,074 - INFO - Processed slatedetection (vv2.1)
+2025-09-18 22:11:04,122 - INFO - Processed fewshotclassifier (vv1.0)
+2025-09-18 22:11:04,168 - INFO - Processed barsdetection (vv1.1)
+2025-09-18 22:11:04,218 - INFO - Processed parseqocr-wrapper (vv1.0)
+2025-09-18 22:11:04,270 - INFO - Processed tesseractocr-wrapper (vv1.0)
+2025-09-18 22:11:04,319 - INFO - Processed chyron-detection (vv1.0)
+2025-09-18 22:11:04,371 - INFO - Processed gentle-forced-aligner-wrapper (vv1.0)
+2025-09-18 22:11:04,430 - INFO - Processed tonedetection (vv1.0)
+2025-09-18 22:11:04,476 - INFO - Processed brandeis-acs-wrapper (vv2)
+2025-09-18 22:11:04,541 - INFO - Processed aapb-pua-kaldi-wrapper (vv2)
+2025-09-18 22:11:04,542 - INFO - Successfully initialized CLAMS agent and AG-UI server
+2025-09-18 22:11:04,543 - INFO - Using LLM provider: ollama
+2025-09-18 22:11:04,544 - INFO - Model: llama3.2:3b
+2025-09-18 22:11:04,549 - INFO - Starting CLAMS Agent Prototype server on port 5005
+2025-09-18 22:11:04,550 - INFO - Debug mode: False
+2025-09-18 22:11:04,550 - INFO - Agent available: True
+2025-09-18 22:11:04,551 - INFO - AG-UI server available: True
+ * Serving Flask app 'app'
+ * Debug mode: off
+2025-09-18 22:11:04,623 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5005
+ * Running on http://129.64.46.224:5005
+2025-09-18 22:11:04,624 - INFO - [33mPress CTRL+C to quit[0m
+2025-09-18 22:11:05,278 - INFO - 127.0.0.1 - - [18/Sep/2025 22:11:05] "GET /api/health HTTP/1.1" 200 -
+2025-09-18 22:11:13,944 - INFO - [simple-test] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "simple test",
+    "task_description": "test"
+  },
+  "session_id": "simple-test"
+}
+2025-09-18 22:11:13,946 - INFO - [simple-test] NEW_SESSION: Initializing new chat session
+2025-09-18 22:11:13,947 - INFO - [simple-test] SESSION_COUNT: Total active sessions: 1
+2025-09-18 22:11:13,947 - INFO - [simple-test] USER_MESSAGE: 'simple test' (task: 'test')
+2025-09-18 22:11:13,948 - INFO - [simple-test] WELCOME_SENT: Initial greeting message delivered
+2025-09-18 22:11:13,949 - INFO - [simple-test] AGENT_CALL: Starting stream_response with user_input='simple test'
+2025-09-18 22:11:15,067 - INFO - HTTP Request: POST http://localhost:11434/api/chat "HTTP/1.1 200 OK"
+2025-09-18 22:11:15,069 - INFO - [simple-test] AGENT_UPDATE: assistant_message - {'content': "It appears that you are providing a list of CLAMS (Computational Linguistics and Machine Learning for Social Media) tools, which are a set of open-source software projects used for natura...
+2025-09-18 22:11:15,070 - INFO - [simple-test] FRONTEND_EVENT: text_message_content - {'content': "It appears that you are providing a list of CLAMS (Computational Linguistics and Machine Learning for Social Media) tools, which are a set of open-source software projects used for natura...
+2025-09-18 22:11:15,071 - INFO - [simple-test] AGENT_UPDATE: conversation_complete - {'status': 'completed'}...
+2025-09-18 22:11:15,072 - INFO - [simple-test] FRONTEND_EVENT: run_finished - {'status': 'completed'}...
+2025-09-18 22:11:15,074 - INFO - 127.0.0.1 - - [18/Sep/2025 22:11:15] "POST /api/agui/events HTTP/1.1" 200 -

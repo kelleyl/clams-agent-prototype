@@ -1,0 +1,202 @@
+2025-09-18 21:58:37,817 - INFO - Downloading app directory from https://raw.githubusercontent.com/clamsproject/apps/main/docs/_data/app-index.json
+2025-09-18 21:58:37,899 - INFO - Successfully loaded 26 apps from GitHub
+2025-09-18 21:58:37,945 - INFO - Processed tesseract (vv2.1)
+2025-09-18 21:58:37,998 - INFO - Processed parakeet-wrapper (vv1.0)
+2025-09-18 21:58:38,043 - INFO - Processed swt-detection (vv7.7)
+2025-09-18 21:58:38,095 - INFO - Processed spacy-wrapper (vv2.1)
+2025-09-18 21:58:38,152 - INFO - Processed doctr-wrapper (vv1.2)
+2025-09-18 21:58:38,207 - INFO - Processed llava-captioner (vv1.2)
+2025-09-18 21:58:38,263 - INFO - Processed whisper-wrapper (vv12)
+2025-09-18 21:58:38,309 - INFO - Processed distil-whisper-wrapper (vv1.2)
+2025-09-18 21:58:38,366 - INFO - Processed simple-timepoints-stitcher (vv3.0)
+2025-09-18 21:58:38,416 - INFO - Processed tfidf-keywordextractor (vv1.0)
+2025-09-18 21:58:38,463 - INFO - Processed text-slicer (vv1.0)
+2025-09-18 21:58:38,513 - INFO - Processed east-textdetection (vv1.2)
+2025-09-18 21:58:38,575 - INFO - Processed inaspeechsegmenter-wrapper (vv2.0)
+2025-09-18 21:58:38,620 - INFO - Processed pyscenedetect-wrapper (vv3)
+2025-09-18 21:58:38,695 - INFO - Processed easyocr-wrapper (vv1.1)
+2025-09-18 21:58:38,756 - INFO - Processed dbpedia-spotlight-wrapper (vv1.2)
+2025-09-18 21:58:38,808 - INFO - Processed slatedetection (vv2.1)
+2025-09-18 21:58:38,867 - INFO - Processed fewshotclassifier (vv1.0)
+2025-09-18 21:58:38,914 - INFO - Processed barsdetection (vv1.1)
+2025-09-18 21:58:38,962 - INFO - Processed parseqocr-wrapper (vv1.0)
+2025-09-18 21:58:39,007 - INFO - Processed tesseractocr-wrapper (vv1.0)
+2025-09-18 21:58:39,068 - INFO - Processed chyron-detection (vv1.0)
+2025-09-18 21:58:39,121 - INFO - Processed gentle-forced-aligner-wrapper (vv1.0)
+2025-09-18 21:58:39,168 - INFO - Processed tonedetection (vv1.0)
+2025-09-18 21:58:39,214 - INFO - Processed brandeis-acs-wrapper (vv2)
+2025-09-18 21:58:39,267 - INFO - Processed aapb-pua-kaldi-wrapper (vv2)
+2025-09-18 21:58:39,268 - INFO - Downloading app directory from https://raw.githubusercontent.com/clamsproject/apps/main/docs/_data/app-index.json
+2025-09-18 21:58:39,312 - INFO - Successfully loaded 26 apps from GitHub
+2025-09-18 21:58:39,364 - INFO - Processed tesseract (vv2.1)
+2025-09-18 21:58:39,409 - INFO - Processed parakeet-wrapper (vv1.0)
+2025-09-18 21:58:39,463 - INFO - Processed swt-detection (vv7.7)
+2025-09-18 21:58:39,511 - INFO - Processed spacy-wrapper (vv2.1)
+2025-09-18 21:58:39,559 - INFO - Processed doctr-wrapper (vv1.2)
+2025-09-18 21:58:39,613 - INFO - Processed llava-captioner (vv1.2)
+2025-09-18 21:58:39,658 - INFO - Processed whisper-wrapper (vv12)
+2025-09-18 21:58:39,703 - INFO - Processed distil-whisper-wrapper (vv1.2)
+2025-09-18 21:58:39,763 - INFO - Processed simple-timepoints-stitcher (vv3.0)
+2025-09-18 21:58:39,813 - INFO - Processed tfidf-keywordextractor (vv1.0)
+2025-09-18 21:58:39,864 - INFO - Processed text-slicer (vv1.0)
+2025-09-18 21:58:39,908 - INFO - Processed east-textdetection (vv1.2)
+2025-09-18 21:58:39,955 - INFO - Processed inaspeechsegmenter-wrapper (vv2.0)
+2025-09-18 21:58:40,018 - INFO - Processed pyscenedetect-wrapper (vv3)
+2025-09-18 21:58:40,065 - INFO - Processed easyocr-wrapper (vv1.1)
+2025-09-18 21:58:40,110 - INFO - Processed dbpedia-spotlight-wrapper (vv1.2)
+2025-09-18 21:58:40,168 - INFO - Processed slatedetection (vv2.1)
+2025-09-18 21:58:40,213 - INFO - Processed fewshotclassifier (vv1.0)
+2025-09-18 21:58:40,266 - INFO - Processed barsdetection (vv1.1)
+2025-09-18 21:58:40,312 - INFO - Processed parseqocr-wrapper (vv1.0)
+2025-09-18 21:58:40,363 - INFO - Processed tesseractocr-wrapper (vv1.0)
+2025-09-18 21:58:40,412 - INFO - Processed chyron-detection (vv1.0)
+2025-09-18 21:58:40,461 - INFO - Processed gentle-forced-aligner-wrapper (vv1.0)
+2025-09-18 21:58:40,505 - INFO - Processed tonedetection (vv1.0)
+2025-09-18 21:58:40,564 - INFO - Processed brandeis-acs-wrapper (vv2)
+2025-09-18 21:58:40,611 - INFO - Processed aapb-pua-kaldi-wrapper (vv2)
+2025-09-18 21:58:40,613 - INFO - Downloading app directory from https://raw.githubusercontent.com/clamsproject/apps/main/docs/_data/app-index.json
+2025-09-18 21:58:40,659 - INFO - Successfully loaded 26 apps from GitHub
+2025-09-18 21:58:40,705 - INFO - Processed tesseract (vv2.1)
+2025-09-18 21:58:40,756 - INFO - Processed parakeet-wrapper (vv1.0)
+2025-09-18 21:58:40,811 - INFO - Processed swt-detection (vv7.7)
+2025-09-18 21:58:40,859 - INFO - Processed spacy-wrapper (vv2.1)
+2025-09-18 21:58:40,910 - INFO - Processed doctr-wrapper (vv1.2)
+2025-09-18 21:58:40,956 - INFO - Processed llava-captioner (vv1.2)
+2025-09-18 21:58:41,001 - INFO - Processed whisper-wrapper (vv12)
+2025-09-18 21:58:41,055 - INFO - Processed distil-whisper-wrapper (vv1.2)
+2025-09-18 21:58:41,104 - INFO - Processed simple-timepoints-stitcher (vv3.0)
+2025-09-18 21:58:41,154 - INFO - Processed tfidf-keywordextractor (vv1.0)
+2025-09-18 21:58:41,200 - INFO - Processed text-slicer (vv1.0)
+2025-09-18 21:58:41,253 - INFO - Processed east-textdetection (vv1.2)
+2025-09-18 21:58:41,304 - INFO - Processed inaspeechsegmenter-wrapper (vv2.0)
+2025-09-18 21:58:41,350 - INFO - Processed pyscenedetect-wrapper (vv3)
+2025-09-18 21:58:41,399 - INFO - Processed easyocr-wrapper (vv1.1)
+2025-09-18 21:58:41,444 - INFO - Processed dbpedia-spotlight-wrapper (vv1.2)
+2025-09-18 21:58:41,493 - INFO - Processed slatedetection (vv2.1)
+2025-09-18 21:58:41,542 - INFO - Processed fewshotclassifier (vv1.0)
+2025-09-18 21:58:41,589 - INFO - Processed barsdetection (vv1.1)
+2025-09-18 21:58:41,636 - INFO - Processed parseqocr-wrapper (vv1.0)
+2025-09-18 21:58:41,680 - INFO - Processed tesseractocr-wrapper (vv1.0)
+2025-09-18 21:58:41,728 - INFO - Processed chyron-detection (vv1.0)
+2025-09-18 21:58:41,776 - INFO - Processed gentle-forced-aligner-wrapper (vv1.0)
+2025-09-18 21:58:41,830 - INFO - Processed tonedetection (vv1.0)
+2025-09-18 21:58:41,938 - INFO - Processed brandeis-acs-wrapper (vv2)
+2025-09-18 21:58:42,008 - INFO - Processed aapb-pua-kaldi-wrapper (vv2)
+2025-09-18 21:58:42,318 - INFO - Downloading app directory from https://raw.githubusercontent.com/clamsproject/apps/main/docs/_data/app-index.json
+2025-09-18 21:58:42,362 - INFO - Successfully loaded 26 apps from GitHub
+2025-09-18 21:58:42,415 - INFO - Processed tesseract (vv2.1)
+2025-09-18 21:58:42,462 - INFO - Processed parakeet-wrapper (vv1.0)
+2025-09-18 21:58:42,505 - INFO - Processed swt-detection (vv7.7)
+2025-09-18 21:58:42,550 - INFO - Processed spacy-wrapper (vv2.1)
+2025-09-18 21:58:42,599 - INFO - Processed doctr-wrapper (vv1.2)
+2025-09-18 21:58:42,649 - INFO - Processed llava-captioner (vv1.2)
+2025-09-18 21:58:42,699 - INFO - Processed whisper-wrapper (vv12)
+2025-09-18 21:58:42,745 - INFO - Processed distil-whisper-wrapper (vv1.2)
+2025-09-18 21:58:42,794 - INFO - Processed simple-timepoints-stitcher (vv3.0)
+2025-09-18 21:58:42,838 - INFO - Processed tfidf-keywordextractor (vv1.0)
+2025-09-18 21:58:42,885 - INFO - Processed text-slicer (vv1.0)
+2025-09-18 21:58:42,929 - INFO - Processed east-textdetection (vv1.2)
+2025-09-18 21:58:42,982 - INFO - Processed inaspeechsegmenter-wrapper (vv2.0)
+2025-09-18 21:58:43,030 - INFO - Processed pyscenedetect-wrapper (vv3)
+2025-09-18 21:58:43,078 - INFO - Processed easyocr-wrapper (vv1.1)
+2025-09-18 21:58:43,124 - INFO - Processed dbpedia-spotlight-wrapper (vv1.2)
+2025-09-18 21:58:43,170 - INFO - Processed slatedetection (vv2.1)
+2025-09-18 21:58:43,221 - INFO - Processed fewshotclassifier (vv1.0)
+2025-09-18 21:58:43,274 - INFO - Processed barsdetection (vv1.1)
+2025-09-18 21:58:43,328 - INFO - Processed parseqocr-wrapper (vv1.0)
+2025-09-18 21:58:43,376 - INFO - Processed tesseractocr-wrapper (vv1.0)
+2025-09-18 21:58:43,424 - INFO - Processed chyron-detection (vv1.0)
+2025-09-18 21:58:43,484 - INFO - Processed gentle-forced-aligner-wrapper (vv1.0)
+2025-09-18 21:58:43,530 - INFO - Processed tonedetection (vv1.0)
+2025-09-18 21:58:43,582 - INFO - Processed brandeis-acs-wrapper (vv2)
+2025-09-18 21:58:43,632 - INFO - Processed aapb-pua-kaldi-wrapper (vv2)
+2025-09-18 21:58:43,633 - INFO - Successfully initialized CLAMS agent and AG-UI server
+2025-09-18 21:58:43,634 - INFO - Using LLM provider: ollama
+2025-09-18 21:58:43,635 - INFO - Model: llama3.2:3b
+2025-09-18 21:58:43,640 - INFO - Starting CLAMS Agent Prototype server on port 5000
+2025-09-18 21:58:43,641 - INFO - Debug mode: False
+2025-09-18 21:58:43,642 - INFO - Agent available: True
+2025-09-18 21:58:43,642 - INFO - AG-UI server available: True
+ * Serving Flask app 'app'
+ * Debug mode: off
+2025-09-18 21:58:43,700 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://129.64.46.224:5000
+2025-09-18 21:58:43,701 - INFO - [33mPress CTRL+C to quit[0m
+2025-09-18 21:58:44,852 - INFO - 127.0.0.1 - - [18/Sep/2025 21:58:44] "GET /api/health HTTP/1.1" 200 -
+2025-09-18 21:58:52,569 - INFO - [timeout-test] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "hello test",
+    "task_description": "test"
+  },
+  "session_id": "timeout-test"
+}
+2025-09-18 21:58:52,571 - INFO - Started dedicated async worker thread
+2025-09-18 21:58:52,572 - INFO - [timeout-test] NEW_SESSION: Initializing new chat session
+2025-09-18 21:58:52,573 - INFO - [timeout-test] SESSION_COUNT: Total active sessions: 1
+2025-09-18 21:58:52,575 - INFO - [timeout-test] USER_MESSAGE: 'hello test' (task: 'test')
+2025-09-18 21:58:52,576 - INFO - [timeout-test] WELCOME_SENT: Initial greeting message delivered
+2025-09-18 21:58:52,576 - INFO - [timeout-test] AGENT_CALL: Starting stream_response with user_input='hello test'
+2025-09-18 21:58:57,045 - INFO - HTTP Request: POST http://localhost:11434/api/chat "HTTP/1.1 200 OK"
+2025-09-18 21:58:57,048 - INFO - [timeout-test] AGENT_UPDATE: assistant_message - {'content': 'It looks like you\'re testing the functionality of a text-based interface. The input you provided, "hello test", is a simple sentence that can be used to test various aspects of the syste...
+2025-09-18 21:58:57,049 - INFO - [timeout-test] FRONTEND_EVENT: text_message_content - {'content': 'It looks like you\'re testing the functionality of a text-based interface. The input you provided, "hello test", is a simple sentence that can be used to test various aspects of the syste...
+2025-09-18 21:58:57,050 - INFO - [timeout-test] AGENT_UPDATE: conversation_complete - {'status': 'completed'}...
+2025-09-18 21:58:57,051 - INFO - [timeout-test] FRONTEND_EVENT: run_finished - {'status': 'completed'}...
+2025-09-18 21:58:57,077 - INFO - 127.0.0.1 - - [18/Sep/2025 21:58:57] "POST /api/agui/events HTTP/1.1" 200 -
+2025-09-18 21:59:19,152 - INFO - 127.0.0.1 - - [18/Sep/2025 21:59:19] "GET /chat HTTP/1.1" 200 -
+2025-09-18 21:59:19,370 - INFO - 127.0.0.1 - - [18/Sep/2025 21:59:19] "[36mGET /assets/index-07d7a772.css HTTP/1.1[0m" 304 -
+2025-09-18 21:59:19,946 - INFO - 127.0.0.1 - - [18/Sep/2025 21:59:19] "[36mGET /assets/index-25b6212b.js HTTP/1.1[0m" 304 -
+2025-09-18 21:59:20,723 - INFO - 127.0.0.1 - - [18/Sep/2025 21:59:20] "GET /api/pipelines HTTP/1.1" 200 -
+2025-09-18 21:59:27,236 - INFO - [session-1758247159801] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "I want to create a CLAMS pipeline for: transcribe speech",
+    "task_description": "transcribe speech"
+  },
+  "session_id": "session-1758247159801"
+}
+2025-09-18 21:59:27,238 - INFO - [session-1758247159801] NEW_SESSION: Initializing new chat session
+2025-09-18 21:59:27,239 - INFO - [session-1758247159801] SESSION_COUNT: Total active sessions: 2
+2025-09-18 21:59:27,240 - INFO - [session-1758247159801] USER_MESSAGE: 'I want to create a CLAMS pipeline for: transcribe speech' (task: 'transcribe speech')
+2025-09-18 21:59:27,241 - INFO - [session-1758247159801] WELCOME_SENT: Initial greeting message delivered
+2025-09-18 21:59:27,242 - INFO - [session-1758247159801] AGENT_CALL: Starting stream_response with user_input='I want to create a CLAMS pipeline for: transcribe speech'
+2025-09-18 21:59:31,108 - INFO - HTTP Request: POST http://localhost:11434/api/chat "HTTP/1.1 200 OK"
+2025-09-18 21:59:31,111 - INFO - [session-1758247159801] AGENT_UPDATE: assistant_message - {'content': 'It seems you\'re interested in creating a CLAMS (Comprehensive Language Analysis and Machine Learning System) pipeline for transcription of speech. Here\'s an example of how you can do th...
+2025-09-18 21:59:31,112 - INFO - [session-1758247159801] FRONTEND_EVENT: text_message_content - {'content': 'It seems you\'re interested in creating a CLAMS (Comprehensive Language Analysis and Machine Learning System) pipeline for transcription of speech. Here\'s an example of how you can do th...
+2025-09-18 21:59:31,112 - INFO - [session-1758247159801] AGENT_UPDATE: conversation_complete - {'status': 'completed'}...
+2025-09-18 21:59:31,113 - INFO - [session-1758247159801] FRONTEND_EVENT: run_finished - {'status': 'completed'}...
+2025-09-18 21:59:31,142 - INFO - 127.0.0.1 - - [18/Sep/2025 21:59:31] "POST /api/agui/events HTTP/1.1" 200 -
+2025-09-18 22:02:27,314 - ERROR - Error in sync generator: Async task task_2 timed out after 180.0s
+2025-09-18 22:02:27,315 - INFO - 127.0.0.1 - - [18/Sep/2025 22:02:27] "GET /api/agui/stream/session-1758247159801 HTTP/1.1" 200 -
+2025-09-18 22:04:10,436 - INFO - 127.0.0.1 - - [18/Sep/2025 22:04:10] "GET /chat HTTP/1.1" 200 -
+2025-09-18 22:04:11,211 - INFO - 127.0.0.1 - - [18/Sep/2025 22:04:11] "[36mGET /assets/index-07d7a772.css HTTP/1.1[0m" 304 -
+2025-09-18 22:04:11,211 - INFO - 127.0.0.1 - - [18/Sep/2025 22:04:11] "[36mGET /assets/index-25b6212b.js HTTP/1.1[0m" 304 -
+2025-09-18 22:04:11,994 - INFO - 127.0.0.1 - - [18/Sep/2025 22:04:11] "GET /api/pipelines HTTP/1.1" 200 -
+2025-09-18 22:04:31,144 - INFO - SSE connection cancelled for session: session-1758247159801
+2025-09-18 22:04:34,178 - INFO - [session-1758247451059] INCOMING_EVENT: {
+  "type": "user_message",
+  "data": {
+    "message": "I want to create a CLAMS pipeline for: transcribe",
+    "task_description": "transcribe"
+  },
+  "session_id": "session-1758247451059"
+}
+2025-09-18 22:05:31,177 - ERROR - Error in sync generator: Async task task_3 timed out after 180.0s
+2025-09-18 22:05:31,178 - INFO - 127.0.0.1 - - [18/Sep/2025 22:05:31] "GET /api/agui/stream/session-1758247159801 HTTP/1.1" 200 -
+2025-09-18 22:06:34,276 - ERROR - Error running async task: Async task task_4 timed out after 120.0s
+2025-09-18 22:06:34,288 - INFO - 127.0.0.1 - - [18/Sep/2025 22:06:34] "[35m[1mPOST /api/agui/events HTTP/1.1[0m" 500 -
+2025-09-18 22:07:34,280 - ERROR - Error in sync generator: Async task task_5 timed out after 180.0s
+2025-09-18 22:07:34,281 - INFO - 127.0.0.1 - - [18/Sep/2025 22:07:34] "GET /api/agui/stream/session-1758247451059 HTTP/1.1" 200 -
+2025-09-18 22:09:31,177 - INFO - SSE connection cancelled for session: session-1758247159801
+2025-09-18 22:09:31,178 - INFO - [session-1758247451059] NEW_SESSION: Initializing new chat session
+2025-09-18 22:09:31,180 - INFO - [session-1758247451059] SESSION_COUNT: Total active sessions: 3
+2025-09-18 22:09:31,180 - INFO - [session-1758247451059] USER_MESSAGE: 'I want to create a CLAMS pipeline for: transcribe' (task: 'transcribe')
+2025-09-18 22:09:31,181 - INFO - [session-1758247451059] WELCOME_SENT: Initial greeting message delivered
+2025-09-18 22:09:31,182 - INFO - [session-1758247451059] AGENT_CALL: Starting stream_response with user_input='I want to create a CLAMS pipeline for: transcribe'
+2025-09-18 22:09:37,918 - INFO - HTTP Request: POST http://localhost:11434/api/chat "HTTP/1.1 200 OK"
+2025-09-18 22:09:37,920 - INFO - [session-1758247451059] AGENT_UPDATE: assistant_message - {'content': 'Based on the provided text, I\'ll assume you\'re interested in creating a CLAMS (CLAS-MAchine Learning for Speech) pipeline that transcribes audio files. Here\'s a step-by-step guide:\n\n...
+2025-09-18 22:09:37,921 - INFO - [session-1758247451059] FRONTEND_EVENT: text_message_content - {'content': 'Based on the provided text, I\'ll assume you\'re interested in creating a CLAMS (CLAS-MAchine Learning for Speech) pipeline that transcribes audio files. Here\'s a step-by-step guide:\n\n...
+2025-09-18 22:09:37,922 - INFO - [session-1758247451059] AGENT_UPDATE: conversation_complete - {'status': 'completed'}...
+2025-09-18 22:09:37,923 - INFO - [session-1758247451059] FRONTEND_EVENT: run_finished - {'status': 'completed'}...

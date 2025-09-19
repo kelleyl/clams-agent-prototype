@@ -166,6 +166,78 @@ export const Chat: React.FC<ChatProps> = ({ onPipelineGenerated }) => {
     const content = 'content' in update ? update.content : update.data;
     
     switch (updateType) {
+      // AG-UI Protocol Events
+      case 'text_message_content':
+        setMessages(prev => [
+          ...prev,
+          {
+            role: 'assistant',
+            content: content.content || content.message || content || '',
+            timestamp: update.timestamp || new Date().toISOString()
+          }
+        ]);
+        setStreaming(false);
+        break;
+        
+      case 'run_started':
+        setStreaming(true);
+        setLoading(true);
+        break;
+        
+      case 'run_finished':
+        setStreaming(false);
+        setLoading(false);
+        break;
+        
+      case 'run_error':
+        setError(content.error || content.message || 'Unknown error');
+        setStreaming(false);
+        setLoading(false);
+        break;
+        
+      case 'tool_call_start':
+        const toolName = content.tool_name || content.name || 'Unknown Tool';
+        setSelectedTools(prev => prev.includes(toolName) ? prev : [...prev, toolName]);
+        
+        setMessages(prev => [
+          ...prev,
+          {
+            role: 'system',
+            content: `🔧 Selected tool: ${toolName}`,
+            tools: [toolName],
+            timestamp: update.timestamp || new Date().toISOString()
+          }
+        ]);
+        break;
+        
+      case 'tool_call_result':
+        setMessages(prev => [
+          ...prev,
+          {
+            role: 'system',
+            content: `✅ Tool executed: ${content.tool_name || 'Unknown'} - ${content.result || 'Success'}`,
+            timestamp: update.timestamp || new Date().toISOString()
+          }
+        ]);
+        break;
+        
+      case 'state_delta':
+        if (content.nodes !== undefined) {
+          setPipelineNodes(content.nodes || 0);
+          if (content.nodes > 0) {
+            setMessages(prev => [
+              ...prev,
+              {
+                role: 'system',
+                content: `📋 Pipeline updated: ${content.nodes} tools, ${content.edges || 0} connections`,
+                timestamp: update.timestamp || new Date().toISOString()
+              }
+            ]);
+          }
+        }
+        break;
+        
+      // Legacy events for backward compatibility
       case 'assistant_message':
         setMessages(prev => [
           ...prev,
@@ -179,15 +251,15 @@ export const Chat: React.FC<ChatProps> = ({ onPipelineGenerated }) => {
         break;
         
       case 'tool_selected':
-        const toolName = content.tool_name || content.name || 'Unknown Tool';
-        setSelectedTools(prev => prev.includes(toolName) ? prev : [...prev, toolName]);
+        const legacyToolName = content.tool_name || content.name || 'Unknown Tool';
+        setSelectedTools(prev => prev.includes(legacyToolName) ? prev : [...prev, legacyToolName]);
         
         setMessages(prev => [
           ...prev,
           {
             role: 'system',
-            content: `🔧 Selected tool: ${toolName}`,
-            tools: [toolName],
+            content: `🔧 Selected tool: ${legacyToolName}`,
+            tools: [legacyToolName],
             timestamp: update.timestamp || new Date().toISOString()
           }
         ]);
@@ -235,6 +307,25 @@ export const Chat: React.FC<ChatProps> = ({ onPipelineGenerated }) => {
         setError(content.error || content.message || 'Unknown error');
         setStreaming(false);
         setLoading(false);
+        break;
+        
+      // Ignore heartbeat and connection events
+      case 'custom_event':
+        if (content.message === 'heartbeat' || content.message === 'Connected to CLAMS agent') {
+          // Ignore these system events
+          return;
+        }
+        // For other custom events, log them
+        console.log('Custom event:', updateType, content);
+        break;
+        
+      case 'raw_event':
+        // Handle raw events (usually heartbeats or system messages)
+        if (content.message === 'heartbeat') {
+          // Ignore heartbeat messages
+          return;
+        }
+        console.log('Raw event:', updateType, content);
         break;
         
       default:
@@ -298,12 +389,22 @@ export const Chat: React.FC<ChatProps> = ({ onPipelineGenerated }) => {
         throw new Error('Failed to start chat session');
       }
 
+      // Handle the response events directly
+      const responseData = await response.json();
+      
       // Add initial user message to UI
       setMessages([{
         role: 'user',
         content: task,
         timestamp: new Date().toISOString()
       }]);
+
+      // Process response events from POST request
+      if (responseData.events && Array.isArray(responseData.events)) {
+        responseData.events.forEach((event: AGUIEvent) => {
+          handleStreamingUpdate(event);
+        });
+      }
 
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
@@ -353,6 +454,16 @@ export const Chat: React.FC<ChatProps> = ({ onPipelineGenerated }) => {
 
       if (!response.ok) {
         throw new Error('Failed to send message');
+      }
+
+      // Handle the response events directly
+      const responseData = await response.json();
+      
+      // Process response events from POST request
+      if (responseData.events && Array.isArray(responseData.events)) {
+        responseData.events.forEach((event: AGUIEvent) => {
+          handleStreamingUpdate(event);
+        });
       }
 
     } catch (err) {

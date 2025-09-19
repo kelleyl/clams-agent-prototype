@@ -6,7 +6,7 @@ from dataclasses import dataclass, asdict, field
 @dataclass
 class LLMConfig:
     """Configuration for the LLM component."""
-    model_name: str = "deepseek-r1:8b"  # Default Ollama model
+    model_name: str = "llama3.2:3b"  # Default Ollama model that supports tools
     base_url: str = "http://localhost:11434"  # Ollama default URL
     temperature: float = 0.7
     top_p: float = 0.9

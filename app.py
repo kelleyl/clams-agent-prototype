@@ -7,6 +7,7 @@ import os
 import json
 import asyncio
 import logging
+import time
 from typing import AsyncGenerator
 from flask import Flask, render_template, request, jsonify, Response, stream_template, send_from_directory
 from flask_cors import CORS
@@ -20,6 +21,17 @@ from utils.config import ConfigManager
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
+# Create dedicated conversation logger
+conversation_logger = logging.getLogger('conversation')
+conversation_handler = logging.FileHandler('conversation.log')
+conversation_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+conversation_logger.addHandler(conversation_handler)
+conversation_logger.setLevel(logging.INFO)
+
+def log_conversation(session_id: str, event_type: str, data: dict):
+    """Log conversation events for debugging"""
+    conversation_logger.info(f"[{session_id}] {event_type}: {json.dumps(data, indent=2)}")
 
 # Initialize Flask app
 app = Flask(__name__, 
@@ -113,7 +125,127 @@ def get_pipeline(name):
         return jsonify({"error": str(e)}), 500
 
 
+# Create a global event loop for handling async operations
+import threading
+import queue
+
+# Global thread for async operations
+async_thread = None
+async_queue = queue.Queue()
+async_results = {}
+result_counter = 0
+
+def start_async_thread():
+    """Start the dedicated async thread for handling events."""
+    global async_thread
+    if async_thread is None:
+        async_thread = threading.Thread(target=async_worker, daemon=True)
+        async_thread.start()
+        logger.info("Started dedicated async worker thread")
+
+def async_worker():
+    """Worker function for the async thread."""
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    
+    try:
+        while True:
+            try:
+                # Get task from queue
+                task_id, coro = async_queue.get(timeout=1.0)
+                
+                # Execute coroutine with timeout protection
+                try:
+                    result = loop.run_until_complete(asyncio.wait_for(coro, timeout=300.0))
+                    async_results[task_id] = {"result": result, "error": None}
+                except asyncio.TimeoutError:
+                    async_results[task_id] = {"result": None, "error": "Task timed out after 300 seconds"}
+                    logger.error(f"Async task {task_id} timed out")
+                except Exception as e:
+                    async_results[task_id] = {"result": None, "error": str(e)}
+                    logger.error(f"Async task {task_id} failed: {e}")
+                
+            except queue.Empty:
+                continue
+                
+    except Exception as e:
+        logger.error(f"Async worker thread failed: {e}")
+    finally:
+        loop.close()
+
+def run_async_task(coro, timeout=120.0):
+    """Run an async task in the dedicated thread and wait for result."""
+    global result_counter
+    
+    # Ensure async thread is running
+    start_async_thread()
+    
+    # Generate unique task ID
+    task_id = f"task_{result_counter}"
+    result_counter += 1
+    
+    # Submit task
+    async_queue.put((task_id, coro))
+    
+    # Wait for result
+    import time
+    start_time = time.time()
+    while task_id not in async_results:
+        if time.time() - start_time > timeout:
+            raise TimeoutError(f"Async task {task_id} timed out after {timeout}s")
+        time.sleep(0.1)
+    
+    # Get result
+    result_data = async_results.pop(task_id)
+    if result_data["error"]:
+        raise Exception(result_data["error"])
+    
+    return result_data["result"]
+
 # Modern AG-UI endpoints
+@app.route('/api/agui/session/<session_id>/welcome', methods=['POST'])
+def send_welcome_message(session_id):
+    """Send welcome message for a new session."""
+    try:
+        if not agui_server:
+            return jsonify({"error": "AG-UI server not available"}), 500
+        
+        # Create a welcome event
+        welcome_event_data = {
+            "type": "session_start",
+            "data": {"message": "Welcome to CLAMS Pipeline Assistant"},
+            "session_id": session_id
+        }
+        
+        # Log welcome event
+        log_conversation(session_id, "WELCOME_REQUEST", welcome_event_data)
+        
+        # Process welcome event
+        async def process_welcome():
+            try:
+                event_json = json.dumps(welcome_event_data)
+                response_events = await agui_server.process_user_event(event_json)
+                return response_events
+            except Exception as e:
+                logger.error(f"Error processing welcome event: {e}")
+                return []
+        
+        # Run async processing
+        try:
+            response_events = run_async_task(process_welcome())
+            return jsonify({
+                "status": "welcome_sent",
+                "events_generated": len(response_events),
+                "message": "Welcome message delivered"
+            })
+        except Exception as e:
+            logger.error(f"Error running welcome async task: {e}")
+            return jsonify({"error": str(e)}), 500
+            
+    except Exception as e:
+        logger.error(f"Error handling welcome message: {e}")
+        return jsonify({"error": str(e)}), 500
+
 @app.route('/api/agui/events', methods=['POST'])
 def handle_agui_event():
     """Handle incoming AG-UI events."""
@@ -122,29 +254,37 @@ def handle_agui_event():
             return jsonify({"error": "AG-UI server not available"}), 500
         
         event_data = request.get_json()
+        session_id = event_data.get('session_id', 'unknown')
         
-        # Process event asynchronously and return immediate response
-        async def process_event():
-            try:
-                event_json = json.dumps(event_data)
-                response_events = await agui_server.process_user_event(event_json)
-                return response_events
-            except Exception as e:
-                logger.error(f"Error processing AG-UI event: {e}")
-                return []
+        # Log incoming user event
+        log_conversation(session_id, "INCOMING_EVENT", event_data)
         
-        # Run async processing
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
+        # Process event synchronously with simpler approach
         try:
-            response_events = loop.run_until_complete(process_event())
+            event_json = json.dumps(event_data)
+            
+            # Use asyncio.run() for simpler execution
+            response_events = asyncio.run(agui_server.process_user_event(event_json))
+            
+            # Convert events to JSON-serializable format
+            events_data = []
+            for event in response_events:
+                events_data.append({
+                    "type": event.type,
+                    "data": event.data,
+                    "session_id": event.session_id,
+                    "timestamp": getattr(event, 'timestamp', None)
+                })
+            
             return jsonify({
                 "status": "processed",
                 "events_generated": len(response_events),
-                "message": "Event processed successfully"
+                "message": "Event processed successfully",
+                "events": events_data  # Include actual response events
             })
-        finally:
-            loop.close()
+        except Exception as e:
+            logger.error(f"Error processing AG-UI event: {e}")
+            return jsonify({"error": str(e)}), 500
             
     except Exception as e:
         logger.error(f"Error handling AG-UI event: {e}")
@@ -155,7 +295,7 @@ def handle_agui_event():
 def stream_agui_events(session_id):
     """Stream AG-UI events via Server-Sent Events."""
     if not agui_server:
-        return jsonify({"error": "AG-UI server not available"}), 500
+        return jsonify({"error": "AG-UI server not available"}), 503
     
     async def event_generator():
         """Generate SSE events."""
@@ -168,17 +308,29 @@ def stream_agui_events(session_id):
     
     def sync_generator():
         """Synchronous wrapper for async generator."""
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
         try:
-            async_gen = event_generator()
-            while True:
+            # Use asyncio.run() like the working POST endpoint
+            async def run_generator():
+                events = []
                 try:
-                    yield loop.run_until_complete(async_gen.__anext__())
-                except StopAsyncIteration:
-                    break
-        finally:
-            loop.close()
+                    async for event in agui_server.handle_sse_connection(session_id):
+                        events.append(event)
+                        if len(events) >= 50:  # Prevent memory issues with too many events
+                            break
+                except Exception as e:
+                    logger.error(f"Error in SSE async generator: {e}")
+                    error_event = f"data: {json.dumps({'type': 'error', 'data': {'error': str(e)}})}\\n\\n"
+                    events.append(error_event)
+                return events
+            
+            # Use asyncio.run() instead of the complex worker thread system
+            events = asyncio.run(run_generator())
+            for event in events:
+                yield event
+                
+        except Exception as e:
+            logger.error(f"Error in sync generator: {e}")
+            yield f"data: {json.dumps({'type': 'error', 'data': {'error': str(e)}})}\\n\\n"
     
     return Response(sync_generator(), 
                    mimetype='text/event-stream',
@@ -233,17 +385,40 @@ def stream_chat_response():
         
         def sync_chat_generator():
             """Synchronous wrapper for async chat generator."""
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
+            # Use the dedicated async thread instead of creating new loops
             try:
-                async_gen = chat_generator()
-                while True:
-                    try:
-                        yield loop.run_until_complete(async_gen.__anext__())
-                    except StopAsyncIteration:
-                        break
-            finally:
-                loop.close()
+                # Collect all chat updates using the dedicated thread
+                async def run_chat():
+                    updates = []
+                    async for update in agent.stream_response(
+                        user_input=user_message,
+                        task_description=task_description,
+                        thread_id=session_id
+                    ):
+                        # Convert to SSE format
+                        event_data = {
+                            'type': update.type,
+                            'content': update.content,
+                            'timestamp': update.timestamp
+                        }
+                        updates.append(f"data: {json.dumps(event_data)}\\n\\n")
+                        if len(updates) >= 100:  # Prevent memory issues
+                            break
+                    return updates
+                
+                # Get all updates and yield them with longer timeout
+                updates = run_async_task(run_chat(), timeout=180.0)
+                for update in updates:
+                    yield update
+                    
+            except Exception as e:
+                logger.error(f"Error in sync chat generator: {e}")
+                error_data = {
+                    'type': 'error',
+                    'content': {'error': str(e)},
+                    'timestamp': str(time.time())
+                }
+                yield f"data: {json.dumps(error_data)}\\n\\n"
         
         return Response(sync_chat_generator(),
                        mimetype='text/event-stream',
@@ -283,19 +458,18 @@ def send_chat_message():
                 thread_id=session_id
             )
         
-        # Run async operation
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
+        # Run async operation with simpler approach
         try:
-            response = loop.run_until_complete(get_response())
+            response = asyncio.run(get_response())
             return jsonify({
                 "response": response.get("content", ""),
                 "tool_calls": response.get("tool_calls", []),
                 "session_id": session_id,
                 "tool_added": len(response.get("tool_calls", [])) > 0
             })
-        finally:
-            loop.close()
+        except Exception as e:
+            logger.error(f"Error running async operation: {e}")
+            return jsonify({"error": str(e)}), 500
             
     except Exception as e:
         logger.error(f"Error in chat message: {e}")
