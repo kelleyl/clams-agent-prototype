@@ -25,7 +25,16 @@ import {
   Pause, 
   Settings,
   Timeline,
-  SmartToy 
+  SmartToy,
+  AddCircle,
+  TextFields,
+  VolumeUp,
+  Visibility,
+  Psychology,
+  Movie,
+  Close,
+  AccountTree,
+  Launch
 } from '@mui/icons-material';
 
 // AG-UI integration (with fallback for development)
@@ -59,6 +68,37 @@ const VideoContainer = styled(Paper)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   backgroundColor: theme.palette.grey[900],
+}));
+
+// Tool icon mapping
+const toolIcons: { [key: string]: React.ElementType } = {
+  'swt-detection': TextFields,
+  'easyocr-wrapper': TextFields,
+  'tesseractocr-wrapper': TextFields,
+  'whisper-wrapper': VolumeUp,
+  'inaspeechsegmenter-wrapper': VolumeUp,
+  'llava-captioner': Visibility,
+  'pyscenedetect-wrapper': Movie,
+  'barsdetection': Movie,
+  'spacy-wrapper': Psychology,
+  'dbpedia-spotlight-wrapper': Psychology,
+  'slatedetection': Movie,
+  'chyron-detection': TextFields,
+  'transnet-wrapper': Movie,  // Added missing tool
+  'gentle-forced-aligner-wrapper': VolumeUp,
+  'east-textdetection': TextFields,
+  'doctr-wrapper': TextFields,
+  'distil-whisper-wrapper': VolumeUp,
+};
+
+const ClickableToolChip = styled(Chip)(({ theme }) => ({
+  margin: theme.spacing(0.2),
+  backgroundColor: theme.palette.primary.light,
+  color: theme.palette.primary.contrastText,
+  cursor: 'pointer',
+  '&:hover': {
+    backgroundColor: theme.palette.primary.main,
+  },
 }));
 
 const MessageList = styled(List)(({ theme }) => ({
@@ -125,6 +165,69 @@ export const Chat: React.FC<ChatProps> = ({ onPipelineGenerated }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const eventSourceRef = useRef<EventSource | null>(null);
+
+  // Add tool to pipeline
+  const addToolToPipeline = useCallback((toolName: string) => {
+    if (!selectedTools.includes(toolName)) {
+      setSelectedTools(prev => [...prev, toolName]);
+      // Trigger pipeline update
+      if (onPipelineGenerated) {
+        onPipelineGenerated({
+          nodes: [...selectedTools, toolName],
+          edges: [], // For now, simple list - can be enhanced later
+        });
+      }
+    }
+  }, [selectedTools, onPipelineGenerated]);
+
+  // Remove tool from pipeline
+  const removeToolFromPipeline = useCallback((toolName: string) => {
+    setSelectedTools(prev => prev.filter(tool => tool !== toolName));
+    // Trigger pipeline update
+    if (onPipelineGenerated) {
+      onPipelineGenerated({
+        nodes: selectedTools.filter(tool => tool !== toolName),
+        edges: [], // For now, simple list - can be enhanced later
+      });
+    }
+  }, [selectedTools, onPipelineGenerated]);
+
+  // Parse message content and render tool names as clickable chips
+  const renderMessageWithToolChips = useCallback((content: string) => {
+    const toolNames = Object.keys(toolIcons);
+    const foundTools: string[] = [];
+    
+    // Simple string search for tool names (safer than regex)
+    toolNames.forEach(toolName => {
+      if (content.toLowerCase().includes(toolName.toLowerCase())) {
+        foundTools.push(toolName);
+      }
+    });
+
+    return (
+      <Box>
+        <Typography variant="body1">
+          {content}
+        </Typography>
+        {foundTools.length > 0 && (
+          <Box sx={{ mt: 1, display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+            {foundTools.map((toolName) => {
+              const IconComponent = toolIcons[toolName] || Settings;
+              return (
+                <ClickableToolChip
+                  key={toolName}
+                  label={toolName}
+                  size="small"
+                  icon={<IconComponent />}
+                  onClick={() => addToolToPipeline(toolName)}
+                />
+              );
+            })}
+          </Box>
+        )}
+      </Box>
+    );
+  }, [addToolToPipeline]);
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -586,18 +689,35 @@ export const Chat: React.FC<ChatProps> = ({ onPipelineGenerated }) => {
           {/* Selected Tools */}
           {selectedTools.length > 0 && (
             <Box sx={{ mb: 2 }}>
-              <Typography variant="subtitle2" gutterBottom>
-                Pipeline Tools:
-              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
+                <Typography variant="subtitle2">
+                  Pipeline Tools ({selectedTools.length}):
+                </Typography>
+                <Button
+                  size="small"
+                  startIcon={<AccountTree />}
+                  endIcon={<Launch />}
+                  onClick={() => window.open('/visualizer', '_blank')}
+                  variant="outlined"
+                  color="primary"
+                >
+                  View Pipeline
+                </Button>
+              </Box>
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                {selectedTools.map((tool, index) => (
-                  <ToolChip
-                    key={index}
-                    label={tool}
-                    size="small"
-                    icon={<Settings />}
-                  />
-                ))}
+                {selectedTools.map((tool, index) => {
+                  const IconComponent = toolIcons[tool] || Settings;
+                  return (
+                    <ToolChip
+                      key={index}
+                      label={tool}
+                      size="small"
+                      icon={<IconComponent />}
+                      onDelete={() => removeToolFromPipeline(tool)}
+                      deleteIcon={<Close />}
+                    />
+                  );
+                })}
               </Box>
             </Box>
           )}
@@ -654,6 +774,109 @@ export const Chat: React.FC<ChatProps> = ({ onPipelineGenerated }) => {
                           {message.tools.map((tool, i) => (
                             <ToolChip key={i} label={tool} size="small" />
                           ))}
+                        </Box>
+                      )}
+                      {/* Simple clickable tools for assistant messages */}
+                      {message.role === 'assistant' && (
+                        <Box sx={{ mt: 1, display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                          {message.content.includes('whisper-wrapper') && (
+                            <Typography 
+                              variant="body2" 
+                              sx={{ 
+                                color: 'primary.main', 
+                                cursor: 'pointer', 
+                                textDecoration: 'underline',
+                                '&:hover': { backgroundColor: 'primary.light', color: 'white', px: 0.5 }
+                              }}
+                              onClick={() => addToolToPipeline('whisper-wrapper')}
+                            >
+                              + whisper-wrapper
+                            </Typography>
+                          )}
+                          {message.content.includes('easyocr-wrapper') && (
+                            <Typography 
+                              variant="body2" 
+                              sx={{ 
+                                color: 'primary.main', 
+                                cursor: 'pointer', 
+                                textDecoration: 'underline',
+                                '&:hover': { backgroundColor: 'primary.light', color: 'white', px: 0.5 }
+                              }}
+                              onClick={() => addToolToPipeline('easyocr-wrapper')}
+                            >
+                              + easyocr-wrapper
+                            </Typography>
+                          )}
+                          {message.content.includes('pyscenedetect-wrapper') && (
+                            <Typography 
+                              variant="body2" 
+                              sx={{ 
+                                color: 'primary.main', 
+                                cursor: 'pointer', 
+                                textDecoration: 'underline',
+                                '&:hover': { backgroundColor: 'primary.light', color: 'white', px: 0.5 }
+                              }}
+                              onClick={() => addToolToPipeline('pyscenedetect-wrapper')}
+                            >
+                              + pyscenedetect-wrapper
+                            </Typography>
+                          )}
+                          {message.content.includes('chyron-detection') && (
+                            <Typography 
+                              variant="body2" 
+                              sx={{ 
+                                color: 'primary.main', 
+                                cursor: 'pointer', 
+                                textDecoration: 'underline',
+                                '&:hover': { backgroundColor: 'primary.light', color: 'white', px: 0.5 }
+                              }}
+                              onClick={() => addToolToPipeline('chyron-detection')}
+                            >
+                              + chyron-detection
+                            </Typography>
+                          )}
+                          {message.content.includes('swt-detection') && (
+                            <Typography 
+                              variant="body2" 
+                              sx={{ 
+                                color: 'primary.main', 
+                                cursor: 'pointer', 
+                                textDecoration: 'underline',
+                                '&:hover': { backgroundColor: 'primary.light', color: 'white', px: 0.5 }
+                              }}
+                              onClick={() => addToolToPipeline('swt-detection')}
+                            >
+                              + swt-detection
+                            </Typography>
+                          )}
+                          {message.content.includes('llava-captioner') && (
+                            <Typography 
+                              variant="body2" 
+                              sx={{ 
+                                color: 'primary.main', 
+                                cursor: 'pointer', 
+                                textDecoration: 'underline',
+                                '&:hover': { backgroundColor: 'primary.light', color: 'white', px: 0.5 }
+                              }}
+                              onClick={() => addToolToPipeline('llava-captioner')}
+                            >
+                              + llava-captioner
+                            </Typography>
+                          )}
+                          {message.content.includes('spacy-wrapper') && (
+                            <Typography 
+                              variant="body2" 
+                              sx={{ 
+                                color: 'primary.main', 
+                                cursor: 'pointer', 
+                                textDecoration: 'underline',
+                                '&:hover': { backgroundColor: 'primary.light', color: 'white', px: 0.5 }
+                              }}
+                              onClick={() => addToolToPipeline('spacy-wrapper')}
+                            >
+                              + spacy-wrapper
+                            </Typography>
+                          )}
                         </Box>
                       )}
                     </MessageContent>

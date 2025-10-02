@@ -168,53 +168,102 @@ class CLAMSAgent:
         # Create system message for CLAMS pipeline assistance
         system_message = self._create_system_message()
         
-        # Bind tools directly to the LLM first
-        llm_with_tools = self.llm.bind_tools(self.tools)
+        # For now, create a simple conversational agent without tools to avoid execution
+        # This prevents the agent from trying to call functions
+        from langgraph.graph import StateGraph, START, END
+        from langchain_core.messages import HumanMessage, AIMessage
         
-        # Use create_react_agent for modern pattern with checkpointer
-        agent = create_react_agent(
-            llm_with_tools,
-            self.tools,
-            prompt=system_message,
-            checkpointer=self.memory
-        )
+        def chat_node(state):
+            messages = state.get("messages", [])
+            # Add system message if this is the first interaction
+            if not any(isinstance(msg, SystemMessage) for msg in messages):
+                messages = [system_message] + messages
+            
+            # Get response from LLM (without tools)
+            response = self.llm.invoke(messages)
+            
+            # Return updated state
+            return {
+                "messages": messages + [response],
+                "task_description": state.get("task_description", ""),
+                "pipeline_dict": state.get("pipeline_dict", {}),
+                "selected_tools": state.get("selected_tools", []),
+                "execution_context": state.get("execution_context", {}),
+                "streaming_updates": state.get("streaming_updates", []),
+                "human_feedback_requested": state.get("human_feedback_requested", False),
+                "current_step": state.get("current_step", "processing")
+            }
         
-        return agent
+        # Create simple graph
+        workflow = StateGraph(CLAMSAgentState)
+        workflow.add_node("chat", chat_node)
+        workflow.add_edge(START, "chat")
+        workflow.add_edge("chat", END)
+        
+        return workflow.compile(checkpointer=self.memory)
     
     def _create_system_message(self) -> SystemMessage:
-        """Create a comprehensive system message for the agent."""
-        tool_descriptions = self._get_tool_descriptions()
+        """Create a comprehensive system message for the agent using actual app metadata."""
+        tool_descriptions = self._get_detailed_tool_descriptions()
         
-        return SystemMessage(content=f"""You are a CLAMS (Computational Language and Audiovisual Multimedia Systems) pipeline expert.
+        return SystemMessage(content=f"""You are a helpful assistant for multimedia analysis. Have natural conversations and recommend tools when appropriate.
 
-Your role is to help users create effective multimedia analysis pipelines by:
+Available CLAMS Tools with their actual capabilities:
 
-1. Understanding user requirements for video/audio analysis
-2. Selecting appropriate CLAMS tools based on input/output compatibility
-3. Constructing logical tool sequences (pipelines)
-4. Explaining tool functionality and pipeline reasoning
-
-Available CLAMS Tools:
 {tool_descriptions}
 
-Pipeline Construction Rules:
-- Consider tool input/output type compatibility
-- Video processing typically starts with VideoDocument input
-- OCR tools need video frames or images
-- Speech recognition tools need audio input
-- Text analysis tools need transcribed text
-- Always explain your tool selection reasoning
+Response Structure Guidelines:
+- Organize responses into clear WORKFLOW STEPS
+- Use paragraph breaks between different stages
+- Present alternatives within each step clearly
+- Explain why tools are interchangeable or different
+- Never include technical details, code, or configuration info
 
-IMPORTANT: When users ask you to use specific tools or demonstrate pipelines, you MUST call the actual tool functions. Do not just describe them. Use the tool calling mechanism to execute the tools with appropriate parameters.
+Workflow Building Blocks (use these concepts):
 
-When suggesting tools:
-1. First understand what the user wants to accomplish
-2. Identify the required input type (video, audio, image, text)
-3. Select tools that produce the needed analysis
-4. Chain tools logically (output of one becomes input of next)
-5. CALL the actual tools using function calls to demonstrate the pipeline
+**VISUAL CONTENT ANALYSIS (pick based on goal):**
+- llava-captioner: DESCRIBE what's happening in images/video frames (visual captioning)
+- pyscenedetect-wrapper: detect scene boundaries and transitions in video
+- slatedetection: find title cards and credit screens
 
-Be conversational but precise. Ask clarifying questions if the user's requirements are unclear.
+**TEXT DETECTION AND EXTRACTION (2-step process):**
+Step 1 - Find Text Areas (pick one):
+- chyron-detection: find news tickers, lower thirds, breaking news banners
+- swt-detection: general text detection in any video scenes
+- east-textdetection: detect text regions in images
+
+Step 2 - Extract Text (pick one):
+- easyocr-wrapper: versatile OCR for most text types
+- tesseractocr-wrapper: traditional OCR engine  
+- doctr-wrapper: modern document OCR
+
+**AUDIO/SPEECH PROCESSING (pick one):**
+- whisper-wrapper: transcribe speech to text (most accurate)
+- distil-whisper-wrapper: faster speech transcription
+- parakeet-wrapper: enterprise speech recognition
+
+**TEXT ANALYSIS (optional enhancement):**
+- spacy-wrapper: find people, places, organizations in text
+- dbpedia-spotlight-wrapper: link entities to Wikipedia knowledge
+
+Response Format Examples:
+
+FOR VIDEO DESCRIPTION: "To describe what's happening in video frames:
+**Visual Content Analysis:** Use llava-captioner to generate descriptions of what you see in each frame or scene."
+
+FOR TEXT EXTRACTION: "To extract text from chyrons/news tickers:
+**Step 1 - Find Text Areas:** Use chyron-detection for news banners, or swt-detection for general text.
+**Step 2 - Extract Text:** Choose easyocr-wrapper (versatile) or tesseractocr-wrapper (traditional)."
+
+FOR SPEECH: "To transcribe speech:
+**Audio Processing:** Use whisper-wrapper for accurate transcription, or distil-whisper-wrapper for speed."
+
+CRITICAL RULES - YOU MUST FOLLOW THESE EXACTLY:
+1. NEVER write code, configuration details, or technical specifications
+2. NEVER mention tools outside the CLAMS toolbox listed above
+3. Keep responses SHORT and focused only on CLAMS tool workflows
+4. Only recommend tools from the list above - no OpenCV, external libraries, etc.
+5. Focus on WHAT to do, not HOW to implement it technically
 """)
     
     def _get_tool_descriptions(self) -> str:
@@ -231,6 +280,82 @@ Be conversational but precise. Ask clarifying questions if the user's requiremen
             )
         
         return "\n".join(descriptions)
+    
+    def _get_detailed_tool_descriptions(self) -> str:
+        """Get detailed tool descriptions using actual app metadata."""
+        descriptions = []
+        
+        # Get the toolbox to access full metadata
+        for tool_name, clams_tool in self.toolbox.get_tools().items():
+            metadata = clams_tool.app_metadata.get('metadata', {})
+            description = metadata.get('description', 'No description available')
+            
+            # Clean up and simplify the description
+            clean_description = self._clean_description(description)
+            
+            # Extract simplified input/output info
+            capabilities = self._extract_capabilities(metadata)
+            
+            descriptions.append(f"**{tool_name}**: {clean_description}{capabilities}")
+        
+        return "\n\n".join(sorted(descriptions))
+    
+    def _clean_description(self, description: str) -> str:
+        """Clean and simplify tool descriptions for better LLM understanding."""
+        # Remove technical URLs and repository links
+        import re
+        description = re.sub(r'https?://[^\s]+', '', description)
+        
+        # Remove specific technical details but keep useful info
+        description = re.sub(r'developed by.*?Brandeis.*?\.', '', description)
+        description = re.sub(r'originally developed.*?OpenAI.*?\.', '', description)
+        description = re.sub(r'The original software can be found at.*?\.', '', description)
+        description = re.sub(r'Please visit the source code repository.*?\.', '', description)
+        description = re.sub(r'Wrapped software can be found at.*?\.', '', description)
+        
+        # Keep useful version info but clean up
+        description = re.sub(r'\[.*?\]', '', description)  # Remove [brackets]
+        description = re.sub(r'See descriptions for I/O types.*?\.', '', description)
+        
+        # Clean up whitespace and periods
+        description = ' '.join(description.split())
+        description = re.sub(r'\.+', '.', description)  # Multiple periods to single
+        
+        return description.strip()
+    
+    def _extract_capabilities(self, metadata: dict) -> str:
+        """Extract key capabilities from metadata."""
+        capabilities = []
+        
+        # Check what types of inputs it accepts
+        inputs = metadata.get('input', [])
+        if any('VideoDocument' in str(inp) for inp in inputs):
+            capabilities.append("works with video")
+        if any('AudioDocument' in str(inp) for inp in inputs):
+            capabilities.append("works with audio")
+        if any('TextDocument' in str(inp) for inp in inputs):
+            capabilities.append("processes text")
+        if any('TimeFrame' in str(inp) for inp in inputs):
+            capabilities.append("uses time segments")
+        if any('BoundingBox' in str(inp) for inp in inputs):
+            capabilities.append("uses detected regions")
+            
+        # Check what it produces
+        outputs = metadata.get('output', [])
+        if any('TextDocument' in str(out) for out in outputs):
+            capabilities.append("produces text")
+        if any('TimeFrame' in str(out) for out in outputs):
+            capabilities.append("finds time segments")
+        if any('BoundingBox' in str(out) for out in outputs):
+            capabilities.append("detects regions")
+        if any('NamedEntity' in str(out) for out in outputs):
+            capabilities.append("identifies entities")
+        if any('Alignment' in str(out) for out in outputs):
+            capabilities.append("provides timing alignment")
+            
+        if capabilities:
+            return f" ({', '.join(capabilities)})"
+        return ""
     
     async def stream_response(self, 
                              user_input: str, 

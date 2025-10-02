@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Frontend Debug Test</title>
+  </head>
+  <body>
+    <div id="root">Loading...</div>
+    <script>
+      // Test if our React app is loading
+      setTimeout(() => {
+        const root = document.getElementById('root');
+        if (root && root.innerHTML === 'Loading...') {
+          console.error('React app failed to mount - root div still shows "Loading..."');
+          document.body.innerHTML = `
+            <h1 style="color: red;">React App Failed to Load</h1>
+            <p>The React application did not mount properly.</p>
+            <p>Check the browser console for JavaScript errors.</p>
+          `;
+        } else {
+          console.log('React app loaded successfully');
+        }
+      }, 3000);
+    </script>
+    <script type="module" crossorigin src="/assets/index-db453fbe.js"></script>
+    <link rel="stylesheet" href="/assets/index-07d7a772.css">
+  </body>
+</html>
