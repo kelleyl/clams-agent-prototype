@@ -9,14 +9,36 @@ import asyncio
 import logging
 import time
 from typing import AsyncGenerator
+from dotenv import load_dotenv
 from flask import Flask, render_template, request, jsonify, Response, stream_template, send_from_directory
 from flask_cors import CORS
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Configure LangSmith tracing if enabled
+def configure_langsmith():
+    """Configure LangSmith observability if API key is provided."""
+    langsmith_enabled = os.getenv("LANGSMITH_TRACING", "false").lower() == "true"
+    langsmith_api_key = os.getenv("LANGSMITH_API_KEY", "")
+
+    if langsmith_enabled and langsmith_api_key:
+        os.environ["LANGCHAIN_TRACING_V2"] = "true"
+        os.environ["LANGCHAIN_API_KEY"] = langsmith_api_key
+        os.environ["LANGCHAIN_PROJECT"] = os.getenv("LANGSMITH_PROJECT", "clams-agent")
+        os.environ["LANGCHAIN_ENDPOINT"] = os.getenv("LANGSMITH_ENDPOINT", "https://api.smith.langchain.com")
+        return True
+    return False
+
+langsmith_active = configure_langsmith()
 
 from utils.langgraph_agent import CLAMSAgent
 from utils.agui_integration import AGUIServer, AGUIEvent, AGUIEventType
 from utils.pipeline_model import PipelineStore
 from utils.clams_tools import CLAMSToolbox
 from utils.config import ConfigManager
+from utils.frame_review import get_frame_review_manager, FrameReviewManager
+from utils.clams_executor import get_clams_executor, CLAMSExecutor
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -52,6 +74,7 @@ try:
     logger.info("Successfully initialized CLAMS agent and AG-UI server")
     logger.info(f"Using LLM provider: {config_manager.get_config().llm.provider}")
     logger.info(f"Model: {config_manager.get_config().llm.model_name}")
+    logger.info(f"LangSmith tracing: {'enabled' if langsmith_active else 'disabled'}")
 except Exception as e:
     logger.error(f"Failed to initialize components: {e}")
     # Create dummy components for fallback
@@ -78,6 +101,12 @@ def chat():
     return render_template('index.html')
 
 
+@app.route('/tools')
+def tools():
+    """Serve the tool browser page."""
+    return render_template('index.html')
+
+
 @app.route('/assets/<path:filename>')
 def serve_static(filename):
     """Serve static files from the assets directory."""
@@ -90,10 +119,51 @@ def get_tools():
     """Get all available CLAMS tools."""
     try:
         if toolbox:
-            return jsonify(toolbox.get_tools())
+            # Get tools and serialize them properly
+            tools = toolbox.get_tools()
+            serialized = {}
+            for tool_id, tool in tools.items():
+                serialized[tool_id] = {
+                    'name': tool.name,
+                    'description': tool.description,
+                    'app_metadata': tool.app_metadata,
+                    'latest_version': tool.app_metadata.get('latest_version', 'unknown')
+                }
+            return jsonify(serialized)
         return jsonify({})
     except Exception as e:
         logger.error(f"Error getting tools: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/tools/metadata')
+def get_tools_metadata():
+    """Get tool metadata in format suitable for Tool Browser UI."""
+    try:
+        if toolbox:
+            tools = toolbox.get_tools()
+            # Transform to match ToolBrowser expected format
+            metadata = {}
+            for tool_id, tool in tools.items():
+                app_metadata = tool.app_metadata
+                tool_metadata = app_metadata.get('metadata', {})
+
+                metadata[tool_id] = {
+                    'app_metadata': {
+                        'metadata': {
+                            'name': tool_metadata.get('name', tool_id),
+                            'description': tool_metadata.get('description', ''),
+                            'input': tool_metadata.get('input', []),
+                            'output': tool_metadata.get('output', []),
+                            'parameters': tool_metadata.get('parameters', [])
+                        }
+                    },
+                    'latest_version': app_metadata.get('latest_version', 'unknown')
+                }
+            return jsonify(metadata)
+        return jsonify({})
+    except Exception as e:
+        logger.error(f"Error getting tools metadata: {e}")
         return jsonify({"error": str(e)}), 500
 
 
@@ -173,7 +243,7 @@ def async_worker():
     finally:
         loop.close()
 
-def run_async_task(coro, timeout=120.0):
+def run_async_task(coro, timeout=300.0):
     """Run an async task in the dedicated thread and wait for result."""
     global result_counter
     
@@ -263,8 +333,8 @@ def handle_agui_event():
         try:
             event_json = json.dumps(event_data)
             
-            # Use asyncio.run() for simpler execution
-            response_events = asyncio.run(agui_server.process_user_event(event_json))
+            # Use run_async_task() with persistent event loop to avoid "Event loop is closed" errors
+            response_events = run_async_task(agui_server.process_user_event(event_json))
             
             # Convert events to JSON-serializable format
             events_data = []
@@ -323,8 +393,8 @@ def stream_agui_events(session_id):
                     events.append(error_event)
                 return events
             
-            # Use asyncio.run() instead of the complex worker thread system
-            events = asyncio.run(run_generator())
+            # Use run_async_task() with persistent event loop
+            events = run_async_task(run_generator())
             for event in events:
                 yield event
                 
@@ -458,9 +528,9 @@ def send_chat_message():
                 thread_id=session_id
             )
         
-        # Run async operation with simpler approach
+        # Run async operation with persistent event loop
         try:
-            response = asyncio.run(get_response())
+            response = run_async_task(get_response())
             return jsonify({
                 "response": response.get("content", ""),
                 "tool_calls": response.get("tool_calls", []),
@@ -522,6 +592,621 @@ def export_session_pipeline(session_id):
         return jsonify({"error": str(e)}), 500
 
 
+# Video metadata endpoint
+@app.route('/api/video/metadata', methods=['POST'])
+def get_video_metadata():
+    """Get metadata for a video file using FFmpeg."""
+    try:
+        from utils.ffmpeg_tools import FFmpegTools
+
+        data = request.get_json()
+        video_path = data.get('video_path', '')
+
+        if not video_path:
+            return jsonify({"error": "video_path is required"}), 400
+
+        # Initialize FFmpeg tools
+        ffmpeg = FFmpegTools()
+        metadata = ffmpeg.get_video_metadata(video_path)
+
+        if "error" in metadata:
+            return jsonify(metadata), 400
+
+        return jsonify(metadata)
+
+    except Exception as e:
+        logger.error(f"Error getting video metadata: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+# Frame extraction endpoint
+@app.route('/api/video/frame', methods=['POST'])
+def extract_video_frame():
+    """Extract a single frame from a video at a specific timestamp."""
+    try:
+        from utils.ffmpeg_tools import FFmpegTools
+
+        data = request.get_json()
+        video_path = data.get('video_path', '')
+        timestamp = data.get('timestamp', 0)
+        width = data.get('width')
+        height = data.get('height')
+
+        if not video_path:
+            return jsonify({"error": "video_path is required"}), 400
+
+        ffmpeg = FFmpegTools()
+        result = ffmpeg.extract_frame_at_timestamp(
+            video_path,
+            timestamp,
+            width=width,
+            height=height
+        )
+
+        if "error" in result:
+            return jsonify(result), 400
+
+        return jsonify(result)
+
+    except Exception as e:
+        logger.error(f"Error extracting frame: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+# Serve extracted frames
+@app.route('/api/video/frame/<frame_id>')
+def serve_frame(frame_id):
+    """Serve an extracted frame image."""
+    try:
+        import os
+        from pathlib import Path
+
+        # Look for frame in output directory
+        frames_dir = Path("data/ffmpeg_output/frames")
+
+        # Find frame file matching the ID
+        for frame_file in frames_dir.glob(f"*{frame_id}*.jpg"):
+            return send_from_directory(
+                str(frame_file.parent),
+                frame_file.name,
+                mimetype='image/jpeg'
+            )
+
+        return jsonify({"error": "Frame not found"}), 404
+
+    except Exception as e:
+        logger.error(f"Error serving frame: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+# Thumbnail sprite generation endpoint
+@app.route('/api/video/sprite', methods=['POST'])
+def generate_thumbnail_sprite():
+    """Generate a thumbnail sprite for timeline scrubbing."""
+    try:
+        from utils.ffmpeg_tools import FFmpegTools
+
+        data = request.get_json()
+        video_path = data.get('video_path', '')
+        interval = data.get('interval', 5.0)
+        thumb_width = data.get('thumb_width', 160)
+        thumb_height = data.get('thumb_height', 90)
+
+        if not video_path:
+            return jsonify({"error": "video_path is required"}), 400
+
+        ffmpeg = FFmpegTools()
+        result = ffmpeg.generate_thumbnail_sprite(
+            video_path,
+            interval=interval,
+            thumb_width=thumb_width,
+            thumb_height=thumb_height
+        )
+
+        if "error" in result:
+            return jsonify(result), 400
+
+        return jsonify(result)
+
+    except Exception as e:
+        logger.error(f"Error generating sprite: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+# Serve sprite images
+@app.route('/api/video/sprite/<sprite_id>')
+def serve_sprite(sprite_id):
+    """Serve a thumbnail sprite image."""
+    try:
+        from pathlib import Path
+
+        sprites_dir = Path("data/ffmpeg_output/sprites")
+
+        for sprite_file in sprites_dir.glob(f"*{sprite_id}*.jpg"):
+            return send_from_directory(
+                str(sprite_file.parent),
+                sprite_file.name,
+                mimetype='image/jpeg'
+            )
+
+        return jsonify({"error": "Sprite not found"}), 404
+
+    except Exception as e:
+        logger.error(f"Error serving sprite: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+# Serve VTT files for thumbnails
+@app.route('/api/video/vtt/<sprite_id>')
+def serve_vtt(sprite_id):
+    """Serve a VTT file for thumbnail mapping."""
+    try:
+        from pathlib import Path
+
+        sprites_dir = Path("data/ffmpeg_output/sprites")
+
+        for vtt_file in sprites_dir.glob(f"*{sprite_id}*.vtt"):
+            return send_from_directory(
+                str(vtt_file.parent),
+                vtt_file.name,
+                mimetype='text/vtt'
+            )
+
+        return jsonify({"error": "VTT file not found"}), 404
+
+    except Exception as e:
+        logger.error(f"Error serving VTT: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+# Video clip extraction endpoint
+@app.route('/api/video/clip', methods=['POST'])
+def extract_video_clip():
+    """Extract a short video clip for review."""
+    try:
+        from utils.ffmpeg_tools import FFmpegTools
+
+        data = request.get_json()
+        video_path = data.get('video_path', '')
+        start_time = data.get('start_time', 0)
+        end_time = data.get('end_time', 10)
+        max_width = data.get('max_width', 640)
+
+        if not video_path:
+            return jsonify({"error": "video_path is required"}), 400
+
+        ffmpeg = FFmpegTools()
+        result = ffmpeg.extract_clip(
+            video_path,
+            start_time,
+            end_time,
+            max_width=max_width
+        )
+
+        if "error" in result:
+            return jsonify(result), 400
+
+        return jsonify(result)
+
+    except Exception as e:
+        logger.error(f"Error extracting clip: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+# Serve video clips
+@app.route('/api/video/clip/<clip_id>')
+def serve_clip(clip_id):
+    """Serve an extracted video clip."""
+    try:
+        from pathlib import Path
+
+        clips_dir = Path("data/ffmpeg_output/clips")
+
+        for clip_file in clips_dir.glob(f"*{clip_id}*.mp4"):
+            return send_from_directory(
+                str(clip_file.parent),
+                clip_file.name,
+                mimetype='video/mp4'
+            )
+
+        return jsonify({"error": "Clip not found"}), 404
+
+    except Exception as e:
+        logger.error(f"Error serving clip: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+# Test frame review endpoint (for development)
+@app.route('/api/test/frame-review', methods=['POST'])
+def test_frame_review():
+    """Trigger a frame review request for testing the HITL flow.
+
+    Returns the frame_review_request event directly, which the frontend
+    can process just like it does with SSE events.
+    """
+    try:
+        data = request.get_json() or {}
+        session_id = data.get('session_id', f'test-session-{int(time.time())}')
+        frame_id = data.get('frame_id', '6c1a8627195e')
+
+        # Create a frame review request event
+        frame_data = {
+            "frame_id": frame_id,
+            "frame_url": f"/api/video/frame/{frame_id}",
+            "timestamp": data.get('timestamp', 30.0),
+            "timestamp_formatted": data.get('timestamp_formatted', '00:00:30'),
+            "video_path": data.get('video_path', '/test/video.mp4'),
+            "context": data.get('context', 'Test frame review request'),
+            "detected_text": data.get('detected_text', 'SAMPLE TEXT'),
+            "detected_entities": data.get('detected_entities', [
+                {"name": "Test Entity", "type": "ORG", "confidence": 0.95}
+            ]),
+            "review_type": data.get('review_type', 'approval')
+        }
+
+        # Return the event directly for frontend processing
+        return jsonify({
+            "success": True,
+            "message": "Frame review request created",
+            "session_id": session_id,
+            "events": [
+                {
+                    "type": AGUIEventType.FRAME_REVIEW_REQUEST.value,
+                    "data": frame_data,
+                    "session_id": session_id
+                }
+            ]
+        })
+
+    except Exception as e:
+        logger.error(f"Error triggering test frame review: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+# ============================================================================
+# Frame Review API Endpoints (Human-in-the-Loop)
+# ============================================================================
+
+@app.route('/api/frames/<session_id>/<frame_id>')
+def get_frame_image(session_id: str, frame_id: str):
+    """Serve a frame image for review.
+
+    Returns the actual image file for display in the frontend.
+    """
+    try:
+        frame_manager = get_frame_review_manager()
+        frame_path = frame_manager.get_frame_image_path(session_id, frame_id)
+
+        if frame_path and os.path.exists(frame_path):
+            directory = os.path.dirname(frame_path)
+            filename = os.path.basename(frame_path)
+            return send_from_directory(directory, filename, mimetype='image/jpeg')
+        else:
+            return jsonify({"error": "Frame not found"}), 404
+
+    except Exception as e:
+        logger.error(f"Error serving frame {frame_id}: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/review/sessions', methods=['GET'])
+def list_review_sessions():
+    """List all active review sessions."""
+    try:
+        frame_manager = get_frame_review_manager()
+        sessions = []
+
+        for session_id, session in frame_manager.sessions.items():
+            sessions.append({
+                "session_id": session_id,
+                "video_path": session.video_path,
+                "frame_count": len(session.frames),
+                "reviewed_count": len(session.reviews),
+                "completed": session.completed,
+                "created_at": session.created_at
+            })
+
+        return jsonify({
+            "success": True,
+            "sessions": sessions
+        })
+
+    except Exception as e:
+        logger.error(f"Error listing review sessions: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/review/<session_id>', methods=['GET'])
+def get_review_session(session_id: str):
+    """Get details of a specific review session."""
+    try:
+        frame_manager = get_frame_review_manager()
+        session = frame_manager.get_session(session_id)
+
+        if not session:
+            return jsonify({"error": f"Session not found: {session_id}"}), 404
+
+        frames = [
+            {
+                "frame_id": f.frame_id,
+                "timestamp_ms": f.timestamp_ms,
+                "timestamp_formatted": f.timestamp_formatted,
+                "frame_url": f"/api/frames/{session_id}/{f.frame_id}",
+                "detected_text": f.detected_text,
+                "detected_entities": f.detected_entities,
+                "context": f.context,
+                "reviewed": f.frame_id in session.reviews
+            }
+            for f in session.frames
+        ]
+
+        return jsonify({
+            "success": True,
+            "session_id": session_id,
+            "video_path": session.video_path,
+            "frames": frames,
+            "summary": session.get_review_summary(),
+            "completed": session.completed
+        })
+
+    except Exception as e:
+        logger.error(f"Error getting review session: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/review/<session_id>/submit', methods=['POST'])
+def submit_frame_review(session_id: str):
+    """Submit a review for a frame."""
+    try:
+        data = request.get_json() or {}
+        frame_id = data.get('frame_id')
+        status = data.get('status', 'skipped')
+        comment = data.get('comment', '')
+        corrected_text = data.get('corrected_text')
+        corrected_entities = data.get('corrected_entities')
+
+        if not frame_id:
+            return jsonify({"error": "frame_id is required"}), 400
+
+        frame_manager = get_frame_review_manager()
+        review = frame_manager.submit_review(
+            session_id=session_id,
+            frame_id=frame_id,
+            status=status,
+            comment=comment,
+            corrected_text=corrected_text,
+            corrected_entities=corrected_entities
+        )
+
+        if not review:
+            return jsonify({"error": "Failed to submit review"}), 400
+
+        # Get updated session state
+        session = frame_manager.get_session(session_id)
+        next_frame = frame_manager.get_next_frame_for_review(session_id)
+
+        return jsonify({
+            "success": True,
+            "review": review.to_dict(),
+            "session_summary": session.get_review_summary() if session else None,
+            "next_frame": {
+                "frame_id": next_frame.frame_id,
+                "frame_url": f"/api/frames/{session_id}/{next_frame.frame_id}",
+                "detected_text": next_frame.detected_text
+            } if next_frame else None,
+            "session_completed": session.completed if session else False
+        })
+
+    except Exception as e:
+        logger.error(f"Error submitting review: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/review/<session_id>/export', methods=['GET'])
+def export_reviews(session_id: str):
+    """Export all reviews for a session."""
+    try:
+        frame_manager = get_frame_review_manager()
+        export_data = frame_manager.export_reviews(session_id)
+
+        if not export_data:
+            return jsonify({"error": f"Session not found: {session_id}"}), 404
+
+        return jsonify({
+            "success": True,
+            "export": export_data
+        })
+
+    except Exception as e:
+        logger.error(f"Error exporting reviews: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/review/<session_id>/corrections', methods=['GET'])
+def get_corrections(session_id: str):
+    """Get all corrections made during a review session."""
+    try:
+        frame_manager = get_frame_review_manager()
+        corrections = frame_manager.get_corrections(session_id)
+
+        return jsonify({
+            "success": True,
+            "session_id": session_id,
+            "corrections": corrections
+        })
+
+    except Exception as e:
+        logger.error(f"Error getting corrections: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/review/create', methods=['POST'])
+def create_review_session():
+    """Create a new frame review session from a video."""
+    try:
+        data = request.get_json() or {}
+        video_path = data.get('video_path')
+        interval_seconds = data.get('interval_seconds', 5.0)
+        max_frames = data.get('max_frames', 30)
+
+        if not video_path:
+            return jsonify({"error": "video_path is required"}), 400
+
+        if not os.path.exists(video_path):
+            return jsonify({"error": f"Video file not found: {video_path}"}), 404
+
+        import uuid
+        session_id = str(uuid.uuid4())[:8]
+
+        frame_manager = get_frame_review_manager()
+        session = frame_manager.create_review_session(
+            session_id=session_id,
+            video_path=video_path,
+            interval_seconds=interval_seconds,
+            max_frames=max_frames
+        )
+
+        return jsonify({
+            "success": True,
+            "session_id": session_id,
+            "frames_extracted": len(session.frames),
+            "video_path": video_path,
+            "review_url": f"/api/review/{session_id}"
+        })
+
+    except Exception as e:
+        logger.error(f"Error creating review session: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+# ============================================================================
+# CLAMS Execution API Endpoints
+# ============================================================================
+
+@app.route('/api/clams/apps', methods=['GET'])
+def list_clams_apps():
+    """List available CLAMS apps that can be executed."""
+    try:
+        executor = get_clams_executor()
+        apps = executor.get_available_apps()
+
+        app_info = []
+        for app_name in apps:
+            metadata = executor.get_app_info(app_name)
+            app_info.append({
+                "name": app_name,
+                "available": True,
+                "description": metadata.get('description', 'No description') if metadata else 'No metadata'
+            })
+
+        return jsonify({
+            "success": True,
+            "apps": app_info
+        })
+
+    except Exception as e:
+        logger.error(f"Error listing CLAMS apps: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/clams/execute', methods=['POST'])
+def execute_clams_app():
+    """Execute a CLAMS app on a video or MMIF input."""
+    try:
+        data = request.get_json() or {}
+        app_name = data.get('app_name')
+        video_path = data.get('video_path')
+        input_mmif = data.get('input_mmif')
+        parameters = data.get('parameters', {})
+
+        if not app_name:
+            return jsonify({"error": "app_name is required"}), 400
+
+        executor = get_clams_executor()
+
+        if app_name not in executor.get_available_apps():
+            return jsonify({"error": f"App not available: {app_name}"}), 400
+
+        # Create or use input MMIF
+        if input_mmif:
+            mmif = input_mmif
+        elif video_path:
+            mmif = executor.create_initial_mmif(video_path)
+        else:
+            return jsonify({"error": "Either video_path or input_mmif is required"}), 400
+
+        # Execute the app
+        result = executor.execute_app(app_name, mmif, parameters)
+
+        if result.success:
+            return jsonify({
+                "success": True,
+                "app_name": app_name,
+                "execution_time": result.execution_time_seconds,
+                "annotations_created": result.annotations_created,
+                "output_mmif": result.output_mmif
+            })
+        else:
+            return jsonify({
+                "success": False,
+                "app_name": app_name,
+                "error": result.error
+            }), 500
+
+    except Exception as e:
+        logger.error(f"Error executing CLAMS app: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/clams/pipeline', methods=['POST'])
+def execute_clams_pipeline():
+    """Execute a pipeline of CLAMS apps on a video."""
+    try:
+        data = request.get_json() or {}
+        apps = data.get('apps', [])
+        video_path = data.get('video_path')
+        parameters = data.get('parameters', {})
+
+        if not apps:
+            return jsonify({"error": "apps list is required"}), 400
+
+        if not video_path:
+            return jsonify({"error": "video_path is required"}), 400
+
+        if not os.path.exists(video_path):
+            return jsonify({"error": f"Video file not found: {video_path}"}), 404
+
+        executor = get_clams_executor()
+        results = executor.execute_pipeline(apps, video_path, parameters)
+
+        summary = []
+        for r in results:
+            summary.append({
+                "app": r.app_name,
+                "success": r.success,
+                "annotations_created": r.annotations_created,
+                "execution_time": r.execution_time_seconds,
+                "error": r.error if not r.success else None
+            })
+
+        # Get final MMIF if all succeeded
+        final_mmif = None
+        if all(r.success for r in results):
+            final_mmif = results[-1].output_mmif
+
+        return jsonify({
+            "success": all(r.success for r in results),
+            "pipeline": apps,
+            "results": summary,
+            "total_annotations": sum(r.annotations_created for r in results if r.success),
+            "final_mmif": final_mmif
+        })
+
+    except Exception as e:
+        logger.error(f"Error executing CLAMS pipeline: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
 # Health check endpoint
 @app.route('/api/health')
 def health_check():
@@ -532,7 +1217,8 @@ def health_check():
             "agent_available": agent is not None,
             "agui_server_available": agui_server is not None,
             "toolbox_available": toolbox is not None,
-            "pipeline_store_available": pipeline_store is not None
+            "pipeline_store_available": pipeline_store is not None,
+            "langsmith_tracing": langsmith_active
         }
         
         if agent:
