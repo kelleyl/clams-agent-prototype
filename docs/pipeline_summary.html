@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CLAMS Agent Pipeline &mdash; Full Summary Report</title>
+<style>
+  :root {
+    --bg: #0f172a;
+    --surface: #1e293b;
+    --surface2: #334155;
+    --border: #475569;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --accent: #818cf8;
+    --accent2: #34d399;
+    --accent3: #f472b6;
+    --accent4: #fbbf24;
+    --accent5: #38bdf8;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    padding: 0;
+  }
+  .hero {
+    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #1e3a5f 100%);
+    padding: 80px 40px 60px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero h1 {
+    font-size: 2.8em;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, #c7d2fe, #818cf8, #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hero .subtitle {
+    font-size: 1.2em;
+    color: var(--text-dim);
+    max-width: 700px;
+    margin: 0 auto 30px;
+  }
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+  .hero-stat {
+    text-align: center;
+  }
+  .hero-stat .num {
+    font-size: 2.4em;
+    font-weight: 800;
+    color: var(--accent);
+  }
+  .hero-stat .label {
+    font-size: 0.85em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px;
+  }
+  h2 {
+    font-size: 1.8em;
+    font-weight: 700;
+    margin: 60px 0 24px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  h2 .icon { font-size: 0.9em; }
+  h3 {
+    font-size: 1.2em;
+    font-weight: 600;
+    color: var(--accent2);
+    margin: 28px 0 12px;
+  }
+  p { margin-bottom: 16px; color: var(--text); }
+  .dim { color: var(--text-dim); }
+
+  /* Cards */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    transition: transform 0.15s;
+  }
+  .card:hover { transform: translateY(-2px); }
+  .card h4 {
+    font-size: 1.05em;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--accent5);
+  }
+  .card .detail { font-size: 0.88em; color: var(--text-dim); margin-bottom: 4px; }
+  .card .tag {
+    display: inline-block;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 2px 8px;
+    font-size: 0.78em;
+    margin: 2px 2px 0 0;
+    color: var(--text-dim);
+  }
+  .card .tag.accent { border-color: var(--accent); color: var(--accent); }
+
+  /* Pipeline flow */
+  .pipeline-flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    overflow-x: auto;
+    padding: 20px 0;
+    margin: 20px 0;
+  }
+  .pipeline-step {
+    background: var(--surface);
+    border: 2px solid var(--accent);
+    border-radius: 12px;
+    padding: 16px 20px;
+    min-width: 160px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .pipeline-step .step-num {
+    font-size: 0.75em;
+    color: var(--accent);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .pipeline-step .step-name {
+    font-weight: 700;
+    font-size: 1em;
+    margin: 4px 0;
+  }
+  .pipeline-step .step-detail {
+    font-size: 0.8em;
+    color: var(--text-dim);
+  }
+  .pipeline-arrow {
+    font-size: 1.5em;
+    color: var(--accent);
+    padding: 0 6px;
+    flex-shrink: 0;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 0.9em;
+  }
+  th, td {
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--surface2);
+  }
+  th {
+    background: var(--surface);
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.85em;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  tr:hover td { background: rgba(99, 102, 241, 0.05); }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+  /* Code / JSON blocks */
+  .example-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin: 16px 0;
+    overflow-x: auto;
+  }
+  .example-block .label {
+    font-size: 0.78em;
+    font-weight: 600;
+    color: var(--accent3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+  }
+  .example-block .question {
+    font-size: 1.05em;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .example-block .answer {
+    color: var(--accent2);
+    font-size: 0.95em;
+  }
+  .example-block .meta {
+    color: var(--text-dim);
+    font-size: 0.82em;
+    margin-top: 8px;
+  }
+  pre {
+    background: #0d1117;
+    border: 1px solid var(--surface2);
+    border-radius: 8px;
+    padding: 16px;
+    overflow-x: auto;
+    font-size: 0.85em;
+    line-height: 1.5;
+    color: #c9d1d9;
+    margin: 12px 0;
+  }
+  code {
+    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  }
+  .json-key { color: #79c0ff; }
+  .json-str { color: #a5d6ff; }
+  .json-num { color: #d2a8ff; }
+
+  /* Model cards */
+  .model-card {
+    background: var(--surface);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 10px 10px 0;
+    padding: 20px 24px;
+    margin: 16px 0;
+  }
+  .model-card.green { border-left-color: var(--accent2); }
+  .model-card.pink { border-left-color: var(--accent3); }
+  .model-card.yellow { border-left-color: var(--accent4); }
+  .model-card.blue { border-left-color: var(--accent5); }
+  .model-card h4 {
+    font-size: 1.1em;
+    margin-bottom: 6px;
+  }
+  .model-card .model-meta {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    font-size: 0.85em;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+  .model-card .model-meta span { white-space: nowrap; }
+
+  /* Bar charts */
+  .bar-chart { margin: 16px 0; }
+  .bar-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    gap: 12px;
+  }
+  .bar-label {
+    width: 180px;
+    text-align: right;
+    font-size: 0.88em;
+    color: var(--text-dim);
+    flex-shrink: 0;
+  }
+  .bar-track {
+    flex: 1;
+    height: 28px;
+    background: var(--surface);
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    font-size: 0.8em;
+    font-weight: 600;
+    color: white;
+    min-width: 40px;
+  }
+  .bar-fill.purple { background: linear-gradient(90deg, #6366f1, #818cf8); }
+  .bar-fill.green { background: linear-gradient(90deg, #059669, #34d399); }
+  .bar-fill.pink { background: linear-gradient(90deg, #be185d, #f472b6); }
+  .bar-fill.blue { background: linear-gradient(90deg, #0284c7, #38bdf8); }
+  .bar-fill.yellow { background: linear-gradient(90deg, #d97706, #fbbf24); }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-dim);
+    font-size: 0.85em;
+    border-top: 1px solid var(--surface2);
+    margin-top: 60px;
+  }
+
+  /* TOC */
+  .toc {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 32px;
+    margin: 30px 0;
+  }
+  .toc h3 { color: var(--text); margin-top: 0; }
+  .toc ol {
+    padding-left: 20px;
+  }
+  .toc li {
+    margin: 6px 0;
+  }
+  .toc a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .toc a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════ HERO ═══════════════════════════════════════════ -->
+<div class="hero">
+  <h1>CLAMS Agent Pipeline</h1>
+  <p class="subtitle">
+    Automated video understanding for archival broadcast content &mdash;
+    scene detection, speech recognition, named entity extraction, and
+    question-answer benchmark generation.
+  </p>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="num">11</div><div class="label">Videos Indexed</div></div>
+    <div class="hero-stat"><div class="num">1,685</div><div class="label">Segments</div></div>
+    <div class="hero-stat"><div class="num">30,470</div><div class="label">Words Transcribed</div></div>
+    <div class="hero-stat"><div class="num">229</div><div class="label">Named Entities</div></div>
+    <div class="hero-stat"><div class="num">2,237</div><div class="label">QA Pairs</div></div>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ═══════════════════════════════════════ TOC ════════════════════════════════════════════ -->
+<div class="toc">
+  <h3>Contents</h3>
+  <ol>
+    <li><a href="#pipeline">Pipeline Architecture</a></li>
+    <li><a href="#models">Models Used</a></li>
+    <li><a href="#corpus">Video Corpus</a></li>
+    <li><a href="#index">Video Index Structure</a></li>
+    <li><a href="#qa">QA Benchmark Dataset</a></li>
+    <li><a href="#examples">Example QA Pairs</a></li>
+    <li><a href="#comparison">Comparison to Research Benchmarks</a></li>
+    <li><a href="#next">Next Steps</a></li>
+  </ol>
+</div>
+
+<!-- ══════════════════════════════════ 1. PIPELINE ═══════════════════════════════════════════ -->
+<h2 id="pipeline"><span class="icon">1.</span> Pipeline Architecture</h2>
+
+<p>
+  The CLAMS Agent pipeline processes archival broadcast videos through a sequence of
+  analysis stages, building a structured <strong>video index</strong> that captures
+  scene boundaries, spoken content, on-screen text, and named entities. This index
+  then feeds an automated QA benchmark generator.
+</p>
+
+<div class="pipeline-flow">
+  <div class="pipeline-step">
+    <div class="step-num">Step 1</div>
+    <div class="step-name">Scene Detection</div>
+    <div class="step-detail">PySceneDetect<br>Shot boundaries</div>
+  </div>
+  <div class="pipeline-arrow">&rarr;</div>
+  <div class="pipeline-step">
+    <div class="step-num">Step 2</div>
+    <div class="step-name">ASR</div>
+    <div class="step-detail">faster-whisper<br>Speech &rarr; text</div>
+  </div>
+  <div class="pipeline-arrow">&rarr;</div>
+  <div class="pipeline-step">
+    <div class="step-num">Step 3</div>
+    <div class="step-name">Indexing</div>
+    <div class="step-detail">JSON + ChromaDB<br>Segment alignment</div>
+  </div>
+  <div class="pipeline-arrow">&rarr;</div>
+  <div class="pipeline-step">
+    <div class="step-num">Step 4</div>
+    <div class="step-name">NER</div>
+    <div class="step-detail">spaCy en_core_web_sm<br>Entity extraction</div>
+  </div>
+  <div class="pipeline-arrow">&rarr;</div>
+  <div class="pipeline-step">
+    <div class="step-num">Step 5</div>
+    <div class="step-name">Enrichment</div>
+    <div class="step-detail">Wikidata + Wikipedia<br>Entity grounding</div>
+  </div>
+  <div class="pipeline-arrow">&rarr;</div>
+  <div class="pipeline-step">
+    <div class="step-num">Step 6</div>
+    <div class="step-name">QA Generation</div>
+    <div class="step-detail">6 categories<br>MC + free-form</div>
+  </div>
+</div>
+
+<h3>Extended Pipeline (with GPU)</h3>
+<p class="dim">
+  When GPU is available, the pipeline adds SWT scene classification (bars, slate, chyron, credits),
+  OCR via docTR or SmolVLM2, and visual captioning. The current batch was processed on
+  Apple Silicon (M-series, CPU only).
+</p>
+
+<div class="pipeline-flow">
+  <div class="pipeline-step" style="border-color: var(--accent4); opacity: 0.7;">
+    <div class="step-num" style="color: var(--accent4);">GPU Step 1</div>
+    <div class="step-name">SWT Detection</div>
+    <div class="step-detail">ConvNeXt classifier<br>Scene type labels</div>
+  </div>
+  <div class="pipeline-arrow" style="opacity: 0.5;">&rarr;</div>
+  <div class="pipeline-step" style="border-color: var(--accent4); opacity: 0.7;">
+    <div class="step-num" style="color: var(--accent4);">GPU Step 2</div>
+    <div class="step-name">OCR</div>
+    <div class="step-detail">docTR / SmolVLM2<br>On-screen text</div>
+  </div>
+  <div class="pipeline-arrow" style="opacity: 0.5;">&rarr;</div>
+  <div class="pipeline-step" style="border-color: var(--accent4); opacity: 0.7;">
+    <div class="step-num" style="color: var(--accent4);">GPU Step 3</div>
+    <div class="step-name">Captioning</div>
+    <div class="step-detail">SmolVLM2<br>Visual descriptions</div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════ 2. MODELS ═══════════════════════════════════════════ -->
+<h2 id="models"><span class="icon">2.</span> Models Used</h2>
+
+<div class="model-card blue">
+  <h4>PySceneDetect &mdash; Shot Boundary Detection</h4>
+  <div class="model-meta">
+    <span>Type: Content-based detector</span>
+    <span>Backend: OpenCV</span>
+    <span>GPU: Not required</span>
+  </div>
+  <p>
+    Detects shot boundaries by analyzing pixel-level changes between consecutive frames.
+    Uses the <strong>ContentDetector</strong> algorithm, which computes HSV color space
+    differences and triggers a cut when the delta exceeds a configurable threshold.
+    CPU-only and fast &mdash; processes a 1-hour video in ~2 minutes on Apple Silicon.
+  </p>
+  <p class="dim">
+    Output: TimeFrame annotations with start/end milliseconds and "shot" labels.
+    Unlike SWT (Scenes With Text), PySceneDetect does not classify scene types &mdash;
+    all segments receive a generic "shot" label. SWT provides semantic labels
+    (bars, slate, chyron, credits, person) but requires GPU.
+  </p>
+</div>
+
+<div class="model-card green">
+  <h4>faster-whisper (small) &mdash; Automatic Speech Recognition</h4>
+  <div class="model-meta">
+    <span>Architecture: Whisper (OpenAI)</span>
+    <span>Backend: CTranslate2</span>
+    <span>Parameters: 244M</span>
+    <span>Compute: int8 quantized, CPU</span>
+  </div>
+  <p>
+    CTranslate2-optimized port of OpenAI's Whisper model, achieving <strong>4&times; speedup</strong>
+    over the original Python implementation with equivalent accuracy. The <code>small</code> model
+    balances quality and speed for batch processing. Supports VAD (Voice Activity Detection)
+    filtering to skip silence and reduce processing time.
+  </p>
+  <p class="dim">
+    Performance on this corpus: 30,470 words from ~4 hours of audio. Transcription speed varies:
+    short clips process at 5&ndash;10&times; realtime; long broadcasts (40+ min) can drop below
+    1&times; realtime on CPU. The <code>medium</code> (769M params) or <code>large-v3</code> (1.55B)
+    models offer better accuracy for challenging audio (overlapping speech, archival noise).
+  </p>
+  <table>
+    <tr><th>Model</th><th>Params</th><th>English WER</th><th>Speed (CPU)</th></tr>
+    <tr><td>tiny</td><td>39M</td><td>~8.0%</td><td>~30&times; RT</td></tr>
+    <tr><td>base</td><td>74M</td><td>~5.5%</td><td>~15&times; RT</td></tr>
+    <tr><td><strong>small</strong></td><td>244M</td><td>~4.0%</td><td>~5&times; RT</td></tr>
+    <tr><td>medium</td><td>769M</td><td>~3.2%</td><td>~2&times; RT</td></tr>
+    <tr><td>large-v3</td><td>1.55B</td><td>~2.5%</td><td>~0.5&times; RT</td></tr>
+  </table>
+</div>
+
+<div class="model-card pink">
+  <h4>spaCy en_core_web_sm &mdash; Named Entity Recognition</h4>
+  <div class="model-meta">
+    <span>Architecture: CNN + HashEmbedCNN</span>
+    <span>Parameters: 12M</span>
+    <span>GPU: Not required</span>
+    <span>Labels: 18 entity types</span>
+  </div>
+  <p>
+    Statistical NER pipeline trained on OntoNotes 5.0. Extracts named entities from ASR
+    transcripts with types including PERSON, ORG, GPE (geo-political entity), LOC, FAC
+    (facility), EVENT, DATE, and more. The pipeline filters to "interesting" types
+    (PERSON, ORG, GPE, LOC, FAC, EVENT), discarding numeric types like CARDINAL and ORDINAL.
+  </p>
+  <p class="dim">
+    Extracted 1,983 raw entity mentions (229 unique) from 30K words.
+    Entity quality depends on ASR accuracy &mdash; whisper transcription errors propagate
+    to NER (e.g., "Mundelein" tagged as PERSON when it's a city in Illinois).
+    The larger <code>en_core_web_trf</code> (transformer-based, 438M params) offers better
+    accuracy but is significantly slower.
+  </p>
+</div>
+
+<div class="model-card yellow">
+  <h4>nomic-embed-text &mdash; Semantic Embeddings</h4>
+  <div class="model-meta">
+    <span>Architecture: BERT-based</span>
+    <span>Dimensions: 768</span>
+    <span>Context: 8,192 tokens</span>
+    <span>Served via: Ollama (localhost)</span>
+  </div>
+  <p>
+    Open-source text embedding model used to generate dense vector representations
+    of segment summaries for semantic search via ChromaDB. Each segment's fused summary
+    (combining scene label, ASR transcript, OCR text, and entity descriptions) is embedded
+    and stored for retrieval. Supports queries like "find segments about tourism in Hawaii"
+    across the entire indexed corpus.
+  </p>
+</div>
+
+<div class="model-card">
+  <h4>SWT Detection (ConvNeXt V2) &mdash; Scene Classification <span class="dim">[GPU pipeline]</span></h4>
+  <div class="model-meta">
+    <span>Architecture: ConvNeXt V2 (Large / Tiny)</span>
+    <span>Task: Frame-level scene classification</span>
+    <span>Labels: 10+ scene types</span>
+    <span>GPU: Required</span>
+  </div>
+  <p>
+    Two-stage CLAMS app: (1) CNN classifier predicts scene type per frame (TimePoint),
+    (2) stitcher merges consecutive same-label frames into TimeFrame segments.
+    Labels include: <code>bars</code>, <code>slate</code>, <code>credits</code>,
+    <code>chyron</code>, <code>person &amp; chyron</code>, <code>other text</code>,
+    <code>filmed text</code>. Used for the cpb-aacip reference video (35 richly-labeled segments).
+    Not available in current CPU-only batch.
+  </p>
+</div>
+
+<div class="model-card">
+  <h4>Wikidata + Wikipedia &mdash; Entity Grounding <span class="dim">[enrichment]</span></h4>
+  <div class="model-meta">
+    <span>Source: Wikidata SPARQL API + Wikipedia REST API</span>
+    <span>Fallback: DuckDuckGo web search</span>
+  </div>
+  <p>
+    Three-layer lookup for each named entity: (1) Wikidata for structured facts
+    (occupation, position held, date of birth), (2) Wikipedia for prose descriptions,
+    (3) DuckDuckGo as fallback for entities not in knowledge bases. Results are stored
+    in the index's <code>grounded_entities</code> field, enabling entity-linking QA questions.
+  </p>
+</div>
+
+<div class="model-card">
+  <h4>qwen2.5:7b &mdash; Agent LLM <span class="dim">[interactive mode]</span></h4>
+  <div class="model-meta">
+    <span>Architecture: Qwen2.5 (Alibaba)</span>
+    <span>Parameters: 7B</span>
+    <span>Served via: Ollama</span>
+    <span>Role: Tool-use reasoning</span>
+  </div>
+  <p>
+    The LangGraph agent's reasoning backbone. In interactive mode (LangGraph Studio or TUI),
+    the LLM decides which CLAMS tools to run, in what order, and with what parameters.
+    Operates in an iterative loop: observe MMIF state &rarr; decide next tool &rarr;
+    execute &rarr; observe result &rarr; repeat until done (max 10 iterations).
+    Not used in the batch pipeline, which follows a fixed sequence.
+  </p>
+</div>
+
+
+<!-- ══════════════════════════════════ 3. CORPUS ═══════════════════════════════════════════ -->
+<h2 id="corpus"><span class="icon">3.</span> Video Corpus</h2>
+
+<p>
+  11 archival broadcast videos from the <a href="https://archive.org" style="color: var(--accent);">Internet Archive</a>'s
+  FuzzyMemoriesTV collection (Chicago-area TV recordings, 1970s&ndash;1980s) plus one
+  AAPB (American Archive of Public Broadcasting) reference video from Hawaii.
+</p>
+
+<table>
+  <tr>
+    <th>Video</th>
+    <th>Year</th>
+    <th>Type</th>
+    <th>Duration</th>
+    <th>Segments</th>
+    <th>ASR Words</th>
+    <th>Entities</th>
+  </tr>
+  <tr>
+    <td>ABC &mdash; Barbary Coast "Funny Money"</td>
+    <td>1975</td>
+    <td>TV Drama</td>
+    <td>~60 min</td>
+    <td class="num">347</td>
+    <td class="num">5,205</td>
+    <td class="num">2</td>
+  </tr>
+  <tr>
+    <td>ABC &mdash; Future Cop "Kansas City Kid"</td>
+    <td>1977</td>
+    <td>TV Drama</td>
+    <td>~60 min</td>
+    <td class="num">585</td>
+    <td class="num">6,510</td>
+    <td class="num">15</td>
+  </tr>
+  <tr>
+    <td>ABC &mdash; General Hospital (Last 14 min)</td>
+    <td>1979</td>
+    <td>Soap Opera</td>
+    <td>~14 min</td>
+    <td class="num">179</td>
+    <td class="num">2,210</td>
+    <td class="num">0</td>
+  </tr>
+  <tr>
+    <td>ABC &mdash; Let's Make a Deal (Opening)</td>
+    <td>1976</td>
+    <td>Game Show</td>
+    <td>~3 min</td>
+    <td class="num">36</td>
+    <td class="num">0</td>
+    <td class="num">0</td>
+  </tr>
+  <tr>
+    <td>ABC News Nightline &mdash; Bitter Cold</td>
+    <td>1982</td>
+    <td>News</td>
+    <td>~16 min</td>
+    <td class="num">110</td>
+    <td class="num">1,443</td>
+    <td class="num">6</td>
+  </tr>
+  <tr>
+    <td>ABC News &mdash; President at the UN</td>
+    <td>1985</td>
+    <td>News Special</td>
+    <td>~41 min</td>
+    <td class="num">116</td>
+    <td class="num">1,880</td>
+    <td class="num">15</td>
+  </tr>
+  <tr>
+    <td>ABC News Weekend Report (Feb 1979)</td>
+    <td>1979</td>
+    <td>News</td>
+    <td>~13 min</td>
+    <td class="num">132</td>
+    <td class="num">1,752</td>
+    <td class="num">10</td>
+  </tr>
+  <tr>
+    <td>ABC News Weekend Report (Mar 1980)</td>
+    <td>1980</td>
+    <td>News</td>
+    <td>~20 min</td>
+    <td class="num">129</td>
+    <td class="num">1,488</td>
+    <td class="num">14</td>
+  </tr>
+  <tr>
+    <td>CBS Family Presentation Bumper</td>
+    <td>1973</td>
+    <td>Bumper</td>
+    <td>5 sec</td>
+    <td class="num">1</td>
+    <td class="num">0</td>
+    <td class="num">0</td>
+  </tr>
+  <tr>
+    <td>Alexander's Star &mdash; Don't Pick It Up</td>
+    <td>1982</td>
+    <td>Commercial</td>
+    <td>30 sec</td>
+    <td class="num">15</td>
+    <td class="num">247</td>
+    <td class="num">1</td>
+  </tr>
+  <tr style="border-top: 2px solid var(--accent);">
+    <td>cpb-aacip-225-009w0w1j (AAPB Hawaii)</td>
+    <td>~1995</td>
+    <td>Public Media</td>
+    <td>~58 min</td>
+    <td class="num">35</td>
+    <td class="num">9,735</td>
+    <td class="num">166</td>
+  </tr>
+  <tr style="font-weight: 700; background: var(--surface);">
+    <td>TOTAL</td>
+    <td></td>
+    <td></td>
+    <td>~5 hours</td>
+    <td class="num">1,685</td>
+    <td class="num">30,470</td>
+    <td class="num">229</td>
+  </tr>
+</table>
+
+<p class="dim">
+  Note: The FuzzyMemoriesTV videos were processed with PySceneDetect (shot boundaries only),
+  while the AAPB reference video was processed with the full GPU pipeline including SWT scene
+  classification, yielding richer labels (bars, slate, chyron, person, credits).
+</p>
+
+
+<!-- ══════════════════════════════════ 4. INDEX ════════════════════════════════════════════ -->
+<h2 id="index"><span class="icon">4.</span> Video Index Structure</h2>
+
+<p>
+  Each video is stored as a JSON index file (<code>data/video_indexes/{video_id}.json</code>)
+  containing per-segment structured data. Segments are also embedded in ChromaDB for
+  semantic vector search.
+</p>
+
+<h3>Segment Data Model</h3>
+<pre><code>{
+  <span class="json-key">"segment_id"</span>: <span class="json-str">"cpb-aacip-225-009w0w1j_227528_305506"</span>,
+  <span class="json-key">"start_ms"</span>: <span class="json-num">227528</span>,
+  <span class="json-key">"end_ms"</span>: <span class="json-num">305506</span>,
+  <span class="json-key">"scene_label"</span>: <span class="json-str">"person &amp; chyron"</span>,
+  <span class="json-key">"segment_type"</span>: <span class="json-str">"interview"</span>,
+  <span class="json-key">"classification"</span>: { <span class="json-str">"person &amp; chyron"</span>: <span class="json-num">0.504</span> },
+  <span class="json-key">"ocr_text"</span>: <span class="json-str">""</span>,
+  <span class="json-key">"asr_transcript"</span>: <span class="json-str">"Tom Sakata is a longtime Hawaii Visitors Bureau
+    official picked to be president last fall. The Bureau has a $20 million
+    contract with the state to promote Hawaii tourism..."</span>,
+  <span class="json-key">"visual_caption"</span>: <span class="json-str">""</span>,
+  <span class="json-key">"named_entities"</span>: [
+    { <span class="json-str">"text"</span>: <span class="json-str">"Tom Sakata"</span>, <span class="json-str">"type"</span>: <span class="json-str">"PERSON"</span> },
+    { <span class="json-str">"text"</span>: <span class="json-str">"Hawaii Visitors Bureau"</span>, <span class="json-str">"type"</span>: <span class="json-str">"ORG"</span> },
+    { <span class="json-str">"text"</span>: <span class="json-str">"Waikiki"</span>, <span class="json-str">"type"</span>: <span class="json-str">"GPE"</span> }
+  ],
+  <span class="json-key">"grounded_entities"</span>: {
+    <span class="json-str">"Hawaii Visitors Bureau"</span>: <span class="json-str">"Government tourism agency..."</span>,
+    <span class="json-str">"Waikiki"</span>: <span class="json-str">"Neighborhood of Honolulu, known for beach..."</span>
+  },
+  <span class="json-key">"summary"</span>: <span class="json-str">"[speaker with name/title overlay] (78.0s) Speech: Tom Sakata
+    is a longtime Hawaii Visitors Bureau official... About: Hawaii Visitors
+    Bureau: Government tourism agency; Waikiki: Neighborhood of Honolulu"</span>
+}</code></pre>
+
+<h3>Example: News Broadcast Segment</h3>
+<pre><code>{
+  <span class="json-key">"segment_id"</span>: <span class="json-str">"ABC_News_Special_Report_..._27127_29939"</span>,
+  <span class="json-key">"scene_label"</span>: <span class="json-str">"shot"</span>,
+  <span class="json-key">"asr_transcript"</span>: <span class="json-str">"So is extra warm sleepwear for ladies 100%
+    cotton final just $6.99 plush paws cozy slippers... We interrupt our
+    regular program schedule to bring you this ABC news special"</span>,
+  <span class="json-key">"named_entities"</span>: [
+    { <span class="json-str">"text"</span>: <span class="json-str">"ABC"</span>, <span class="json-str">"type"</span>: <span class="json-str">"ORG"</span> }
+  ]
+}</code></pre>
+<p class="dim">
+  This segment captures the moment a commercial is interrupted by a breaking news bulletin &mdash;
+  a pattern common in archival broadcast recordings.
+</p>
+
+
+<!-- ══════════════════════════════════ 5. QA DATASET ══════════════════════════════════════ -->
+<h2 id="qa"><span class="icon">5.</span> QA Benchmark Dataset</h2>
+
+<p>
+  The QA generator produces question-answer pairs across <strong>6 categories</strong>,
+  in both free-form and multiple-choice formats. Questions are derived deterministically
+  from the structured video index &mdash; no LLM is used in generation (template-based).
+</p>
+
+<h3>Category Distribution</h3>
+<div class="bar-chart">
+  <div class="bar-row">
+    <div class="bar-label">text_extraction</div>
+    <div class="bar-track"><div class="bar-fill green" style="width: 34%;">765</div></div>
+  </div>
+  <div class="bar-row">
+    <div class="bar-label">scene_classification</div>
+    <div class="bar-track"><div class="bar-fill purple" style="width: 32%;">720</div></div>
+  </div>
+  <div class="bar-row">
+    <div class="bar-label">cross_annotation</div>
+    <div class="bar-track"><div class="bar-fill pink" style="width: 28%;">616</div></div>
+  </div>
+  <div class="bar-row">
+    <div class="bar-label">named_entity</div>
+    <div class="bar-track"><div class="bar-fill blue" style="width: 3.2%;">72</div></div>
+  </div>
+  <div class="bar-row">
+    <div class="bar-label">entity_linking</div>
+    <div class="bar-track"><div class="bar-fill yellow" style="width: 2.6%;">58</div></div>
+  </div>
+</div>
+
+<h3>Difficulty &amp; Modality</h3>
+<table>
+  <tr><th>Metric</th><th>Count</th><th>Percentage</th></tr>
+  <tr><td>Easy</td><td class="num">743</td><td class="num">33%</td></tr>
+  <tr><td>Medium</td><td class="num">1,385</td><td class="num">62%</td></tr>
+  <tr><td>Hard</td><td class="num">103</td><td class="num">5%</td></tr>
+  <tr style="border-top: 1px solid var(--border);">
+    <td>Requires video</td><td class="num">1,322</td><td class="num">59%</td></tr>
+  <tr><td>Requires audio</td><td class="num">927</td><td class="num">42%</td></tr>
+  <tr><td>Multiple-choice (MC set)</td><td class="num">1,313</td><td class="num">59%</td></tr>
+</table>
+
+<h3>Question Categories Explained</h3>
+
+<div class="card-grid">
+  <div class="card">
+    <h4>Scene Classification</h4>
+    <p class="detail">720 questions &bull; What scene type at timestamp? How many X scenes? First/last scene?</p>
+    <p class="dim">Tests visual understanding of scene boundaries and types. With SWT labels: bars, slate, chyron, credits. With PySceneDetect: shot boundaries.</p>
+    <span class="tag">requires_video</span>
+    <span class="tag accent">MC supported</span>
+  </div>
+  <div class="card">
+    <h4>Text Extraction</h4>
+    <p class="detail">765 questions &bull; What is said at time X? Does video have dialogue? Summarize discussion.</p>
+    <p class="dim">Tests ASR transcript retrieval and comprehension. Includes both lookup (specific time range) and summarization tasks.</p>
+    <span class="tag">requires_audio</span>
+    <span class="tag">asr</span>
+  </div>
+  <div class="card">
+    <h4>Named Entity</h4>
+    <p class="detail">72 questions &bull; What people/orgs/places are mentioned? Is X mentioned?</p>
+    <p class="dim">Tests entity extraction from spoken content. Includes positive/negative existence, type-filtered aggregation, and per-segment queries.</p>
+    <span class="tag">requires_audio</span>
+    <span class="tag accent">MC supported</span>
+  </div>
+  <div class="card">
+    <h4>Entity Linking</h4>
+    <p class="detail">58 questions &bull; What is [entity]? Which entities are linked to knowledge bases?</p>
+    <p class="dim">Tests ability to connect mentioned entities to external knowledge (Wikidata/Wikipedia). Requires both entity recognition and world knowledge.</p>
+    <span class="tag">grounding</span>
+    <span class="tag">wikidata</span>
+  </div>
+  <div class="card">
+    <h4>Cross-Annotation</h4>
+    <p class="detail">616 questions &bull; Who speaks during chyron? What follows the slate? Longest segment?</p>
+    <p class="dim">Multi-layer reasoning: joins scene labels with entities, transcripts with visual context. Includes temporal ordering and duration questions.</p>
+    <span class="tag">requires_video</span>
+    <span class="tag">requires_audio</span>
+  </div>
+  <div class="card">
+    <h4>Temporal Reasoning</h4>
+    <p class="detail">Embedded in cross_annotation &bull; Before/after ordering, duration, sequence.</p>
+    <p class="dim">Tests understanding of temporal structure: scene ordering, person appearance order, segment duration comparison.</p>
+    <span class="tag">temporal</span>
+    <span class="tag accent">MC supported</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════ 6. EXAMPLES ═════════════════════════════════════════ -->
+<h2 id="examples"><span class="icon">6.</span> Example QA Pairs</h2>
+
+<h3>Scene Classification</h3>
+<div class="example-block">
+  <div class="label">Scene Classification &bull; Easy</div>
+  <div class="question">Q: What type of scene appears at timestamp 00:01:49.192?</div>
+  <div class="answer">A: shot (confidence: 0.00)</div>
+  <div class="meta">Video: ABC &mdash; Barbary Coast (1975) &bull; Tags: scene-at-time, requires_video</div>
+</div>
+
+<div class="example-block">
+  <div class="label">Scene Classification &bull; Easy &bull; AAPB Reference</div>
+  <div class="question">Q: Does this video contain any person &amp; chyron scenes?</div>
+  <div class="answer">A: Yes &mdash; 12 segments found</div>
+  <div class="meta">Video: cpb-aacip-225-009w0w1j &bull; Tags: existence, requires_video</div>
+</div>
+
+<h3>Text Extraction (ASR)</h3>
+<div class="example-block">
+  <div class="label">Text Extraction &bull; Medium</div>
+  <div class="question">Q: What is said between 00:01:06.643 and 00:01:06.684?</div>
+  <div class="answer">A: "I sell Avon, and I can give you a special kind of attention you can only get at home."</div>
+  <div class="meta">Video: ABC &mdash; Future Cop (1977) &bull; Tags: asr, transcript, requires_audio</div>
+</div>
+
+<div class="example-block">
+  <div class="label">Text Extraction &bull; Medium</div>
+  <div class="question">Q: What is said between 00:00:00.210 and 00:00:00.256?</div>
+  <div class="answer">A: "Sir yeah, please don't pick up Alexander star why because Alexander star is a puzzle that'll drive you wacky"</div>
+  <div class="meta">Video: Alexander's Star Commercial (1982) &bull; Tags: asr, requires_audio</div>
+</div>
+
+<h3>Named Entity Recognition</h3>
+<div class="example-block">
+  <div class="label">Named Entity &bull; Medium</div>
+  <div class="question">Q: What people are mentioned in this video?</div>
+  <div class="answer">A: Ali Teymur, Mikhail Gorbachev, Mundelein, Peter Jennings, Reagan</div>
+  <div class="meta">Video: ABC News &mdash; President at the UN (1985) &bull; Tags: person, aggregation, requires_audio</div>
+</div>
+
+<div class="example-block">
+  <div class="label">Named Entity &bull; Medium</div>
+  <div class="question">Q: What organizations are mentioned in this video?</div>
+  <div class="answer">A: ABC, CBS, FBI, Hawaiian Airlines, NBC, United Nations, Waikiki Improvement Association</div>
+  <div class="meta">Video: cpb-aacip-225-009w0w1j &bull; Tags: organization, aggregation</div>
+</div>
+
+<h3>Entity Linking</h3>
+<div class="example-block">
+  <div class="label">Entity Linking &bull; Hard</div>
+  <div class="question">Q: What do you know about 'Hawaii Visitors Bureau' as mentioned in this video?</div>
+  <div class="answer">A: Government tourism promotion agency with a $20 million state contract. Mentioned in context of state auditor criticism and organizational reform efforts.</div>
+  <div class="meta">Video: cpb-aacip-225-009w0w1j &bull; Tags: grounding, wikidata, requires_audio</div>
+</div>
+
+<h3>Cross-Annotation</h3>
+<div class="example-block">
+  <div class="label">Cross-Annotation &bull; Hard</div>
+  <div class="question">Q: Who is speaking during the person &amp; chyron segment at 00:03:47.528?</div>
+  <div class="answer">A: Tom Sakata &mdash; discussing Hawaii Visitors Bureau reform</div>
+  <div class="meta">Video: cpb-aacip-225-009w0w1j &bull; Tags: cross-layer, speaker-identification, requires_audio, requires_video</div>
+</div>
+
+<div class="example-block">
+  <div class="label">Cross-Annotation &bull; Medium &bull; Temporal</div>
+  <div class="question">Q: What type of scene follows the slate segment at 00:01:32.032?</div>
+  <div class="answer">A: other text (at 00:01:39.706)</div>
+  <div class="meta">Video: cpb-aacip-225-009w0w1j &bull; Tags: temporal, ordering, requires_video</div>
+</div>
+
+<h3>Multiple Choice Examples</h3>
+<div class="example-block">
+  <div class="label">Multiple Choice &bull; Scene Classification</div>
+  <div class="question">Q: What type of scene appears first in this video?</div>
+  <div class="answer">
+    A) other text &nbsp;&nbsp; B) filmed text &nbsp;&nbsp; C) bars &nbsp;&nbsp; <strong style="color: var(--accent2);">D) shot &larr; correct</strong>
+  </div>
+  <div class="meta">Distractors drawn from global scene label pool</div>
+</div>
+
+<div class="example-block">
+  <div class="label">Multiple Choice &bull; Named Entity</div>
+  <div class="question">Q: Which of the following people is mentioned in this video?</div>
+  <div class="answer">
+    A) Dr. Zachary Pemberton &nbsp;&nbsp; <strong style="color: var(--accent2);">B) Peter Jennings &larr; correct</strong> &nbsp;&nbsp; C) Maria Gonzalez-Chen &nbsp;&nbsp; D) Sarah Nightingale
+  </div>
+  <div class="meta">Distractors: fictional names mixed with real entities from the corpus</div>
+</div>
+
+<div class="example-block">
+  <div class="label">Multiple Choice &bull; Temporal</div>
+  <div class="question">Q: Is Tom Sakata mentioned before or after Stephen Boyle?</div>
+  <div class="answer">
+    <strong style="color: var(--accent2);">A) Before &larr; correct</strong> &nbsp;&nbsp; B) After &nbsp;&nbsp; C) At the same time &nbsp;&nbsp; D) Neither is mentioned
+  </div>
+  <div class="meta">Grounded in first-appearance timestamps from the index</div>
+</div>
+
+
+<!-- ══════════════════════════════════ 7. COMPARISON ══════════════════════════════════════ -->
+<h2 id="comparison"><span class="icon">7.</span> Comparison to Research Benchmarks</h2>
+
+<table>
+  <tr>
+    <th>Benchmark</th>
+    <th>Size</th>
+    <th>Format</th>
+    <th>Generation</th>
+    <th>Domain</th>
+    <th>Key Innovation</th>
+  </tr>
+  <tr>
+    <td><strong>CinePile</strong> (NeurIPS'24)</td>
+    <td>305K</td>
+    <td>5-choice MC</td>
+    <td>LLM from audio descriptions</td>
+    <td>Movies</td>
+    <td>Deaf-blind adversarial filtering</td>
+  </tr>
+  <tr>
+    <td><strong>LongVideoBench</strong> (NeurIPS'24)</td>
+    <td>6.7K</td>
+    <td>MC</td>
+    <td>Human annotated</td>
+    <td>Web videos</td>
+    <td>Referring reasoning</td>
+  </tr>
+  <tr>
+    <td><strong>Video-MME</strong> (CVPR'25)</td>
+    <td>2.7K</td>
+    <td>MC</td>
+    <td>Human crafted</td>
+    <td>Mixed</td>
+    <td>Certificate length</td>
+  </tr>
+  <tr>
+    <td><strong>EgoSchema</strong> (NeurIPS'23)</td>
+    <td>5K</td>
+    <td>5-choice MC</td>
+    <td>Human curated</td>
+    <td>Egocentric</td>
+    <td>Long temporal reasoning</td>
+  </tr>
+  <tr>
+    <td><strong>MVBench</strong> (CVPR'24)</td>
+    <td>4K</td>
+    <td>MC</td>
+    <td>Auto-converted</td>
+    <td>Mixed</td>
+    <td>Static-to-dynamic conversion</td>
+  </tr>
+  <tr>
+    <td><strong>MLVU</strong> (CVPR'25)</td>
+    <td>2.6K</td>
+    <td>MC + open</td>
+    <td>LLM + human</td>
+    <td>Long video</td>
+    <td>Needle-in-haystack</td>
+  </tr>
+  <tr style="background: rgba(99, 102, 241, 0.1);">
+    <td><strong>CLAMS QA</strong> (ours)</td>
+    <td>2.2K</td>
+    <td>MC + free-form</td>
+    <td>Template from structured index</td>
+    <td>Archival broadcast</td>
+    <td>Multi-modal cross-annotation</td>
+  </tr>
+</table>
+
+<h3>Our Unique Contributions</h3>
+<div class="card-grid">
+  <div class="card">
+    <h4>First Archival Broadcast Benchmark</h4>
+    <p class="dim">No existing QA benchmark targets historical TV, news broadcasts, or public media archives. Despite massive collections (AAPB: 68K+ hours, Internet Archive TV News: 380K+ hours), no structured QA evaluation exists for this domain.</p>
+  </div>
+  <div class="card">
+    <h4>Multi-Modal Cross-Annotation</h4>
+    <p class="dim">Questions that require jointly reasoning over scene type + ASR transcript + OCR text + named entities. "Who speaks during the chyron?" needs visual scene classification, speech recognition, and entity extraction simultaneously.</p>
+  </div>
+  <div class="card">
+    <h4>Structured Index Grounding</h4>
+    <p class="dim">All answers are grounded in a machine-readable structured index with precise timestamps, confidence scores, and entity links. This enables automated evaluation without human judgment for most question types.</p>
+  </div>
+  <div class="card">
+    <h4>On-Screen Text Focus</h4>
+    <p class="dim">Current video LLMs score below 47% on video OCR tasks (VidText, 2025). Our pipeline's pre-extracted OCR from slates, chyrons, and credits provides ground truth for evaluating text-in-video understanding.</p>
+  </div>
+</div>
+
+<h3>Known Gaps (vs. State of the Art)</h3>
+<div class="card-grid">
+  <div class="card">
+    <h4>No Adversarial Filtering</h4>
+    <p class="dim">CinePile 2.0 uses a "deaf-blind LLM" to identify questions answerable without video. We tag modality requirements but don't empirically test them. <strong>Planned:</strong> Run text-only LLM baseline, rewrite biased questions.</p>
+  </div>
+  <div class="card">
+    <h4>Template-Only Generation</h4>
+    <p class="dim">Our questions follow fixed templates ("What scene at X?"). LLM-generated questions (CinePile, MLVU) are more diverse and natural. <strong>Planned:</strong> LLM-augmented generation from structured context.</p>
+  </div>
+  <div class="card">
+    <h4>No Multi-Hop Reasoning</h4>
+    <p class="dim">Most questions are single-hop lookups. Multi-hop chains ("What org employs the person who speaks during the first chyron after the slate?") are underrepresented. <strong>Planned:</strong> Chain-of-evidence question templates.</p>
+  </div>
+  <div class="card">
+    <h4>Scale</h4>
+    <p class="dim">2.2K questions vs. CinePile's 305K. Sufficient for evaluation but small for training. Growing the corpus and adding LLM generation will increase scale.</p>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════ 8. NEXT STEPS ══════════════════════════════════════ -->
+<h2 id="next"><span class="icon">8.</span> Next Steps</h2>
+
+<div class="card-grid">
+  <div class="card">
+    <h4>1. LLM-Augmented QA Generation</h4>
+    <p class="dim">Feed structured index context to an LLM to generate natural-language questions, multi-hop reasoning chains, and more diverse question types beyond templates.</p>
+  </div>
+  <div class="card">
+    <h4>2. Deaf-Blind Adversarial Filtering</h4>
+    <p class="dim">Run all questions through a text-only LLM (no video/audio). Questions it can answer correctly are biased &mdash; rewrite or discard them. Inspired by CinePile 2.0.</p>
+  </div>
+  <div class="card">
+    <h4>3. GPU Pipeline (SWT + OCR)</h4>
+    <p class="dim">Re-process videos with SWT scene classification and docTR/SmolVLM2 OCR on Aristotle (GPU server). This will add rich scene labels and on-screen text extraction.</p>
+  </div>
+  <div class="card">
+    <h4>4. HITL Quality Review</h4>
+    <p class="dim">Use the Gradio review app (already built) for human approval/rejection/editing of generated QA pairs. ELO tournament for comparing model answers.</p>
+  </div>
+  <div class="card">
+    <h4>5. Model Evaluation</h4>
+    <p class="dim">Run the QA benchmark against video LLMs (Qwen-VL, LLaVA, Gemini) to establish baselines and identify where archival video understanding fails.</p>
+  </div>
+  <div class="card">
+    <h4>6. SFT Fine-Tuning</h4>
+    <p class="dim">Generate chain-of-thought tool-use trajectories from the QA dataset for supervised fine-tuning of smaller models on archival video reasoning tasks.</p>
+  </div>
+</div>
+
+
+</div><!-- /container -->
+
+<div class="footer">
+  <p>
+    CLAMS Agent Pipeline &mdash; Generated 2026-03-09<br>
+    <span class="dim">CLAMS Project &bull; Brandeis University &bull; American Archive of Public Broadcasting</span>
+  </p>
+</div>
+
+</body>
+</html>

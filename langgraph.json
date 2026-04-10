@@ -1,0 +1,7 @@
+{
+  "dependencies": ["."],
+  "graphs": {
+    "clams_agent": "./agent.py:graph"
+  },
+  "env": ".env"
+}

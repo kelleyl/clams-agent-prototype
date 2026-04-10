@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>QA Review</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f1117; color: #e0e0e0; display: flex; height: 100vh; }
+
+.sidebar {
+  width: 360px;
+  border-right: 1px solid #2a2d3a;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+.sidebar-header { padding: 12px 16px; border-bottom: 1px solid #2a2d3a; background: #161b22; }
+.sidebar-header h2 { font-size: 14px; color: #c9d1d9; }
+.sidebar-header .stats { font-size: 12px; color: #8b949e; margin-top: 4px; }
+.filter-bar { padding: 8px 16px; border-bottom: 1px solid #2a2d3a; display: flex; gap: 8px; flex-wrap: wrap; }
+.filter-bar select, .filter-bar input { padding: 4px 8px; background: #21262d; border: 1px solid #30363d; border-radius: 4px; color: #c9d1d9; font-size: 12px; }
+.filter-bar input { flex: 1; min-width: 100px; }
+.q-list { flex: 1; overflow-y: auto; }
+.q-item { padding: 10px 16px; border-bottom: 1px solid #1a1d27; cursor: pointer; font-size: 13px; line-height: 1.4; }
+.q-item:hover { background: #161b22; }
+.q-item.active { background: #1f2937; border-left: 3px solid #6b7fff; }
+.q-item.accepted { border-left: 3px solid #4ade80; }
+.q-item.rejected { border-left: 3px solid #f87171; opacity: 0.6; }
+.q-item .q-meta { font-size: 11px; color: #8b949e; margin-top: 2px; }
+.q-item .q-id { color: #6b7fff; font-size: 11px; }
+
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.video-section { background: #000; flex-shrink: 0; }
+.video-section video { width: 100%; max-height: 300px; }
+.video-section .no-video { padding: 40px; text-align: center; color: #555; }
+
+.detail { flex: 1; overflow-y: auto; padding: 20px; }
+.detail h3 { font-size: 16px; color: #fff; margin-bottom: 12px; }
+.detail .answer { color: #4ade80; font-size: 14px; margin-bottom: 16px; }
+.detail .section-label { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #6b7fff; margin-top: 16px; margin-bottom: 8px; }
+
+.evidence-box { background: #161b22; border: 1px solid #2a2d3a; border-radius: 6px; padding: 12px; margin-bottom: 10px; font-size: 13px; line-height: 1.5; }
+.ev-label { font-size: 11px; font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
+.ev-label.speech { color: #60a5fa; }
+.ev-label.visual { color: #a78bfa; }
+.ev-label.ocr { color: #f59e0b; }
+.ev-text { color: #c9d1d9; }
+
+.jump-btn { display: inline-block; padding: 2px 8px; background: #1f6feb; border: none; border-radius: 4px; color: #fff; font-size: 11px; cursor: pointer; margin-left: 8px; }
+.jump-btn:hover { background: #388bfd; }
+
+.time-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+.time-chip { padding: 4px 10px; background: #21262d; border: 1px solid #30363d; border-radius: 12px; font-size: 12px; color: #c9d1d9; cursor: pointer; }
+.time-chip:hover { background: #30363d; border-color: #6b7fff; }
+
+.review-actions { padding: 12px 20px; border-top: 1px solid #2a2d3a; background: #161b22; display: flex; gap: 10px; align-items: center; }
+.review-actions button { padding: 6px 16px; border: 1px solid #30363d; border-radius: 6px; background: #21262d; color: #c9d1d9; cursor: pointer; font-size: 13px; }
+.review-actions button:hover { background: #30363d; }
+.review-actions .accept { background: #1a4731; border-color: #4ade80; color: #4ade80; }
+.review-actions .reject { background: #4a1a1a; border-color: #f87171; color: #f87171; }
+.review-actions .save { background: #1f6feb; border-color: #1f6feb; color: #fff; margin-left: auto; }
+.review-actions .progress { font-size: 12px; color: #8b949e; }
+
+.quality-badges { display: flex; gap: 6px; margin-bottom: 12px; }
+.badge { padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+.badge.high { background: #1a4731; color: #4ade80; }
+.badge.mid { background: #3d2e00; color: #f59e0b; }
+.badge.low { background: #4a1a1a; color: #f87171; }
+
+.index-search { display: flex; gap: 8px; margin-top: 12px; }
+.index-search input { flex: 1; padding: 6px 10px; background: #21262d; border: 1px solid #30363d; border-radius: 6px; color: #c9d1d9; font-size: 13px; }
+.index-search button { padding: 6px 14px; background: #21262d; border: 1px solid #30363d; border-radius: 6px; color: #c9d1d9; cursor: pointer; }
+
+.mc-options { margin-bottom: 16px; }
+.mc-option { padding: 6px 10px; margin-bottom: 4px; background: #161b22; border: 1px solid #2a2d3a; border-radius: 4px; font-size: 13px; }
+.mc-option.correct { border-color: #4ade80; background: #1a2e1a; }
+
+.kbd { display: inline-block; padding: 1px 6px; background: #2a2d3a; border-radius: 3px; font-size: 11px; font-family: monospace; color: #8b949e; margin-left: 4px; }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="sidebar-header">
+    <h2>QA Review</h2>
+    <div class="stats" id="stats">Loading...</div>
+    <div style="font-size:11px; color:#555; margin-top:4px;">Keys: <span class="kbd">j/k</span> navigate <span class="kbd">a</span> accept <span class="kbd">r</span> reject <span class="kbd">u</span> clear</div>
+  </div>
+  <div class="filter-bar">
+    <select id="datasetSelect" onchange="loadDataset(this.value)">
+      <option value="qa-data/raw/qa_v3.jsonl">V3 (Gemini)</option>
+      <option value="qa-data/raw/llm_comprehension_qa_v2_scored.jsonl">V2 (qwen3:30b)</option>
+    </select>
+    <select id="filterFormat" onchange="filterQuestions()">
+      <option value="">All formats</option>
+      <option value="multiple_choice">MC</option>
+      <option value="free_text">Free-text</option>
+    </select>
+    <select id="filterStatus" onchange="filterQuestions()">
+      <option value="">All status</option>
+      <option value="unreviewed">Unreviewed</option>
+      <option value="accepted">Accepted</option>
+      <option value="rejected">Rejected</option>
+    </select>
+    <input type="text" id="filterSearch" placeholder="Search questions..." oninput="filterQuestions()">
+  </div>
+  <div class="q-list" id="qList"></div>
+</div>
+
+<div class="main">
+  <div class="video-section" id="videoSection">
+    <div class="no-video">Select a question to view</div>
+  </div>
+  <div class="detail" id="detail">
+    <p style="color:#555; padding:20px;">Select a question from the list.</p>
+  </div>
+  <div class="review-actions" id="reviewActions" style="display:none;">
+    <button class="accept" onclick="setStatus('accepted')">Accept <span class="kbd">a</span></button>
+    <button class="reject" onclick="setStatus('rejected')">Reject <span class="kbd">r</span></button>
+    <button onclick="setStatus('')">Clear <span class="kbd">u</span></button>
+    <span class="progress" id="reviewProgress"></span>
+    <button class="save" onclick="saveReview()">Save Review</button>
+  </div>
+</div>
+
+<script>
+let allQuestions = [];
+let filteredQuestions = [];
+let currentIdx = -1;
+let reviews = {};
+let indexCache = {};
+let currentVideoId = null;
+
+async function loadDataset(path) {
+  const resp = await fetch(path);
+  const text = await resp.text();
+  allQuestions = text.trim().split('\n').map(l => JSON.parse(l));
+  currentIdx = -1;
+  currentVideoId = null;
+  reviews = {};
+  // Try loading reviews for this dataset
+  const reviewFile = path.includes('v3') ? 'v3_review.json' : 'v2_review.json';
+  try {
+    const r = await fetch('qa-data/reviews/' + reviewFile);
+    if (r.ok) reviews = await r.json();
+  } catch(e) {}
+  filterQuestions();
+  updateStats();
+}
+
+async function init() {
+  await loadDataset('qa-data/raw/qa_v3.jsonl');
+
+  // Load MC options from benchmark (for V2 questions)
+  try {
+    const bResp = await fetch('qa-data/benchmark/v2/benchmark.jsonl');
+    if (bResp.ok) {
+      const bText = await bResp.text();
+      const benchmarkMap = {};
+      bText.trim().split('\n').forEach(l => {
+        const q = JSON.parse(l);
+        if (q.mc_options) benchmarkMap[q.id] = q;
+      });
+      allQuestions.forEach(q => {
+        const bq = benchmarkMap[q.id];
+        if (bq) {
+          q.mc_options = bq.mc_options;
+          q.mc_correct = bq.mc_correct;
+        }
+      });
+    }
+  } catch(e) {}
+
+  document.addEventListener('keydown', e => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+    if (e.key === 'ArrowDown' || e.key === 'j') { selectQuestion(currentIdx + 1); e.preventDefault(); }
+    if (e.key === 'ArrowUp' || e.key === 'k') { selectQuestion(currentIdx - 1); e.preventDefault(); }
+    if (e.key === 'a') setStatus('accepted');
+    if (e.key === 'r') setStatus('rejected');
+    if (e.key === 'u') setStatus('');
+    if (e.key === 's' && (e.metaKey || e.ctrlKey)) { saveReview(); e.preventDefault(); }
+  });
+}
+
+function updateStats() {
+  const accepted = Object.values(reviews).filter(r => r.status === 'accepted').length;
+  const rejected = Object.values(reviews).filter(r => r.status === 'rejected').length;
+  const total = allQuestions.length;
+  document.getElementById('stats').textContent =
+    `${total} questions | ${accepted} accepted | ${rejected} rejected | ${total - accepted - rejected} unreviewed`;
+  document.getElementById('reviewProgress').textContent =
+    `${accepted + rejected}/${total} reviewed`;
+}
+
+function filterQuestions() {
+  const fmt = document.getElementById('filterFormat').value;
+  const status = document.getElementById('filterStatus').value;
+  const search = document.getElementById('filterSearch').value.toLowerCase();
+
+  filteredQuestions = allQuestions.filter(q => {
+    if (fmt && q.format !== fmt) return false;
+    const rev = reviews[q.id] || {};
+    if (status === 'unreviewed' && rev.status) return false;
+    if (status === 'accepted' && rev.status !== 'accepted') return false;
+    if (status === 'rejected' && rev.status !== 'rejected') return false;
+    if (search && !q.question.toLowerCase().includes(search) && !q.video_id.toLowerCase().includes(search)) return false;
+    return true;
+  });
+
+  renderList();
+}
+
+function renderList() {
+  const list = document.getElementById('qList');
+  list.innerHTML = filteredQuestions.map((q, i) => {
+    const rev = reviews[q.id] || {};
+    const cls = rev.status ? ` ${rev.status}` : '';
+    const active = i === currentIdx ? ' active' : '';
+    return `<div class="q-item${cls}${active}" onclick="selectQuestion(${i})" id="qi-${i}">
+      <span class="q-id">${q.id || ''}</span>
+      <div>${q.question.substring(0, 80)}${q.question.length > 80 ? '...' : ''}</div>
+      <div class="q-meta">${q.video_id.substring(0, 35)} | ${q.format}</div>
+    </div>`;
+  }).join('');
+}
+
+async function selectQuestion(idx) {
+  if (idx < 0 || idx >= filteredQuestions.length) return;
+  currentIdx = idx;
+  const q = filteredQuestions[idx];
+
+  renderList();
+  // Scroll active into view
+  const el = document.getElementById('qi-' + idx);
+  if (el) el.scrollIntoView({block: 'nearest'});
+
+  // Load video only if different
+  if (q.video_id !== currentVideoId) {
+    currentVideoId = q.video_id;
+    document.getElementById('videoSection').innerHTML =
+      `<video id="videoPlayer" controls preload="metadata">
+        <source src="/api/video/${q.video_id}" type="video/mp4">
+      </video>`;
+  }
+
+  // Jump to evidence time
+  const times = q.source_segment_times || [];
+  if (times.length > 0) {
+    const startS = (times[0].start_ms || 0) / 1000;
+    setTimeout(() => jumpTo(startS), 300);
+  }
+
+  // Build detail
+  const g = q.grounding || {};
+  const scores = q.quality_scores || {};
+
+  // Time chips
+  let timeChips = '';
+  if (times.length > 0) {
+    timeChips = '<div class="time-chips">';
+    for (const t of times) {
+      const startS = (t.start_ms || 0) / 1000;
+      const endS = (t.end_ms || 0) / 1000;
+      const fmt = s => Math.floor(s/60) + ':' + String(Math.floor(s%60)).padStart(2,'0');
+      const layer = t.layer ? ` [${t.layer}]` : '';
+      timeChips += `<div class="time-chip" onclick="jumpTo(${startS})">${fmt(startS)} - ${fmt(endS)}${layer}</div>`;
+    }
+    timeChips += '</div>';
+  }
+
+  // Quality badges
+  let badges = '';
+  if (scores.naturalness !== undefined) {
+    const b = (val, label) => `<span class="badge ${val >= 4 ? 'high' : val >= 3 ? 'mid' : 'low'}">${label}: ${val}</span>`;
+    badges = `<div class="quality-badges">${b(scores.cognitive_level,'cog')} ${b(scores.naturalness,'nat')} ${b(scores.groundedness,'gnd')} ${b(scores.cross_modal_need,'xmod')}</div>`;
+  }
+
+  // MC options
+  let mcHtml = '';
+  if (q.mc_options) {
+    mcHtml = '<div class="mc-options">';
+    for (const letter of Object.keys(q.mc_options).sort()) {
+      const correct = letter === q.mc_correct ? ' correct' : '';
+      const marker = letter === q.mc_correct ? ' (correct)' : '';
+      mcHtml += `<div class="mc-option${correct}">${letter}. ${q.mc_options[letter]}${marker}</div>`;
+    }
+    mcHtml += '</div>';
+  }
+
+  // Evidence
+  let evHtml = '';
+  if (g.speech_excerpt) {
+    const s = times[0] ? times[0].start_ms / 1000 : 0;
+    evHtml += `<div class="evidence-box"><div class="ev-label speech">Speech ${s ? `<button class="jump-btn" onclick="jumpTo(${s})">Jump</button>` : ''}</div><div class="ev-text">${g.speech_excerpt}</div></div>`;
+  }
+  if (g.visual_reference) {
+    evHtml += `<div class="evidence-box"><div class="ev-label visual">Visual</div><div class="ev-text">${g.visual_reference}</div></div>`;
+  }
+  if (g.ocr_reference) {
+    evHtml += `<div class="evidence-box"><div class="ev-label ocr">OCR</div><div class="ev-text">${g.ocr_reference}</div></div>`;
+  }
+  if (g.reasoning) {
+    evHtml += `<div class="evidence-box"><div class="ev-label" style="color:#8b949e">Reasoning</div><div class="ev-text">${g.reasoning}</div></div>`;
+  }
+
+  document.getElementById('detail').innerHTML = `
+    <h3>${q.question}</h3>
+    <div class="answer">Answer: ${q.answer || ''}</div>
+    ${badges}
+    ${mcHtml}
+    <div class="section-label">Source Segments</div>
+    ${timeChips || '<div style="color:#555">No segment times</div>'}
+    <div class="section-label">Evidence</div>
+    ${evHtml || '<div style="color:#555">No grounding data</div>'}
+    <div class="section-label">Metadata</div>
+    <div class="evidence-box"><div class="ev-text">
+      Video: ${q.video_id}<br>
+      Seed: ${q.seed_entity || ''} (${q.seed_type || ''})<br>
+      Format: ${q.format} | Modalities: ${(q.modalities_required || []).join(', ')}<br>
+      Valid: ${q.cross_modal_valid} | ${q.validation_reason || ''}
+    </div></div>
+    <div class="section-label">Search Index</div>
+    <div class="index-search">
+      <input type="text" id="idxSearch" placeholder="Search this video's index..." onkeydown="if(event.key==='Enter')searchIdx()">
+      <button onclick="searchIdx()">Search</button>
+    </div>
+    <div id="searchResults"></div>
+  `;
+
+  document.getElementById('reviewActions').style.display = 'flex';
+}
+
+function jumpTo(seconds) {
+  const v = document.getElementById('videoPlayer');
+  if (v) { v.currentTime = seconds; v.play(); }
+}
+
+async function searchIdx() {
+  const q = filteredQuestions[currentIdx];
+  const query = document.getElementById('idxSearch').value.trim().toLowerCase();
+  if (!query || !q) return;
+
+  if (!indexCache[q.video_id]) {
+    try {
+      const r = await fetch(`data/video_indexes/${q.video_id}.json`);
+      indexCache[q.video_id] = await r.json();
+    } catch(e) {
+      document.getElementById('searchResults').innerHTML = '<div style="color:#f87171;padding:8px;">Failed to load index</div>';
+      return;
+    }
+  }
+
+  const idx = indexCache[q.video_id];
+  const layers = idx.layers || {};
+  const results = [];
+  const terms = query.split(/\s+/);
+
+  for (const ln of ['asr','ocr','visual_captions','speakers','entities']) {
+    for (const item of (layers[ln]||{}).items||[]) {
+      const text = Object.entries(item).filter(([k,v]) => typeof v === 'string').map(([k,v]) => v).join(' ');
+      if (terms.every(t => text.toLowerCase().includes(t)))
+        results.push({layer: ln, start: item.start_ms, end: item.end_ms, text: text.substring(0,200)});
+    }
+  }
+  results.sort((a,b) => a.start - b.start);
+
+  const fmt = ms => Math.floor(ms/60000)+':'+String(Math.floor((ms%60000)/1000)).padStart(2,'0');
+  document.getElementById('searchResults').innerHTML = results.length === 0
+    ? `<div style="color:#555;padding:8px;">No results for "${query}"</div>`
+    : results.slice(0,20).map(r => `<div class="evidence-box" style="cursor:pointer" onclick="jumpTo(${r.start/1000})">
+        <span style="font-size:11px;padding:1px 6px;border-radius:3px;background:#2a2d3a;color:#a0a8c0;">${r.layer}</span>
+        <span style="color:#6b7fff;font-size:11px;font-family:monospace;">[${fmt(r.start)}]</span>
+        <button class="jump-btn" onclick="event.stopPropagation();jumpTo(${r.start/1000})">Jump</button>
+        <div class="ev-text" style="margin-top:4px;">${r.text}</div>
+      </div>`).join('');
+}
+
+function setStatus(status) {
+  if (currentIdx < 0) return;
+  const q = filteredQuestions[currentIdx];
+  if (status) {
+    reviews[q.id] = {status};
+  } else {
+    delete reviews[q.id];
+  }
+  updateStats();
+  renderList();
+  // Auto-advance on accept/reject
+  if (status) selectQuestion(currentIdx + 1);
+}
+
+async function saveReview() {
+  const data = JSON.stringify(reviews, null, 2);
+  try {
+    // Try server-side save
+    const r = await fetch('/api/save_review', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: data,
+    });
+    if (r.ok) { alert('Saved ' + Object.keys(reviews).length + ' decisions'); return; }
+  } catch(e) {}
+  // Fallback: download
+  const blob = new Blob([data], {type: 'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'v2_review.json';
+  a.click();
+}
+
+init();
+</script>
+</body>
+</html>

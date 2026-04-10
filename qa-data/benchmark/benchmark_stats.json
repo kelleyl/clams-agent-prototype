@@ -1,0 +1,27 @@
+{
+  "total": 1602,
+  "mc_generated": 734,
+  "mc_adversarial_pass": 542,
+  "mc_adversarial_fail": 845,
+  "mc_hardened": 192,
+  "freetext": 868,
+  "distractor_failed": 868,
+  "mc_by_reasoning_type": {
+    "factual": 431,
+    "cross-modal": 135,
+    "causal": 14,
+    "inferential": 149,
+    "comparative": 5
+  },
+  "ft_by_reasoning_type": {
+    "factual": 447,
+    "cross-modal": 202,
+    "comparative": 11,
+    "inferential": 185,
+    "causal": 23
+  },
+  "mc_count": 734,
+  "ft_count": 868,
+  "total_benchmark": 1602,
+  "model": "qwen3:30b"
+}

@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CLAMS-Agent Benchmark Dataset Documentation</title>
+<style>
+  :root {
+    --bg: #fafafa;
+    --card-bg: #fff;
+    --text: #1a1a2e;
+    --muted: #6b7280;
+    --accent: #2563eb;
+    --accent-light: #dbeafe;
+    --border: #e5e7eb;
+    --green: #059669;
+    --orange: #d97706;
+    --red: #dc2626;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+  h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+  h2 { font-size: 1.4rem; margin-top: 2.5rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--accent); }
+  h3 { font-size: 1.15rem; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--accent); }
+  p { margin-bottom: 0.8rem; }
+  .subtitle { color: var(--muted); font-size: 1.1rem; margin-bottom: 2rem; }
+  .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; }
+  .card-header { font-weight: 600; font-size: 1.1rem; margin-bottom: 0.8rem; }
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+  .stat-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 1.2rem; text-align: center; }
+  .stat-number { font-size: 2rem; font-weight: 700; color: var(--accent); }
+  .stat-label { font-size: 0.85rem; color: var(--muted); margin-top: 0.3rem; }
+  table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+  th, td { padding: 0.6rem 0.8rem; text-align: left; border-bottom: 1px solid var(--border); }
+  th { background: var(--accent-light); font-weight: 600; white-space: nowrap; }
+  tr:hover { background: #f9fafb; }
+  code { background: #f1f5f9; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; }
+  pre { background: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 6px; overflow-x: auto; font-size: 0.82rem; margin: 1rem 0; }
+  .tag { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 12px; font-size: 0.75rem; font-weight: 500; margin-right: 0.3rem; }
+  .tag-blue { background: #dbeafe; color: #1d4ed8; }
+  .tag-green { background: #d1fae5; color: #065f46; }
+  .tag-orange { background: #fef3c7; color: #92400e; }
+  .tag-purple { background: #ede9fe; color: #5b21b6; }
+  .tag-red { background: #fee2e2; color: #991b1b; }
+  .pipeline-step { display: flex; align-items: center; margin: 0.5rem 0; }
+  .pipeline-num { background: var(--accent); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 600; flex-shrink: 0; }
+  .pipeline-content { margin-left: 0.8rem; }
+  .pipeline-arrow { color: var(--muted); margin: 0 0 0 12px; font-size: 0.8rem; }
+  .bar { height: 22px; border-radius: 4px; display: inline-block; }
+  .bar-container { background: #f1f5f9; border-radius: 4px; overflow: hidden; height: 22px; margin: 0.3rem 0; }
+  .toc { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem; }
+  .toc a { color: var(--accent); text-decoration: none; display: block; padding: 0.2rem 0; }
+  .toc a:hover { text-decoration: underline; }
+  .note { background: #fffbeb; border-left: 4px solid var(--orange); padding: 0.8rem 1rem; margin: 1rem 0; border-radius: 0 4px 4px 0; font-size: 0.9rem; }
+  .footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.85rem; }
+  .example { background: #f8fafc; border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 0 6px 6px 0; padding: 1rem 1.2rem; margin: 1rem 0; font-size: 0.88rem; }
+  .example-label { font-weight: 600; color: var(--accent); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+  .example-q { font-weight: 600; margin-bottom: 0.3rem; }
+  .example-field { color: var(--muted); font-size: 0.82rem; margin-top: 0.2rem; }
+  .example-field strong { color: var(--text); }
+  .mc-option { padding: 0.2rem 0.5rem; margin: 0.15rem 0; border-radius: 4px; font-size: 0.82rem; }
+  .mc-correct { background: #d1fae5; }
+  .mc-wrong { background: #f1f5f9; }
+  .coverage-explain { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 1rem; margin: 1rem 0; font-size: 0.88rem; }
+  .example-frame { max-width: 480px; border-radius: 6px; border: 1px solid var(--border); margin: 0.5rem 0; }
+  .example-with-frame { display: flex; gap: 1.2rem; align-items: flex-start; }
+  .example-text { flex: 1; min-width: 0; }
+  .example-img { flex-shrink: 0; }
+  @media (max-width: 768px) { .example-with-frame { flex-direction: column; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>CLAMS-Agent Benchmark Dataset</h1>
+<p class="subtitle">A Cross-Modal QA Benchmark for Archival Broadcast Video Understanding</p>
+
+<div class="stats-grid">
+  <div class="stat-card"><div class="stat-number">108</div><div class="stat-label">Videos</div></div>
+  <div class="stat-card"><div class="stat-number">1,076</div><div class="stat-label">Benchmark Questions</div></div>
+  <div class="stat-card"><div class="stat-number">80.3</div><div class="stat-label">Hours of Video</div></div>
+  <div class="stat-card"><div class="stat-number">5</div><div class="stat-label">Collections</div></div>
+  <div class="stat-card"><div class="stat-number">26,693</div><div class="stat-label">Index Segments</div></div>
+  <div class="stat-card"><div class="stat-number">3</div><div class="stat-label">Question Formats</div></div>
+</div>
+
+<div class="toc">
+  <strong>Contents</strong>
+  <a href="#overview">1. Overview</a>
+  <a href="#videos">2. Video Corpus</a>
+  <a href="#pipeline">3. Processing Pipeline</a>
+  <a href="#index">4. Structured Video Index</a>
+  <a href="#benchmark">5. QA Benchmark</a>
+  <a href="#training">6. Training Data</a>
+  <a href="#evaluation">7. Evaluation Protocol</a>
+  <a href="#results">8. Baseline Results</a>
+  <a href="#files">9. File Locations</a>
+</div>
+
+<!-- ================================================================ -->
+<h2 id="overview">1. Overview</h2>
+
+<div class="card">
+<p>The CLAMS-Agent Benchmark is a cross-modal question-answering dataset built over archival broadcast video content from the American Archive of Public Broadcasting (AAPB). Questions are designed to require combining information from multiple modalities &mdash; speech transcripts, on-screen text, visual content, named entities, and speaker identification &mdash; to answer correctly.</p>
+
+<p>The dataset is constructed by an automated pipeline that orchestrates specialized open-source tools through the CLAMS (Computational Linguistics Applications for Multimedia Services) platform, producing hierarchical structured video indexes. Questions are generated by an LLM using structured multi-modal evidence, then split into three evaluation tracks: multiple-choice, free-text, and visual-grounded.</p>
+
+<h3>Key Design Principles</h3>
+<ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+  <li><strong>Cross-modal requirement:</strong> Questions cannot be answered from any single modality alone. 95% of questions have grounding evidence from 2+ sources.</li>
+  <li><strong>Grounded evaluation:</strong> Models must cite specific video segments and quote supporting evidence, not just produce an answer.</li>
+  <li><strong>Dual-format:</strong> Inspired by MLVU and TempCompass, both multiple-choice (discriminative) and free-text (generative) tracks are included.</li>
+  <li><strong>Adversarial filtering:</strong> MC distractors are tested with a "Deaf-Blind" protocol (CinePile) &mdash; an LLM attempts to answer without evidence, and questions where it succeeds are flagged.</li>
+  <li><strong>Archival domain:</strong> Content spans 1960s&ndash;2000s broadcast television, presenting challenges from analog degradation, diverse production styles, and historical context.</li>
+</ul>
+</div>
+
+<!-- ================================================================ -->
+<h2 id="videos">2. Video Corpus</h2>
+
+<div class="card">
+<p>108 videos totaling 80.3 hours, drawn from 5 AAPB collections representing diverse broadcast content types:</p>
+
+<table>
+  <tr><th>Collection</th><th>Videos</th><th>Content Type</th><th>Era</th><th>Source</th></tr>
+  <tr><td><span class="tag tag-blue">NewsHour</span></td><td>46</td><td>PBS national news broadcast</td><td>1975&ndash;2005</td><td>WETA/WGBH</td></tr>
+  <tr><td><span class="tag tag-purple">Peabody</span></td><td>23</td><td>Award-winning broadcasts (documentary, public affairs, cultural)</td><td>1960s&ndash;1990s</td><td>Peabody Awards Collection</td></tr>
+  <tr><td><span class="tag tag-orange">FuzzyMemories</span></td><td>18</td><td>Chicago local TV recordings (news, commercials, shows)</td><td>1966&ndash;1985</td><td>FuzzyMemories.TV archive</td></tr>
+  <tr><td><span class="tag tag-green">IMLS</span></td><td>8</td><td>Mixed AAPB content (educational, public affairs)</td><td>1960s&ndash;1990s</td><td>IMLS-funded digitization</td></tr>
+  <tr><td><span class="tag tag-red">NJN Network</span></td><td>7</td><td>New Jersey Network regional broadcasts</td><td>1960s&ndash;1990s</td><td>NJN/NJTV</td></tr>
+  <tr><td>Other AAPB</td><td>6</td><td>Hawaiian public broadcasting, other regional</td><td>Various</td><td>AAPB</td></tr>
+</table>
+
+<h3>Content Characteristics</h3>
+<ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+  <li>Duration range: 2 minutes (short clips) to 90 minutes (full broadcasts)</li>
+  <li>Video quality: Varies from well-preserved digital transfers to degraded analog tape with noise, color distortion, and artifacts</li>
+  <li>Multi-modal content: Speech narration, on-screen chyrons/graphics, b-roll footage, interviews, maps, data visualizations, opening slates, credits</li>
+  <li>FuzzyMemories videos have watermarks masked with ffmpeg black rectangles to prevent OCR/caption contamination</li>
+</ul>
+</div>
+
+<!-- ================================================================ -->
+<h2 id="pipeline">3. Processing Pipeline</h2>
+
+<div class="card">
+<p>Each video is processed through a 7-stage pipeline of specialized open-source models, followed by post-processing for NER, entity resolution, relation extraction, and knowledge grounding.</p>
+
+<div class="pipeline-step">
+  <div class="pipeline-num">1</div>
+  <div class="pipeline-content"><strong>Scene Detection (SWT)</strong> &mdash; <code>app-swt-detection v8.3</code><br>CNN classifier identifies scene types: slate, chyron, credits, text overlays, negative (no text). Produces TimeFrame annotations with classification scores.</div>
+</div>
+<div class="pipeline-arrow">&darr;</div>
+
+<div class="pipeline-step">
+  <div class="pipeline-num">2</div>
+  <div class="pipeline-content"><strong>Speech Recognition (Parakeet)</strong> &mdash; <code>app-parakeet-wrapper v1.0</code> with <code>parakeet-tdt-0.6b-v2</code><br>NVIDIA NeMo CTC/TDT model. Non-autoregressive architecture eliminates repetition artifacts common in autoregressive ASR (Whisper). Word-level timestamps.</div>
+</div>
+<div class="pipeline-arrow">&darr;</div>
+
+<div class="pipeline-step">
+  <div class="pipeline-num">3</div>
+  <div class="pipeline-content"><strong>Shot Boundary Detection (TransNet)</strong> &mdash; <code>app-transnet-wrapper</code> with <code>TransNetV2</code><br>Detects shot transitions to segment the video into coherent visual units. Used as primary temporal segmentation (preferred over SWT's coarse scene-level boundaries).</div>
+</div>
+<div class="pipeline-arrow">&darr;</div>
+
+<div class="pipeline-step">
+  <div class="pipeline-num">4</div>
+  <div class="pipeline-content"><strong>On-Screen Text OCR (Qwen SWT)</strong> &mdash; <code>app-qwen3vl-captioner</code> with <code>Qwen2.5-VL-3B-Instruct</code><br>Targets SWT-detected text scenes (slates, chyrons, credits). Extracts on-screen text via VLM prompting. Batch size 64.</div>
+</div>
+<div class="pipeline-arrow">&darr;</div>
+
+<div class="pipeline-step">
+  <div class="pipeline-num">5</div>
+  <div class="pipeline-content"><strong>Visual Captioning (Qwen Shots)</strong> &mdash; <code>app-qwen3vl-captioner</code> with <code>Qwen2.5-VL-3B-Instruct</code><br>Captions one frame every 5 seconds across all TransNet shots. Provides visual descriptions of b-roll, graphics, maps, people, and scenes. Batch size 64.</div>
+</div>
+<div class="pipeline-arrow">&darr;</div>
+
+<div class="pipeline-step">
+  <div class="pipeline-num">6</div>
+  <div class="pipeline-content"><strong>View Merging</strong> &mdash; <code>scripts/merge_mmif_views.py</code><br>Merges MMIF outputs from all stages into a single multi-view document with cross-view ID renumbering to avoid collisions.</div>
+</div>
+<div class="pipeline-arrow">&darr;</div>
+
+<div class="pipeline-step">
+  <div class="pipeline-num">7</div>
+  <div class="pipeline-content"><strong>Speaker Diarization</strong> &mdash; <code>NeMo ClusteringDiarizer</code> (MarbleNet VAD + TitaNet embeddings)<br>Identifies speaker turns and clusters them. Speaker names resolved from chyron OCR text (preferred spelling authority).</div>
+</div>
+<div class="pipeline-arrow">&darr;</div>
+
+<div style="margin-top: 1rem; padding: 1rem; background: #f0f9ff; border-radius: 6px;">
+<strong>Post-Pipeline Processing</strong>
+<div class="pipeline-step" style="margin-top: 0.5rem">
+  <div class="pipeline-num" style="background: var(--green)">A</div>
+  <div class="pipeline-content"><strong>Named Entity Recognition</strong> &mdash; <code>spaCy en_core_web_sm</code><br>Extracts PERSON, ORG, GPE, etc. from all text fields (ASR + OCR + captions). Filtered by groundability blocklist.</div>
+</div>
+<div class="pipeline-step">
+  <div class="pipeline-num" style="background: var(--green)">B</div>
+  <div class="pipeline-content"><strong>Entity Resolution</strong> &mdash; custom <code>resolve_entity_variants()</code><br>Merges variant spellings (e.g., "Woodruff" + "Judy Woodruff" &rarr; "Judy Woodruff"). Prefers chyron/OCR spellings. Substring containment + QID matching. 2,011 variants merged across dataset.</div>
+</div>
+<div class="pipeline-step">
+  <div class="pipeline-num" style="background: var(--green)">C</div>
+  <div class="pipeline-content"><strong>Relation Extraction</strong> &mdash; spaCy dependency parsing<br>Extracts SVO (Subject-Verb-Object) triples with cross-segment overlap (handles sentences spanning segment boundaries).</div>
+</div>
+<div class="pipeline-step">
+  <div class="pipeline-num" style="background: var(--green)">D</div>
+  <div class="pipeline-content"><strong>Entity Grounding</strong> &mdash; Wikidata API + Wikipedia MediaWiki API<br>Links named entities to knowledge bases. Provides structured facts (occupations, positions, affiliations) and prose descriptions. 2s rate limiting between API calls.</div>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>Pipeline Infrastructure</h3>
+<table>
+  <tr><th>Component</th><th>Details</th></tr>
+  <tr><td>Server</td><td><code>aristotle.cs.brandeis.edu</code> &mdash; 4&times; NVIDIA RTX A6000 (48GB each)</td></tr>
+  <tr><td>Container runtime</td><td>Podman (rootless containers)</td></tr>
+  <tr><td>CLAMS apps</td><td>Container images from <code>ghcr.io/clamsproject/</code></td></tr>
+  <tr><td>LLM inference</td><td>Ollama (qwen3:8b) and vLLM (Qwen3.5-9B, Qwen3-VL-8B-Instruct)</td></tr>
+  <tr><td>Embeddings</td><td><code>nomic-embed-text</code> via Ollama (768-dim, for ChromaDB semantic search)</td></tr>
+  <tr><td>Output format</td><td>MMIF (Multi-Media Interchange Format) &mdash; JSON-LD annotation interchange</td></tr>
+</table>
+</div>
+
+<!-- ================================================================ -->
+<h2 id="index">4. Structured Video Index</h2>
+
+<div class="card">
+<p>Each video produces a JSON index file containing timestamped segments with multi-modal annotations.</p>
+
+<div class="stats-grid">
+  <div class="stat-card"><div class="stat-number">26,693</div><div class="stat-label">Segments</div></div>
+  <div class="stat-card"><div class="stat-number">66,284</div><div class="stat-label">Named Entities</div></div>
+  <div class="stat-card"><div class="stat-number">33,435</div><div class="stat-label">Relations (SVO)</div></div>
+  <div class="stat-card"><div class="stat-number">11,539</div><div class="stat-label">Grounded Entities</div></div>
+</div>
+
+<h3>Segment Schema</h3>
+<pre>{
+  "segment_id": "cpb-aacip-507-154dn40c26_130196_158858",
+  "start_ms": 130196,
+  "end_ms": 158858,
+  "scene_label": "Neg",
+  "asr_transcript": "that is fast becoming this country's number one health concern...",
+  "visual_caption": "A man in a suit sits at a news desk with a monitor behind him...",
+  "ocr_text": "AIDS: FACT AND FICTION",
+  "named_entities": [
+    {"text": "Dr. Mathilde Krim", "type": "PERSON"},
+    {"text": "AIDS Medical Foundation", "type": "ORG"}
+  ],
+  "relations": [
+    ["AIDS researcher", "separate", "fact from fiction"],
+    ["AIDS victims", "isolate from", "society"]
+  ],
+  "grounded_entities": {
+    "Dr. Mathilde Krim": "American geneticist and public health advocate (1926-2018). Co-founder of amfAR...",
+    "AIDS Medical Foundation": "Predecessor to amfAR, founded 1983..."
+  },
+  "primary_speaker": "speaker_7"
+}</pre>
+
+<h3>Real Segment Examples</h3>
+
+<div class="example">
+<div class="example-label">NewsHour &mdash; AIDS Report (cpb-aacip-507-154dn40c26, 19:47&ndash;21:39)</div>
+<div class="example-with-frame">
+<div class="example-img"><img src="example_frames/newshr_aids.jpg" class="example-frame" alt="NewsHour AIDS segment frame"></div>
+<div class="example-text">
+<p class="example-field"><strong>ASR:</strong> "Well, this is a very puzzling situation in this country and in Europe. You're right. In Africa, AIDS is a venereal disease which attacks men and women in equal numbers..."</p>
+<p class="example-field"><strong>OCR:</strong> "MATHILDE KRIM, PHD. AIDS Medical Foundation"</p>
+<p class="example-field"><strong>Entities:</strong> Europe (LOC), South Africa (LOC), the late 70s (DATE)</p>
+<p class="example-field"><strong>Relations:</strong> AIDS virus &rarr; bring into &rarr; country; gay male community &rarr; close from &rarr; standpoint of sexual interactions</p>
+</div></div>
+</div>
+
+<div class="example">
+<div class="example-label">Peabody &mdash; First Amendment Documentary (cpb-aacip-526-cj87h1fq6v, 38:51&ndash;39:37)</div>
+<div class="example-with-frame">
+<div class="example-img"><img src="example_frames/peabody_1amend.jpg" class="example-frame" alt="Peabody First Amendment frame"></div>
+<div class="example-text">
+<p class="example-field"><strong>ASR:</strong> "...of what many people don't expect to be a problem with censorship, but rather students with conservative viewpoints as opposed to liberal viewpoints who are being censored in their student publications..."</p>
+<p class="example-field"><strong>OCR:</strong> "Mark Goodman, EXECUTIVE DIRECTOR, STUDENT PRESS LAW CENTER"</p>
+<p class="example-field"><strong>Entities:</strong> the Student Press Law Center (ORG), the Dartmouth Review (ORG), Mark Goodman (PERSON)</p>
+</div></div>
+</div>
+
+<div class="example">
+<div class="example-label">FuzzyMemories &mdash; Barbary Coast TV Show (1975 broadcast, 34:45&ndash;36:21)</div>
+<div class="example-with-frame">
+<div class="example-img"><img src="example_frames/fuzzy_barbary.jpg" class="example-frame" alt="Barbary Coast 1975 frame"></div>
+<div class="example-text">
+<p class="example-field"><strong>ASR:</strong> "Of course it was Vancouver. We already knew that. What better place to pass counterfeit money than a bank?"</p>
+<p class="example-field"><strong>Visual:</strong> Dark nighttime scene with "Guest Stars PAT HINGLE as Emory Van Cleve" displayed in yellow and white text.</p>
+<p class="example-field"><strong>Entities:</strong> Vancouver (GPE), Pat Hingle (PERSON), Emory Van Cleve (PERSON)</p>
+<p class="example-field"><strong>Grounded:</strong> Vancouver: "largest city in the province of British Columbia, Canada"</p>
+</div></div>
+</div>
+
+<div class="example">
+<div class="example-label">NJN Network &mdash; Sculpture Documentary (cpb-aacip-75-30prrg9s, 28:50&ndash;29:49)</div>
+<div class="example-with-frame">
+<div class="example-img"><img src="example_frames/njn_sculpture.jpg" class="example-frame" alt="NJN sculpture documentary frame"></div>
+<div class="example-text">
+<p class="example-field"><strong>ASR:</strong> "...it shows a certain resemblance to other experiments earlier than the Lipschitz we saw where he had these transparencies and the open areas are contrasted with the volume forms..."</p>
+<p class="example-field"><strong>Visual:</strong> Close-up of a mechanical arm with a claw-like end, set against a rocky outdoor background.</p>
+<p class="example-field"><strong>Entities:</strong> Lipschitz (PERSON), C&eacute;sar (ORG), Vokas (PERSON), John Mason (ORG)</p>
+</div></div>
+</div>
+
+<div class="example">
+<div class="example-label">Peabody &mdash; Chicago Symphony (cpb-aacip-526-mk6542kh8x, 51:16&ndash;52:06)</div>
+<div class="example-with-frame">
+<div class="example-img"><img src="example_frames/peabody_symphony.jpg" class="example-frame" alt="Chicago Symphony frame"></div>
+<div class="example-text">
+<p class="example-field"><strong>ASR:</strong> "Civic Orchestra is the training orchestra of the Chicago Symphony. Almost a quarter of today's CSO musicians started with Civic."</p>
+<p class="example-field"><strong>Visual:</strong> A conductor in a white shirt standing at a podium with his right hand raised, conducting an orchestra.</p>
+<p class="example-field"><strong>Entities:</strong> Civic Orchestra (ORG), the Chicago Symphony Orchestra (ORG), CSO (ORG), Europe (LOC)</p>
+</div></div>
+</div>
+
+<div class="example">
+<div class="example-label">IMLS &mdash; Family Education (cpb-aacip-15-1c1td9n55n, 2:36&ndash;3:07)</div>
+<div class="example-with-frame">
+<div class="example-img"><img src="example_frames/imls_housing.jpg" class="example-frame" alt="IMLS family education frame"></div>
+<div class="example-text">
+<p class="example-field"><strong>ASR:</strong> "I can ask him once or twice at the most to do something for me. And usually it was his homework. It took me three hours to get him to sit down and do his homework because James was going to do it when he got ready."</p>
+<p class="example-field"><strong>Entities:</strong> James (PERSON), January (DATE), Haroldine Haley (PERSON)</p>
+</div></div>
+</div>
+
+<div class="example">
+<div class="example-label">NewsHour &mdash; Cabinet Nominations (cpb-aacip-507-4746q1t25k, 19:13&ndash;21:07)</div>
+<div class="example-with-frame">
+<div class="example-img"><img src="example_frames/newshr_cabinet.jpg" class="example-frame" alt="NewsHour cabinet nominations frame"></div>
+<div class="example-text">
+<p class="example-field"><strong>ASR:</strong> "...these people haven't yet been confirmed by the Senate. I accept every one of them at face value. I think we have to say the president-elect has a right to choose anyone he want..."</p>
+<p class="example-field"><strong>OCR:</strong> "UNITED STATES OF AMERICA"</p>
+<p class="example-field"><strong>Entities:</strong> Senate (ORG), Linda Chavez (PERSON), Gail Norton (PERSON), John Ashcroft (PERSON), Ronnie White (PERSON)</p>
+</div></div>
+</div>
+
+<h3>Index Coverage</h3>
+<table>
+  <tr><th>Field</th><th>Segments with Data</th><th>Coverage</th><th>Meaning</th></tr>
+  <tr><td>ASR transcript</td><td>22,078</td><td>83%</td><td>Percentage of segments that have any speech content. The 17% without ASR are typically non-speech segments: opening slates, test patterns, music-only moments, or visual transitions.</td></tr>
+  <tr><td>Visual captions</td><td>26,132</td><td>98%</td><td>Percentage of segments with a VLM-generated description of what the frame shows. Nearly universal because Qwen captions every 5 seconds. The 2% gap is segments too short for frame extraction.</td></tr>
+  <tr><td>OCR text</td><td>1,008</td><td>4%</td><td>Percentage of segments with dedicated OCR text extraction. Low because OCR only runs on SWT-detected text scenes (slates, chyrons, credits) &mdash; not on regular shots. On-screen text in other segments is captured in visual captions instead.</td></tr>
+  <tr><td>Named entities</td><td>18,884</td><td>71%</td><td>Percentage of segments where spaCy found at least one named entity (person, organization, location, etc.). Segments without entities typically contain generic speech with no proper nouns.</td></tr>
+  <tr><td>Relations</td><td>16,022</td><td>60%</td><td>Percentage of segments with extracted SVO triples (subject-verb-object from dependency parsing). Requires sufficiently complex sentences to produce meaningful triples.</td></tr>
+  <tr><td>Grounded entities</td><td>11,539</td><td>43%</td><td>Percentage of segments where at least one entity was successfully linked to Wikidata or Wikipedia. Entities that fail to resolve include misspellings, obscure local figures, and generic terms.</td></tr>
+</table>
+
+<div class="coverage-explain">
+<strong>What "coverage" means:</strong> Each percentage indicates how many of the 26,693 total segments have a non-empty value for that field. A segment with 83% ASR coverage means 83% of all segments across all 108 videos contain at least some speech transcript. Coverage varies because not every video segment contains every type of content &mdash; a silent opening slate has visual captions and possibly OCR but no ASR; a radio-style voiceover segment has ASR but minimal visual interest.
+</div>
+</div>
+
+<!-- ================================================================ -->
+<h2 id="benchmark">5. QA Benchmark</h2>
+
+<div class="card">
+<h3>Three Evaluation Tracks</h3>
+<table>
+  <tr><th>Track</th><th>Questions</th><th>Format</th><th>Scoring</th></tr>
+  <tr>
+    <td><span class="tag tag-blue">Multiple Choice</span></td>
+    <td>521</td>
+    <td>4-way MC with adversarially filtered distractors</td>
+    <td>Exact match accuracy</td>
+  </tr>
+  <tr>
+    <td><span class="tag tag-green">Free-Text</span></td>
+    <td>350</td>
+    <td>Open-ended answer with reference</td>
+    <td>LLM-as-judge (Video-ChatGPT protocol, 5 dimensions: correctness, completeness, relevance, cross-modal reasoning, specificity, each 0&ndash;5)</td>
+  </tr>
+  <tr>
+    <td><span class="tag tag-purple">Visual-Grounded</span></td>
+    <td>205</td>
+    <td>Frame image + ASR transcript required</td>
+    <td>LLM-as-judge</td>
+  </tr>
+</table>
+</div>
+
+<div class="card">
+<h3>Question Generation</h3>
+<p>Questions are generated by prompting <code>qwen3:8b</code> (via Ollama) with structured multi-modal evidence from the video index. The system prompt defines 4 cross-modal patterns:</p>
+
+<table>
+  <tr><th>Pattern</th><th>Questions</th><th>%</th><th>Example</th></tr>
+  <tr><td>ASR + chyron (name/title)</td><td>191</td><td>28%</td><td>"What organization does the speaker represent according to the on-screen title?"</td></tr>
+  <tr><td>ASR + b-roll footage</td><td>131</td><td>19%</td><td>"What was shown on screen while the reporter described the advance?"</td></tr>
+  <tr><td>ASR + on-screen graphic</td><td>104</td><td>15%</td><td>"What data is displayed in the chart during the healthcare discussion?"</td></tr>
+  <tr><td>ASR + speaker identification</td><td>67</td><td>10%</td><td>"What position did the person identified as 'Anti-AIDS Citizens Group' take?"</td></tr>
+  <tr><td>Entity knowledge + content</td><td>15</td><td>2%</td><td>"Given the speaker's Wikidata description, how does their background relate?"</td></tr>
+  <tr><td>Other cross-modal</td><td>176</td><td>26%</td><td>Various combinations of modalities</td></tr>
+</table>
+
+<h3>Grounding Verification</h3>
+<p>Each question includes grounding metadata with verbatim excerpts from the source evidence:</p>
+<pre>{
+  "grounding": {
+    "speech_excerpt": "Dr. Krim discussed the latest research findings...",
+    "visual_reference": "A chyron reads 'DR. MATHILDE KRIM, AIDS Medical Foundation'",
+    "ocr_reference": "AIDS MEDICAL FOUNDATION",
+    "reasoning": "The chyron identifies her organization while the speech provides her argument"
+  },
+  "source_segment_times": [{"start_ms": 130196, "end_ms": 158858}]
+}</pre>
+<p>Grounding is verified against the index: 99% of questions have locatable evidence, 88% have verified speech excerpts, 65% have verified visual references.</p>
+</div>
+
+<div class="card">
+<h3>Multiple Choice Distractor Pipeline</h3>
+<p>Inspired by CinePile, INQUIRER, and AutoConverter:</p>
+<ol style="margin-left: 1.5rem;">
+  <li><strong>Pre-filtering:</strong> Removes watermark/branding questions (91 filtered), applies per-video cap (max 10)</li>
+  <li><strong>LLM distractor generation:</strong> 4 error types &mdash; entity substitution, attribute modification, temporal confusion, partial/misleading</li>
+  <li><strong>Quality checks:</strong> Rejects &gt;80% word overlap with correct answer; enforces &ge;2 different error types per question</li>
+  <li><strong>Adversarial "Deaf-Blind" filter:</strong> An LLM attempts to answer without evidence. Questions answerable with &ge;80% confidence are flagged.
+    <ul style="margin-left: 1rem; margin-top: 0.3rem;">
+      <li>154 questions (30%) passed outright (blind LLM guessed wrong)</li>
+      <li>367 questions (70%) kept as "hardened" (blind LLM guessed correctly but distractors retained)</li>
+    </ul>
+  </li>
+  <li><strong>Format routing:</strong> Questions that fail distractor generation route to the free-text track instead</li>
+</ol>
+</div>
+
+<div class="card">
+<h3>Visual-Grounded Track</h3>
+<p>205 questions across 72 videos requiring actual frame images to answer. The model sees the extracted frame + ASR transcript but NOT the visual caption (which was used only for question generation).</p>
+
+<table>
+  <tr><th>Visual Category</th><th>Questions</th><th>Description</th></tr>
+  <tr><td><span class="tag tag-blue">Graphic</span></td><td>104</td><td>Charts, data tables, diagrams, numbers on screen</td></tr>
+  <tr><td><span class="tag tag-green">B-roll</span></td><td>62</td><td>Action footage, outdoor scenes, crowds, buildings</td></tr>
+  <tr><td><span class="tag tag-purple">Map</span></td><td>34</td><td>Geographic displays, globe graphics, highlighted regions</td></tr>
+  <tr><td><span class="tag tag-orange">Headline</span></td><td>5</td><td>On-screen news banners, breaking news text</td></tr>
+</table>
+<p>All 205 frames extracted successfully at segment midpoints via ffmpeg.</p>
+</div>
+
+<div class="card">
+<h3>Example Questions by Track</h3>
+
+<div class="example">
+<div class="example-label">Multiple Choice &mdash; Chyron + Speech (NewsHour)</div>
+<p class="example-q">Q: What role does the on-screen text 'Roger Rosenblatt' play in relation to the speech content?</p>
+<div class="mc-option mc-correct"><strong>A)</strong> The on-screen text 'Roger Rosenblatt' indicates that the speech content is referencing Roger Rosenblatt, a writer, as the subject of the discussion about the 'body of work' metaphor.</div>
+<div class="mc-option mc-wrong">B) The on-screen text 'Roger Rosenblatt' indicates the speech is about a Supreme Court case involving the 'body of work' metaphor.</div>
+<div class="mc-option mc-wrong">C) Roger Rosenblatt is the speaker delivering the speech about the 'body of work' metaphor.</div>
+<div class="mc-option mc-wrong">D) Roger Rosenblatt is the editor of the publication featuring the speech content.</div>
+<p class="example-field"><strong>Grounding:</strong> Speech: "phrase, body of work. Unlike the body you were born with, this one is put together by oneself..." | OCR: "Roger Rosenblatt" | <em>Requires both modalities: OCR identifies WHO, speech reveals WHAT they said.</em></p>
+</div>
+
+<div class="example">
+<div class="example-label">Multiple Choice &mdash; Visual + Speech (Peabody)</div>
+<p class="example-q">Q: How does the serene landscape painting in the second segment relate to the speaker's question about using the gift of observation in daily life?</p>
+<div class="mc-option mc-correct"><strong>A)</strong> The serene landscape painting illustrates the speaker's point about finding meaning in everyday surroundings by showing a tranquil scene where people engage with their environment.</div>
+<div class="mc-option mc-wrong">B) The painting demonstrates how to use observation to identify objects in daily life.</div>
+<div class="mc-option mc-wrong">C) The painting serves as an example of how to apply observation skills to detect hidden meanings in art.</div>
+<div class="mc-option mc-wrong">D) The painting is used to show how observation can help in identifying cultural artifacts in modern settings.</div>
+<p class="example-field"><strong>Grounding:</strong> Speech: "How do we put that gift to use as we look at the sights around us in our daily lives?" | Visual: "A serene landscape painting featuring a lone tree on a rocky outcrop with people in the foreground" | <em>Requires understanding what the painting shows AND what the speaker is asking.</em></p>
+</div>
+
+<div class="example">
+<div class="example-label">Free-Text &mdash; Speaker Identification (NewsHour)</div>
+<p class="example-q">Q: What organization does Dr. Jonathan Mann represent according to the on-screen text and his speech?</p>
+<p class="example-field"><strong>Reference answer:</strong> Dr. Jonathan Mann represents the World Health Organization (WHO).</p>
+<p class="example-field"><strong>Grounding:</strong> Speech: "there have been a total of over 51,000 cases of AIDS reported officially to the World Health Organization..." | Visual: chyron reads "DR. JONATHAN MANN, World Health Organization" | <em>The chyron names his affiliation; the speech confirms his role in reporting global AIDS statistics.</em></p>
+</div>
+
+<div class="example">
+<div class="example-label">Free-Text &mdash; Cross-Collection (IMLS)</div>
+<p class="example-q">Q: What is the relationship between the named entity 'DEP' and Seba Geigi according to the speech?</p>
+<p class="example-field"><strong>Reference answer:</strong> The DEP has been permissive with Seba Geigi, as indicated by the speech.</p>
+<p class="example-field"><strong>Grounding:</strong> Speech: "I would say that the DEP has been permissive with Sebogyga. Peter Montague..." | <em>This question tests factual extraction from an educational/public affairs broadcast in the IMLS collection.</em></p>
+</div>
+
+<div class="example">
+<div class="example-label">Visual-Grounded &mdash; B-roll + Speech (NewsHour)</div>
+<p class="example-q">Q: What specific visual detail in the background supports the speaker's claim about legislative action?</p>
+<p class="example-field"><strong>Answer:</strong> The burning building in the background supports the speaker's claim about legislative action by symbolizing an urgent issue that requires immediate attention.</p>
+<p class="example-field"><strong>Frame:</strong> [Extracted frame showing chaotic scene with people running from a burning building]</p>
+<p class="example-field"><strong>ASR context:</strong> "Your failure to commit to addressing this issue straight on and immediately will motivate this committee to search for legislative..."</p>
+<p class="example-field"><strong>Category:</strong> <span class="tag tag-green">B-roll</span> | <em>The model must SEE the burning building in the frame AND connect it to the legislative urgency in the speech. Neither the frame alone nor the transcript alone is sufficient.</em></p>
+</div>
+
+<div class="example">
+<div class="example-label">Visual-Grounded &mdash; Graphic + Speech (Peabody)</div>
+<p class="example-q">Q: What aspect of the cityscape in the frame relates to the topic of health impacts discussed in the speech?</p>
+<p class="example-field"><strong>Answer:</strong> The urban environment with a large 'GO' graphic connects to the discussion about how advertising might influence alcohol and tobacco consumption and health impacts.</p>
+<p class="example-field"><strong>Frame:</strong> [Extracted frame showing a cityscape with a large 'GO' graphic in the foreground]</p>
+<p class="example-field"><strong>ASR context:</strong> "impact of alcohol and tobacco on health. I think that's been clearly established."</p>
+<p class="example-field"><strong>Category:</strong> <span class="tag tag-blue">Graphic</span> | <em>The model must recognize the advertising graphic in the frame and connect it to the public health discussion in the transcript.</em></p>
+</div>
+</div>
+
+<!-- ================================================================ -->
+<h2 id="training">6. Training Data</h2>
+
+<div class="card">
+<p>Two types of training data generated from the benchmark for SFT and RL fine-tuning:</p>
+
+<h3>Chain-of-Thought Traces (871)</h3>
+<p>Deterministic reasoning traces built from grounding metadata, showing how to find and combine evidence:</p>
+<pre>&lt;think&gt;This question asks about video cpb-aacip-507-154dn40c26.
+I need to find evidence combining speech and visual modalities.
+Speech transcript says: "Dr. Krim discussed the latest research..."
+On-screen text shows: "DR. MATHILDE KRIM, AIDS Medical Foundation"
+Combining the speech content with the on-screen information...&lt;/think&gt;
+&lt;answer&gt;Dr. Krim represents the AIDS Medical Foundation.&lt;/answer&gt;</pre>
+
+<h3>Tool-Use Trajectories (871)</h3>
+<p>Multi-turn conversations following Agent-R1 / WebAgent-R1 format with 4 available tools:</p>
+<table>
+  <tr><th>Tool</th><th>Usage</th><th>Description</th></tr>
+  <tr><td><code>search_index</code></td><td>871 (100%)</td><td>Keyword search over video segments</td></tr>
+  <tr><td><code>browse_timeline</code></td><td>871 (100%)</td><td>Get full segment details for a time range</td></tr>
+  <tr><td><code>get_entity_info</code></td><td>Available</td><td>Look up grounded entity description</td></tr>
+  <tr><td><code>list_speakers</code></td><td>Available</td><td>Get speaker names and segment counts</td></tr>
+</table>
+<p>Average 3.0 turns per trajectory. Tool calls use realistic search results from the actual index.</p>
+
+<h3>Orchestration Trajectories (1,284) &mdash; NEW</h3>
+<p>The primary training data for the agent. Instead of querying a pre-built index, these trajectories teach the agent to orchestrate CLAMS tools on <strong>raw video</strong>:</p>
+
+<table>
+  <tr><th>Tool</th><th>Usage</th><th>When Selected</th></tr>
+  <tr><td><code>ffmpeg:get_video_info</code></td><td>1,284 (100%)</td><td>Always first &mdash; get video duration and properties</td></tr>
+  <tr><td><code>qwen3vl-captioner</code></td><td>1,226 (95%)</td><td>Visual captioning or OCR depending on config</td></tr>
+  <tr><td><code>parakeet-wrapper</code></td><td>1,132 (88%)</td><td>When speech content is needed</td></tr>
+  <tr><td><code>transnet-wrapper</code></td><td>1,045 (81%)</td><td>When visual segmentation is needed</td></tr>
+  <tr><td><code>spacy-wrapper</code></td><td>239 (19%)</td><td>When entity extraction is needed</td></tr>
+  <tr><td><code>swt-detection</code></td><td>181 (14%)</td><td>When on-screen text (chyrons, slates) is needed</td></tr>
+</table>
+
+<p>Average 4.0 tools per trajectory, 11.0 conversation turns. Simulated tool outputs extracted from actual MMIF pipeline data.</p>
+
+<h3>Training Data Examples</h3>
+
+<div class="example">
+<div class="example-label">Chain-of-Thought Trace &mdash; Waikiki Tourism (Hawaii broadcast)</div>
+<p class="example-q">Q: What was the main argument being made about Waikiki's role in the tourism industry?</p>
+<pre style="background: #1e293b; color: #e2e8f0; font-size: 0.8rem;">&lt;think&gt;This question asks about video cpb-aacip-225-009w0w1j.
+I need to find evidence combining speech and entities.
+Speech transcript says: "the product for them is first
+experienced on the street and on the beaches and all the
+public areas"
+Visual frame shows: "Waikiki: neighborhood of Honolulu,
+Hawaii, United States."
+Combining the speech content with the entity knowledge
+to understand the argument about tourism...&lt;/think&gt;
+&lt;answer&gt;The main argument is that Waikiki's public areas,
+including streets and beaches, serve as the primary
+"product" that visitors experience, making their
+maintenance critical to the tourism industry.&lt;/answer&gt;</pre>
+</div>
+
+<div class="example">
+<div class="example-label">Tool-Use Trajectory &mdash; Same Question</div>
+<pre style="background: #1e293b; color: #e2e8f0; font-size: 0.8rem;"><span style="color:#93c5fd">User:</span> What was the main argument about Waikiki's role
+in the tourism industry?
+
+<span style="color:#86efac">Assistant:</span> &lt;think&gt;I need to search the video index for
+segments relevant to this question.&lt;/think&gt;
+&lt;tool&gt;search_index(query="Waikiki's",
+  video_id="cpb-aacip-225-009w0w1j")&lt;/tool&gt;
+
+<span style="color:#fbbf24">Tool:</span> Found 5 matching segments:
+
+Segment (974s-996s):
+  Speech: It creates some 250,000 jobs in the
+  community, some $10 billion in revenues...
+  Entities: HVB, Japan, Hawaii Public Broadcasting
+
+Segment (2464s-2466s):
+  Speech: you have about Hawaii starts in Waikiki.
+  So we do need that partnership...
+  Entities: Waikiki Improvement Association, Tom, HVB
+
+<span style="color:#86efac">Assistant:</span> &lt;think&gt;Let me look at the specific segment
+in more detail.&lt;/think&gt;
+&lt;tool&gt;browse_timeline(video_id="cpb-aacip-225-009w0w1j",
+  start_ms=827027, end_ms=840774)&lt;/tool&gt;
+
+<span style="color:#fbbf24">Tool:</span> Segment (827s-840s):
+  Speech: the product for them is first experienced
+  on the street and on the beaches...
+  Entities: Waikiki Improvement Association
+
+<span style="color:#86efac">Assistant:</span> &lt;think&gt;The speech identifies public areas as
+the tourism "product." The entity knowledge confirms
+Waikiki as a specific neighborhood.&lt;/think&gt;
+&lt;answer&gt;The main argument is that Waikiki's public
+areas serve as the primary product visitors experience,
+making their maintenance essential to the industry.
+&lt;/answer&gt;</pre>
+</div>
+</div>
+
+<!-- ================================================================ -->
+<h2 id="evaluation">7. Evaluation Protocol</h2>
+
+<div class="card">
+<h3>Grounded Evidence Requirement</h3>
+<p>Models must return structured JSON with both an answer and supporting evidence:</p>
+<pre>{
+  "answer": "The AIDS Medical Foundation",
+  "cited_segments": ["2:10-2:38"],
+  "speech_evidence": "Dr. Krim discussed the latest research...",
+  "visual_evidence": "Chyron reads: DR. MATHILDE KRIM, AIDS Medical Foundation",
+  "ocr_evidence": null,
+  "reasoning": "The chyron identifies her organization while she discusses research"
+}</pre>
+
+<h3>Three-Part Scoring</h3>
+<ol style="margin-left: 1.5rem;">
+  <li><strong>Answer correctness:</strong> MC exact match or LLM-as-judge (5 dimensions, 0&ndash;5 each)</li>
+  <li><strong>Grounding verification:</strong> Cited evidence checked against index &mdash; do the quoted excerpts actually appear at the cited timestamps?</li>
+  <li><strong>Cross-modal citation:</strong> Did the model cite evidence from 2+ modalities?</li>
+</ol>
+
+<h3>Experimental Conditions</h3>
+<table>
+  <tr><th>Condition</th><th>Input</th><th>What It Tests</th></tr>
+  <tr><td>Full index baseline</td><td>Structured index (all modalities)</td><td>System performance with complete information</td></tr>
+  <tr><td>Ablation: no ASR</td><td>Index without speech transcripts</td><td>How much does speech contribute?</td></tr>
+  <tr><td>Ablation: no visual</td><td>Index without visual captions</td><td>How much do visual descriptions contribute?</td></tr>
+  <tr><td>Ablation: ASR only</td><td>Only speech transcripts</td><td>Lower bound &mdash; proves multi-modal index adds value</td></tr>
+  <tr><td>VLM oracle (N frames)</td><td>Ground-truth segment frames + ASR</td><td>Upper bound for VLM on these questions</td></tr>
+  <tr><td>VLM uniform (N frames)</td><td>Uniformly sampled frames from full video + full transcript</td><td>Standard VLM evaluation (fair comparison)</td></tr>
+</table>
+</div>
+
+<!-- ================================================================ -->
+<h2 id="results">8. Baseline Results</h2>
+
+<div class="card">
+<h3>Index-Based QA Baselines</h3>
+<table>
+  <tr><th>Model</th><th>Backend</th><th>MC Accuracy</th><th>Grounded MC Acc.</th><th>Grounding Verified</th><th>Multi-modal Cited</th></tr>
+  <tr><td>Qwen3:8b</td><td>Ollama</td><td><strong>79.1%</strong> (412/521)</td><td><strong>90.9%</strong></td><td>87%</td><td>85%</td></tr>
+  <tr><td>Qwen3.5-9B</td><td>vLLM</td><td>59.9% (312/521)</td><td><strong>90.7%</strong></td><td>64%</td><td>63%</td></tr>
+</table>
+
+<div class="note">
+<strong>Key finding:</strong> Grounded MC accuracy is nearly identical (~91%) for both models. The difference in overall accuracy is entirely due to retrieval &mdash; Qwen3.5-9B more often says "insufficient evidence" rather than guessing. When either model successfully retrieves and cites evidence, it answers correctly 91% of the time. This suggests the bottleneck is search/retrieval, not reasoning.
+</div>
+
+<h3>Ablation Studies</h3>
+<p>Removing modalities from the structured index to measure each component's contribution:</p>
+<table>
+  <tr><th>Condition</th><th>Qwen3:8b MC</th><th>Qwen3.5-9B MC</th><th>Interpretation</th></tr>
+  <tr><td><strong>Full index</strong></td><td><strong>79.1%</strong></td><td>59.9%</td><td>Baseline &mdash; all modalities available</td></tr>
+  <tr><td>No ASR</td><td>71.0% (-8.1)</td><td>46.4% (-13.5)</td><td>Speech contributes significantly to answering</td></tr>
+  <tr><td>No visual</td><td>74.5% (-4.6)</td><td>44.5% (-15.4)</td><td>Visual captions provide important context</td></tr>
+  <tr><td>ASR only</td><td>65.3% (-13.8)</td><td>28.2% (-31.7)</td><td>Largest drop &mdash; proves multi-modal index adds substantial value over transcript alone</td></tr>
+</table>
+
+<div class="note">
+<strong>Key finding:</strong> Removing any modality degrades performance, but the largest drop comes from reducing to ASR-only (-13.8 to -31.7 points). This proves that visual captions, OCR, entities, and relations all contribute meaningfully to answering cross-modal questions. The multi-modal structured index is not redundant with the speech transcript.
+</div>
+
+<h3>VLM Direct Comparison (Qwen3-VL-8B-Instruct)</h3>
+<p>Instead of using the structured index, feed raw video frames (+ optionally ASR) directly to a vision-language model:</p>
+<table>
+  <tr><th>Condition</th><th>Retrieval</th><th>Frames</th><th>ASR</th><th>MC Accuracy</th></tr>
+  <tr><td>Oracle 1 frame</td><td>Ground truth segment</td><td>1</td><td>No</td><td><strong>87.4%</strong></td></tr>
+  <tr><td>Oracle 5 frames + ASR</td><td>Ground truth segment</td><td>5</td><td>Yes</td><td>84.8%</td></tr>
+  <tr><td>Uniform 5 frames</td><td>Full video (standard)</td><td>5</td><td>No</td><td><strong>87.2%</strong></td></tr>
+  <tr><td>Uniform 5 frames + ASR</td><td>Full video (standard)</td><td>5</td><td>Yes</td><td>86.4%</td></tr>
+</table>
+
+<div class="note">
+<strong>Surprising finding:</strong> The VLM achieves 87% even with uniform sampling (no oracle retrieval). Qwen3-VL-8B is strong at reading on-screen text directly from frames. However, VLM answers are NOT grounded &mdash; the model cannot cite which segment or timestamp its evidence comes from. This motivates the combined approach below.
+</div>
+
+<h3>Combined Index + VLM (Microsoft DVD-inspired)</h3>
+<p>Structured index retrieval narrows the search space, then frame extraction + VLM provides visual verification:</p>
+<table>
+  <tr><th>Condition</th><th>MC Accuracy</th><th>Grounded?</th></tr>
+  <tr><td>Index only (Qwen3:8b)</td><td>79.1%</td><td>Yes (87%)</td></tr>
+  <tr><td>VLM only (uniform 5f)</td><td>87.2%</td><td>No</td></tr>
+  <tr><td><strong>Index + VLM combined</strong></td><td><strong>82.3%</strong></td><td><strong>Yes (100%)</strong></td></tr>
+</table>
+
+<div class="note">
+<strong>The thesis argument:</strong> The combined approach provides both accuracy AND evidence provenance. While the VLM achieves higher raw accuracy, it cannot cite specific segments or quote evidence. The structured index enables grounded, auditable answers &mdash; essential for archival applications where catalogers need to verify claims against specific video moments. Training an agent to orchestrate these tools intelligently is the path to closing the gap with the VLM's raw accuracy while maintaining full grounding.
+</div>
+</div>
+
+<!-- ================================================================ -->
+<h2 id="files">9. File Locations</h2>
+
+<div class="card">
+<p>All paths are on <code>aristotle.cs.brandeis.edu</code> unless noted otherwise.</p>
+
+<h3>Video Files</h3>
+<table>
+  <tr><th>Collection</th><th>Path</th></tr>
+  <tr><td>NewsHour</td><td><code>/mnt/llc/llc_data/clams/wgbh/NewsHour/</code></td></tr>
+  <tr><td>Peabody</td><td><code>/mnt/llc/llc_data/clams/wgbh/Peabody/</code></td></tr>
+  <tr><td>NJN Network</td><td><code>/mnt/llc/llc_data/clams/wgbh/NJN_Network/</code></td></tr>
+  <tr><td>IMLS</td><td><code>/mnt/llc/llc_data/clams/wgbh/imls-batch/videos/</code></td></tr>
+  <tr><td>FuzzyMemories</td><td><code>~/fuzzymemories_rerun/masked_videos/</code> and <code>~/chicago_tv/FuzzyMemoriesTV/</code></td></tr>
+</table>
+<p>Full video path list: <code>data/video_file_paths.txt</code> (local) or <code>~/clams-agent-prototype/data/video_file_paths.txt</code></p>
+
+<h3>Pipeline Outputs</h3>
+<table>
+  <tr><th>Data</th><th>Path</th><th>Count</th></tr>
+  <tr><td>Combined MMIF files</td><td><code>~/clams-agent-prototype/data/combined_outputs/*.mmif</code></td><td>99</td></tr>
+  <tr><td>Video indexes (JSON)</td><td><code>~/clams-agent-prototype/data/video_indexes/*.json</code></td><td>108</td></tr>
+  <tr><td>Thumbnails (5s interval)</td><td><code>~/clams-agent-prototype/data/thumbnails_5s/{video_id}/</code></td><td>varies</td></tr>
+</table>
+
+<h3>Benchmark Files</h3>
+<table>
+  <tr><th>File</th><th>Path</th><th>Count</th></tr>
+  <tr><td>Raw questions</td><td><code>qa-data/raw/llm_comprehension_qa.jsonl</code></td><td>1,284</td></tr>
+  <tr><td>MC questions</td><td><code>qa-data/benchmark/mc_questions.jsonl</code></td><td>521</td></tr>
+  <tr><td>Free-text questions</td><td><code>qa-data/benchmark/freetext_questions.jsonl</code></td><td>350</td></tr>
+  <tr><td>Visual-grounded questions</td><td><code>qa-data/benchmark/visual_questions.jsonl</code></td><td>205</td></tr>
+  <tr><td>Combined benchmark</td><td><code>qa-data/benchmark/benchmark.jsonl</code></td><td>871</td></tr>
+  <tr><td>Visual frames</td><td><code>qa-data/benchmark/frames/{video_id}/</code></td><td>205</td></tr>
+  <tr><td>Benchmark stats</td><td><code>qa-data/benchmark/benchmark_stats.json</code></td><td>&mdash;</td></tr>
+</table>
+
+<h3>Training Data</h3>
+<table>
+  <tr><th>File</th><th>Path</th><th>Count</th></tr>
+  <tr><td>CoT reasoning traces</td><td><code>training_data/output/cot_traces.jsonl</code></td><td>871</td></tr>
+  <tr><td>Tool-use trajectories</td><td><code>training_data/output/tool_trajectories.jsonl</code></td><td>871</td></tr>
+</table>
+
+<h3>Evaluation Results</h3>
+<table>
+  <tr><th>File</th><th>Path</th></tr>
+  <tr><td>Qwen3:8b baseline</td><td><code>eval/results/index_baseline_full.scored.jsonl</code></td></tr>
+  <tr><td>Qwen3.5-9B baseline</td><td><code>eval/results/qwen35_baseline_full.jsonl</code></td></tr>
+  <tr><td>Ablation results</td><td><code>eval/results/q3_ablation_*.jsonl</code>, <code>eval/results/q35_ablation_*.jsonl</code></td></tr>
+  <tr><td>VLM comparison results</td><td><code>eval/results/q3vl_*.jsonl</code></td></tr>
+</table>
+
+<h3>Key Scripts</h3>
+<table>
+  <tr><th>Script</th><th>Purpose</th></tr>
+  <tr><td><code>scripts/run_multicollection_pipeline.sh</code></td><td>Full 7-stage pipeline for new videos</td></tr>
+  <tr><td><code>scripts/rebuild_indexes.py</code></td><td>Rebuild indexes from MMIF (NER + resolution + relations + grounding)</td></tr>
+  <tr><td><code>scripts/resolve_all_entities.py</code></td><td>Entity variant resolution across all indexes</td></tr>
+  <tr><td><code>scripts/ground_all_entities.py</code></td><td>Batch entity grounding via Wikidata/Wikipedia</td></tr>
+  <tr><td><code>qa-data/generate_llm_comprehension.py</code></td><td>LLM-based cross-modal question generation</td></tr>
+  <tr><td><code>qa-data/generate_distractors.py</code></td><td>Dual-format benchmark (MC + free-text) with adversarial filtering</td></tr>
+  <tr><td><code>qa-data/generate_visual_questions.py</code></td><td>Visual-grounded question generation with frame extraction</td></tr>
+  <tr><td><code>training_data/generate_cot_traces.py</code></td><td>Chain-of-thought trace generation</td></tr>
+  <tr><td><code>training_data/generate_tool_trajectories.py</code></td><td>Tool-use trajectory generation</td></tr>
+  <tr><td><code>eval/run_index_qa.py</code></td><td>Index baseline evaluation with grounded citations</td></tr>
+  <tr><td><code>eval/run_vlm_direct.py</code></td><td>VLM direct evaluation (oracle/uniform frame sampling)</td></tr>
+  <tr><td><code>eval/run_ablation.py</code></td><td>Modality ablation studies</td></tr>
+  <tr><td><code>eval/score_predictions.py</code></td><td>MC scoring + LLM-as-judge + grounding metrics</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>Related Research</h3>
+<p>This benchmark draws on methodology from:</p>
+<ul style="margin-left: 1.5rem;">
+  <li><strong>MLVU</strong> (2024) &mdash; Dual-format (MC + generation) evaluation for long video</li>
+  <li><strong>TempCompass</strong> (2024) &mdash; Same questions in multiple formats; temporal understanding</li>
+  <li><strong>CinePile</strong> (2024) &mdash; Adversarial "Deaf-Blind" distractor filtering</li>
+  <li><strong>INQUIRER</strong> &mdash; KG-based question generation with relation paths</li>
+  <li><strong>Video-ChatGPT</strong> (2023) &mdash; 5-dimension LLM-as-judge scoring protocol</li>
+  <li><strong>LongVILA-R1</strong> (2025) &mdash; CoT-SFT + GRPO training for video reasoning</li>
+  <li><strong>Video-R1</strong> (2025) &mdash; Contrastive temporal reward (T-GRPO)</li>
+  <li><strong>Agent-R1</strong> (2025) &mdash; End-to-end RL for tool-use agents with process rewards</li>
+  <li><strong>DramaQA</strong> &mdash; Cognitive difficulty hierarchy (L1&ndash;L4)</li>
+</ul>
+</div>
+
+<div class="footer">
+  <p>CLAMS-Agent Benchmark Dataset &mdash; Kelley Lynch, Brandeis University</p>
+  <p>Generated: March 2026 &nbsp;|&nbsp; Dataset version: 1.0</p>
+  <p>Part of the CLAMS Project: <a href="https://clams.ai">clams.ai</a> &nbsp;|&nbsp; AAPB: <a href="https://americanarchive.org">americanarchive.org</a></p>
+</div>
+
+</div>
+</body>
+</html>

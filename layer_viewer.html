@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Multi-Layer Video Index Viewer</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0d1117; color: #c9d1d9; }
+
+  /* Header */
+  .header { background: #161b22; border-bottom: 1px solid #30363d; padding: 10px 20px; display: flex; align-items: center; gap: 16px; position: sticky; top: 0; z-index: 100; }
+  .header h1 { font-size: 15px; color: #58a6ff; white-space: nowrap; }
+  .header select { background: #21262d; color: #c9d1d9; border: 1px solid #30363d; padding: 6px 12px; border-radius: 6px; font-size: 13px; max-width: 420px; }
+  .broadcast-date { color: #f0883e; font-size: 13px; white-space: nowrap; }
+  .duration { color: #8b949e; font-size: 13px; white-space: nowrap; }
+
+  /* Stats bar */
+  .stats-bar { background: #161b22; border-bottom: 1px solid #30363d; padding: 6px 20px; display: flex; gap: 14px; font-size: 11px; flex-wrap: wrap; }
+  .stat { display: flex; align-items: center; gap: 3px; }
+  .stat-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .stat-value { color: #58a6ff; font-weight: 600; }
+  .stat-label { color: #8b949e; }
+
+  /* Nav tabs */
+  .nav-tabs { background: #161b22; border-bottom: 1px solid #30363d; padding: 0 20px; display: flex; gap: 0; }
+  .nav-tab { padding: 7px 14px; font-size: 13px; color: #8b949e; cursor: pointer; border-bottom: 2px solid transparent; user-select: none; }
+  .nav-tab:hover { color: #c9d1d9; }
+  .nav-tab.active { color: #58a6ff; border-bottom-color: #58a6ff; }
+
+  /* Search */
+  .search-bar { background: #161b22; border-bottom: 1px solid #30363d; padding: 8px 20px; display: none; }
+  .search-bar.visible { display: flex; gap: 8px; align-items: center; }
+  .search-box { flex: 1; padding: 6px 10px; background: #21262d; border: 1px solid #30363d; border-radius: 6px; color: #c9d1d9; font-size: 13px; }
+  .search-box:focus { outline: none; border-color: #58a6ff; }
+  .search-count { color: #8b949e; font-size: 12px; white-space: nowrap; }
+
+  /* Main layout */
+  .main { height: calc(100vh - 145px); display: flex; flex-direction: column; overflow: hidden; }
+  .tab-panel { display: none; flex: 1; overflow: hidden; }
+  .tab-panel.active { display: flex; flex-direction: column; }
+
+  /* Timeline panel */
+  .timeline-container { padding: 10px 20px 6px; flex-shrink: 0; overflow-x: auto; }
+  .timeline-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .timeline-header .time-display { font-family: 'SF Mono', Consolas, monospace; font-size: 12px; color: #f0883e; }
+  .zoom-controls { display: flex; gap: 4px; }
+  .zoom-btn { width: 24px; height: 24px; background: #21262d; border: 1px solid #30363d; border-radius: 4px; color: #8b949e; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+  .zoom-btn:hover { color: #c9d1d9; border-color: #484f58; }
+
+  /* Timeline lanes */
+  .timeline-lanes { position: relative; min-width: 100%; }
+  .lane { display: flex; align-items: center; height: 26px; margin-bottom: 2px; }
+  .lane-label { width: 100px; min-width: 100px; font-size: 10px; color: #8b949e; text-transform: uppercase; letter-spacing: 0.5px; padding-right: 8px; text-align: right; user-select: none; }
+  .lane-track { flex: 1; position: relative; height: 22px; background: #161b22; border-radius: 3px; overflow: hidden; cursor: crosshair; }
+  .lane-item { position: absolute; height: 100%; min-width: 2px; border-radius: 2px; transition: opacity 0.1s; }
+  .lane-item:hover { opacity: 0.75; z-index: 5; }
+  .lane-item.selected { outline: 2px solid #f0883e; outline-offset: -1px; z-index: 10; }
+
+  /* Layer colors */
+  .layer-chapters { background: #1f6feb; }
+  .layer-scenes { background: #3fb950; }
+  .layer-shots { background: #484f58; }
+  .layer-speakers { background: #d2a8ff; }
+  .layer-asr { background: #56d364; }
+  .layer-ocr { background: #f0883e; }
+  .layer-visual_captions { background: #a371f7; }
+  .layer-credits { background: #f778ba; }
+  .layer-entities { background: #79c0ff; }
+  .layer-relations { background: #ffa657; }
+
+  /* Scene label sub-colors */
+  .scene-Bars { background: #f85149; }
+  .scene-Slate { background: #f0883e; }
+  .scene-Chyron, .scene-chyron { background: #1f6feb; }
+  .scene-Credits, .scene-credits { background: #a371f7; }
+  .scene-Other-text { background: #3fb950; }
+  .scene-Neg { background: #30363d; }
+
+  /* Speaker colors */
+  .spk-0 { background: #d2a8ff; } .spk-1 { background: #79c0ff; }
+  .spk-2 { background: #56d364; } .spk-3 { background: #ffa657; }
+  .spk-4 { background: #f778ba; } .spk-5 { background: #ff7b72; }
+  .spk-6 { background: #a5d6ff; } .spk-7 { background: #7ee787; }
+
+  /* Playhead */
+  .playhead { position: absolute; top: 0; bottom: 0; width: 2px; background: #f0883e; pointer-events: none; z-index: 20; display: none; }
+  .cursor-line { position: absolute; top: 0; bottom: 0; width: 1px; background: #484f58; pointer-events: none; z-index: 15; display: none; }
+
+  /* Tooltip */
+  .tooltip { position: fixed; background: #21262d; border: 1px solid #484f58; border-radius: 6px; padding: 8px 12px; font-size: 12px; max-width: 400px; z-index: 200; pointer-events: none; display: none; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+  .tooltip .tt-layer { font-size: 10px; text-transform: uppercase; color: #8b949e; margin-bottom: 2px; }
+  .tooltip .tt-time { font-family: monospace; color: #f0883e; font-size: 11px; }
+  .tooltip .tt-text { color: #c9d1d9; margin-top: 4px; line-height: 1.4; }
+
+  /* Detail panel */
+  .detail-container { flex: 1; display: grid; grid-template-columns: 1fr 380px; overflow: hidden; border-top: 1px solid #30363d; }
+  .detail-list { overflow-y: auto; padding: 10px 16px; }
+  .detail-sidebar { border-left: 1px solid #30363d; overflow-y: auto; padding: 12px 16px; background: #161b22; }
+
+  .detail-heading { font-size: 12px; color: #8b949e; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+
+  /* Item cards */
+  .item-card { border: 1px solid #30363d; border-radius: 6px; margin-bottom: 6px; overflow: hidden; cursor: pointer; transition: border-color 0.1s; }
+  .item-card:hover { border-color: #484f58; }
+  .item-card.selected { border-color: #58a6ff; box-shadow: 0 0 0 1px #58a6ff; }
+  .item-header { display: flex; justify-content: space-between; align-items: center; padding: 5px 10px; background: #21262d; }
+  .item-time { font-family: monospace; font-size: 11px; color: #8b949e; }
+  .item-badge { font-size: 10px; font-weight: 600; padding: 1px 8px; border-radius: 8px; color: #fff; }
+  .item-body { padding: 6px 10px; font-size: 12px; line-height: 1.5; color: #c9d1d9; }
+  .item-body .truncated { color: #8b949e; }
+
+  /* Sidebar detail */
+  .sidebar-section { margin-bottom: 14px; }
+  .sidebar-section h3 { font-size: 11px; color: #8b949e; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .sidebar-section .content { font-size: 13px; line-height: 1.6; }
+  .sidebar-thumb { width: 100%; border-radius: 6px; margin-bottom: 10px; background: #21262d; }
+  .entity-tag { display: inline-block; padding: 2px 8px; margin: 2px; border-radius: 4px; font-size: 11px; background: #21262d; border: 1px solid #30363d; }
+  .entity-tag.PERSON { border-color: #1f6feb; color: #79c0ff; }
+  .entity-tag.ORG { border-color: #3fb950; color: #56d364; }
+  .entity-tag.GPE { border-color: #f0883e; color: #ffa657; }
+  .rel-row { font-size: 12px; margin-bottom: 4px; }
+  .rel-arrow { color: #484f58; }
+
+  /* Transcript tab */
+  .transcript-panel { overflow-y: auto; padding: 16px 24px; max-width: 900px; }
+  .transcript-turn { margin-bottom: 12px; padding: 8px 12px; border-left: 3px solid #30363d; }
+  .transcript-speaker { font-size: 11px; font-weight: 600; color: #d2a8ff; margin-bottom: 2px; }
+  .transcript-time { font-family: monospace; font-size: 10px; color: #484f58; }
+  .transcript-text { font-size: 13px; line-height: 1.6; }
+  .transcript-ocr { background: #21262d; border: 1px solid #30363d; border-radius: 4px; padding: 6px 10px; margin: 6px 0; font-size: 12px; color: #f0883e; }
+
+  /* Entities tab */
+  .entities-panel { overflow-y: auto; padding: 16px 24px; }
+  .entity-group { margin-bottom: 16px; }
+  .entity-group h3 { font-size: 13px; color: #58a6ff; margin-bottom: 6px; }
+  .entity-item { display: inline-block; padding: 4px 10px; margin: 3px; border-radius: 6px; font-size: 12px; background: #21262d; border: 1px solid #30363d; cursor: pointer; }
+  .entity-item:hover { border-color: #58a6ff; }
+  .entity-count { color: #484f58; font-size: 10px; margin-left: 4px; }
+
+  /* Search results */
+  .search-results { overflow-y: auto; padding: 10px 16px; }
+  mark { background: #f0883e44; color: #f0883e; padding: 0 2px; border-radius: 2px; }
+
+  /* Visual search tab */
+  .visual-panel { overflow-y: auto; padding: 16px 24px; }
+  .visual-search-bar { display: flex; gap: 8px; margin-bottom: 16px; align-items: center; }
+  .visual-search-bar input { flex: 1; padding: 6px 10px; background: #21262d; border: 1px solid #30363d; border-radius: 6px; color: #c9d1d9; font-size: 13px; }
+  .visual-search-bar input:focus { outline: none; border-color: #58a6ff; }
+  .visual-search-bar button { padding: 6px 14px; background: #1f6feb; border: none; border-radius: 6px; color: #fff; cursor: pointer; font-size: 13px; }
+  .visual-search-bar button:hover { background: #388bfd; }
+  .visual-search-bar label { font-size: 12px; color: #8b949e; display: flex; align-items: center; gap: 4px; }
+  .visual-results { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+  .visual-result { border: 1px solid #30363d; border-radius: 6px; overflow: hidden; cursor: pointer; transition: border-color 0.1s; }
+  .visual-result:hover { border-color: #58a6ff; }
+  .visual-result img { width: 100%; height: 120px; object-fit: cover; background: #21262d; }
+  .visual-result-info { padding: 6px 8px; font-size: 11px; }
+  .visual-result-info .score { color: #3fb950; font-weight: 600; }
+  .visual-result-info .time { color: #8b949e; font-family: monospace; }
+  .visual-result-info .vid { color: #58a6ff; font-size: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .visual-query-card { display: flex; gap: 12px; margin-bottom: 16px; padding: 10px; background: #21262d; border-radius: 6px; align-items: center; }
+  .visual-query-card img { width: 160px; height: 100px; object-fit: cover; border-radius: 4px; }
+  .visual-query-card .info { font-size: 12px; color: #8b949e; }
+  .visual-label-bar { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+  .visual-label-btn { padding: 2px 8px; border-radius: 4px; font-size: 10px; border: 1px solid #30363d; background: #21262d; color: #8b949e; cursor: pointer; }
+  .visual-label-btn:hover { border-color: #58a6ff; color: #c9d1d9; }
+  .visual-label-btn.active { background: #1f6feb33; border-color: #1f6feb; color: #58a6ff; }
+
+  /* QA tab */
+  .qa-panel { overflow-y: auto; padding: 16px 24px; max-width: 1000px; }
+  .qa-card { border: 1px solid #30363d; border-radius: 8px; margin-bottom: 12px; overflow: hidden; }
+  .qa-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: #21262d; }
+  .qa-vid { font-size: 11px; color: #8b949e; font-family: monospace; }
+  .qa-mods { display: flex; gap: 4px; }
+  .qa-mod { font-size: 9px; padding: 2px 6px; border-radius: 4px; background: #1f6feb33; color: #58a6ff; }
+  .qa-question { padding: 10px 12px; font-size: 14px; color: #c9d1d9; line-height: 1.5; }
+  .qa-answer { padding: 8px 12px; font-size: 13px; color: #8b949e; border-top: 1px solid #21262d; line-height: 1.5; }
+  .qa-answer strong { color: #3fb950; }
+  .qa-grounding { padding: 6px 12px 10px; font-size: 11px; color: #484f58; border-top: 1px solid #21262d; }
+  .qa-grounding span { display: inline-block; margin-right: 12px; }
+  .qa-stats { display: flex; gap: 16px; margin-bottom: 16px; font-size: 13px; }
+  .qa-stats .stat-val { color: #58a6ff; font-weight: 600; }
+  .qa-filter { margin-bottom: 12px; }
+  .qa-filter select { background: #21262d; color: #c9d1d9; border: 1px solid #30363d; padding: 4px 8px; border-radius: 4px; font-size: 12px; }
+
+  .empty-state { text-align: center; padding: 40px; color: #484f58; font-size: 14px; }
+
+  /* Video player */
+  .video-panel { display: flex; align-items: center; gap: 12px; padding: 8px 20px; background: #161b22; border-bottom: 1px solid #30363d; flex-shrink: 0; }
+  .video-panel video { max-height: 180px; border-radius: 6px; background: #000; }
+  .video-controls { display: flex; flex-direction: column; gap: 6px; }
+  .video-controls button { padding: 4px 12px; background: #21262d; border: 1px solid #30363d; border-radius: 4px; color: #c9d1d9; cursor: pointer; font-size: 12px; }
+  .video-controls button:hover { border-color: #58a6ff; color: #58a6ff; }
+  .video-time { font-family: monospace; font-size: 13px; color: #f0883e; }
+  .video-unavailable { color: #484f58; font-size: 12px; padding: 10px; }
+
+  /* Selection overlay on timeline */
+  .selection-overlay { position: absolute; top: 0; bottom: 0; background: rgba(88, 166, 255, 0.15); border-left: 2px solid #58a6ff; border-right: 2px solid #58a6ff; pointer-events: none; z-index: 18; display: none; }
+
+  /* Summarize button (appears after selection) */
+  .summarize-bar { background: #161b22; border-top: 1px solid #30363d; padding: 8px 20px; display: none; align-items: center; gap: 12px; flex-shrink: 0; }
+  .summarize-bar.visible { display: flex; }
+  .summarize-btn { padding: 6px 16px; background: #1f6feb; border: none; border-radius: 6px; color: #fff; cursor: pointer; font-size: 13px; font-weight: 500; }
+  .summarize-btn:hover { background: #388bfd; }
+  .summarize-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .selection-info { font-size: 12px; color: #8b949e; }
+  .selection-clear { color: #484f58; cursor: pointer; font-size: 12px; text-decoration: underline; }
+  .selection-clear:hover { color: #8b949e; }
+
+  /* Summary modal */
+  .summary-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 300; display: none; align-items: center; justify-content: center; }
+  .summary-modal.visible { display: flex; }
+  .summary-content { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 20px 24px; max-width: 700px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+  .summary-content h2 { font-size: 15px; color: #58a6ff; margin-bottom: 12px; }
+  .summary-text { font-size: 14px; line-height: 1.7; color: #c9d1d9; white-space: pre-wrap; }
+  .summary-close { float: right; background: none; border: none; color: #8b949e; font-size: 18px; cursor: pointer; }
+  .summary-close:hover { color: #c9d1d9; }
+  .summary-loading { color: #8b949e; font-style: italic; }
+  .summary-error { color: #f85149; }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .detail-container { grid-template-columns: 1fr; }
+    .detail-sidebar { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Layer Viewer</h1>
+  <select id="videoSelect" onchange="loadVideo(this.value)">
+    <option value="">Select video...</option>
+  </select>
+  <span class="broadcast-date" id="broadcastDate"></span>
+  <span class="duration" id="durationLabel"></span>
+</div>
+
+<div class="stats-bar" id="statsBar"></div>
+
+<div class="nav-tabs">
+  <div class="nav-tab active" data-tab="timeline" onclick="switchTab('timeline')">Timeline</div>
+  <div class="nav-tab" data-tab="transcript" onclick="switchTab('transcript')">Transcript</div>
+  <div class="nav-tab" data-tab="entities" onclick="switchTab('entities')">Entities</div>
+  <div class="nav-tab" data-tab="search" onclick="switchTab('search')">Search</div>
+  <div class="nav-tab" data-tab="visual" onclick="switchTab('visual')">Visual Search</div>
+  <div class="nav-tab" data-tab="qa" onclick="switchTab('qa')">QA (<span id="qaCount">0</span>)</div>
+</div>
+
+<div class="main">
+  <!-- Timeline Tab -->
+  <div class="tab-panel active" id="tab-timeline">
+    <!-- Video player -->
+    <div class="video-panel" id="videoPanel">
+      <video id="videoPlayer" controls preload="metadata" style="display:none"></video>
+      <div class="video-controls" id="videoControls">
+        <span class="video-time" id="videoTime">--:--</span>
+        <button onclick="syncVideoToPlayhead()">Sync to playhead</button>
+        <button onclick="syncPlayheadToVideo()">Sync from video</button>
+      </div>
+      <div class="video-unavailable" id="videoUnavailable">Video: loading...</div>
+    </div>
+    <!-- Summarize bar -->
+    <div class="summarize-bar" id="summarizeBar">
+      <button class="summarize-btn" id="summarizeBtn" onclick="summarizeSelection()">Summarize Selection</button>
+      <span class="selection-info" id="selectionInfo"></span>
+      <span class="selection-clear" onclick="clearSelection()">clear</span>
+    </div>
+    <div class="timeline-container" id="timelineContainer">
+      <div class="timeline-header">
+        <span class="time-display" id="timeDisplay">Click timeline to inspect</span>
+        <div class="zoom-controls">
+          <button class="zoom-btn" onclick="zoomTimeline(-1)" title="Zoom out">-</button>
+          <button class="zoom-btn" onclick="zoomTimeline(1)" title="Zoom in">+</button>
+          <button class="zoom-btn" onclick="zoomTimeline(0)" title="Fit">F</button>
+        </div>
+      </div>
+      <div class="timeline-lanes" id="timelineLanes">
+        <div class="playhead" id="playhead"></div>
+        <div class="cursor-line" id="cursorLine"></div>
+      </div>
+    </div>
+    <div class="detail-container">
+      <div class="detail-list" id="detailList">
+        <div class="empty-state">Click a point on the timeline to see what's happening across all layers</div>
+      </div>
+      <div class="detail-sidebar" id="detailSidebar">
+        <div class="empty-state">Select an item to see details</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Transcript Tab -->
+  <div class="tab-panel" id="tab-transcript">
+    <div class="transcript-panel" id="transcriptPanel"></div>
+  </div>
+
+  <!-- Entities Tab -->
+  <div class="tab-panel" id="tab-entities">
+    <div class="entities-panel" id="entitiesPanel"></div>
+  </div>
+
+  <!-- Search Tab -->
+  <div class="tab-panel" id="tab-search">
+    <div style="padding: 10px 20px;">
+      <input type="text" class="search-box" id="searchInput" placeholder="Search across all layers..." onkeyup="handleSearch(event)">
+      <span class="search-count" id="searchCount"></span>
+    </div>
+    <div class="search-results" id="searchResults">
+      <div class="empty-state">Type to search across ASR, OCR, captions, entities, chapters, and more</div>
+    </div>
+  </div>
+
+  <!-- Visual Search Tab -->
+  <div class="tab-panel" id="tab-visual">
+    <div class="visual-panel" id="visualPanel">
+      <div class="visual-search-bar">
+        <input type="text" id="clipSearchInput" placeholder="Describe what you're looking for (e.g., 'person at podium', 'map graphic')...">
+        <button onclick="clipTextSearch()">Search</button>
+        <label><input type="checkbox" id="crossVideoCheck"> Cross-video</label>
+      </div>
+      <div id="clipQueryCard"></div>
+      <div class="visual-results" id="clipResults">
+        <div class="empty-state" style="grid-column: 1/-1">Click a shot in the timeline, then switch here to find visually similar shots. Or type a description above.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QA Tab -->
+  <div class="tab-panel" id="tab-qa">
+    <div class="qa-panel" id="qaPanel">
+      <div class="empty-state">Loading questions...</div>
+    </div>
+  </div>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+<div class="summary-modal" id="summaryModal">
+  <div class="summary-content">
+    <button class="summary-close" onclick="closeSummary()">&times;</button>
+    <h2 id="summaryTitle">Summary</h2>
+    <div class="summary-text" id="summaryText"></div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// State
+// ============================================================
+let currentDoc = null;
+let currentLayers = null;
+let durationMs = 0;
+let zoomLevel = 1;
+let playheadMs = -1;
+let selectedItem = null;
+let speakerColorMap = {};
+
+const LAYER_ORDER = ['chapters', 'scenes', 'shots', 'speakers', 'asr', 'ocr', 'visual_captions', 'credits', 'entities', 'relations'];
+const LAYER_COLORS = {
+  chapters: '#1f6feb', scenes: '#3fb950', shots: '#484f58', speakers: '#d2a8ff',
+  asr: '#56d364', ocr: '#f0883e', visual_captions: '#a371f7', credits: '#f778ba',
+  entities: '#79c0ff', relations: '#ffa657',
+};
+const SCENE_COLORS = {
+  'Bars': '#f85149', 'Slate': '#f0883e', 'Chyron': '#1f6feb', 'chyron': '#1f6feb',
+  'Credits': '#a371f7', 'credits': '#a371f7', 'Other-text': '#3fb950',
+  'Neg': '#30363d', 'person & chyron': '#1f6feb', 'other chyron': '#58a6ff',
+};
+const SPEAKER_COLORS = ['#d2a8ff','#79c0ff','#56d364','#ffa657','#f778ba','#ff7b72','#a5d6ff','#7ee787'];
+
+// ============================================================
+// Init: populate video selector
+// ============================================================
+async function init() {
+  try {
+    // Try fetching a manifest first, fall back to listing approach
+    const resp = await fetch('data/video_indexes/');
+    const html = await resp.text();
+    const matches = html.matchAll(/href="([^"]+\.json)"/g);
+    const files = [...matches].map(m => m[1].replace('.json', '')).sort();
+    const sel = document.getElementById('videoSelect');
+    files.forEach(f => {
+      const opt = document.createElement('option');
+      opt.value = f; opt.textContent = f.replace(/_/g, ' ').substring(0, 70);
+      sel.appendChild(opt);
+    });
+    // Auto-load from URL hash
+    if (location.hash) loadVideo(location.hash.slice(1));
+  } catch(e) {
+    console.warn('Could not list videos:', e);
+  }
+}
+
+// ============================================================
+// Load video
+// ============================================================
+async function loadVideo(videoId) {
+  if (!videoId) return;
+  location.hash = videoId;
+  document.getElementById('videoSelect').value = videoId;
+
+  const resp = await fetch(`data/video_indexes/${videoId}.json`);
+  currentDoc = await resp.json();
+  currentLayers = normalizeToV2(currentDoc);
+  durationMs = currentDoc.duration_ms || 0;
+  playheadMs = -1;
+  selectedItem = null;
+  speakerColorMap = {};
+
+  // Header info
+  document.getElementById('broadcastDate').textContent = currentDoc.broadcast_date || '';
+  document.getElementById('durationLabel').textContent = durationMs ? formatTime(durationMs) : '';
+
+  // Stats
+  renderStats();
+  // Timeline
+  renderTimeline();
+  // Transcript
+  renderTranscript();
+  // Entities
+  renderEntities();
+  // Clear detail
+  document.getElementById('detailList').innerHTML = '<div class="empty-state">Click a point on the timeline to see what\'s happening across all layers</div>';
+  document.getElementById('detailSidebar').innerHTML = '<div class="empty-state">Select an item to see details</div>';
+}
+
+// ============================================================
+// Normalize v1 to v2
+// ============================================================
+function normalizeToV2(doc) {
+  if (doc.layers) return doc.layers;
+  const segments = doc.segments || [];
+  const speakerNames = doc.speaker_names || {};
+  const layers = {};
+
+  layers.scenes = { source: 'swt-detection', items: segments.filter(s => s.scene_label && s.scene_label !== 'Neg' && s.segment_type !== 'gap').map((s,i) => ({
+    id: `scene_${i}`, start_ms: s.start_ms, end_ms: s.end_ms, label: s.scene_label, classification: s.classification
+  }))};
+  layers.shots = { source: 'transnet', items: segments.filter(s => s.scene_label === 'Neg' || s.segment_type === 'visual').map((s,i) => ({
+    id: `shot_${i}`, start_ms: s.start_ms, end_ms: s.end_ms
+  }))};
+  layers.asr = { source: 'parakeet', items: segments.filter(s => s.asr_transcript).map((s,i) => ({
+    id: `asr_${i}`, start_ms: s.start_ms, end_ms: s.end_ms, text: s.asr_transcript
+  }))};
+  layers.ocr = { source: 'qwen-ocr', items: segments.filter(s => s.ocr_text && s.ocr_text.length > 3).map((s,i) => ({
+    id: `ocr_${i}`, start_ms: s.start_ms, end_ms: s.end_ms, text: s.ocr_text, scene_label: s.scene_label
+  }))};
+  layers.visual_captions = { source: 'qwen-caption', items: segments.filter(s => s.visual_caption).map((s,i) => ({
+    id: `vcap_${i}`, start_ms: s.start_ms, end_ms: s.end_ms, text: s.visual_caption
+  }))};
+
+  const spkItems = [];
+  segments.forEach((s,i) => {
+    if (s.primary_speaker) {
+      const name = speakerNames[s.primary_speaker] || '';
+      spkItems.push({ id: `spk_${i}`, start_ms: s.start_ms, end_ms: s.end_ms, speaker_id: s.primary_speaker, speaker_name: name });
+    }
+  });
+  layers.speakers = { source: 'diarization', speaker_names: speakerNames, items: spkItems };
+
+  const entItems = [];
+  segments.forEach(s => {
+    (s.named_entities||[]).forEach((e,j) => {
+      entItems.push({ id: `ent_${entItems.length}`, start_ms: s.start_ms, end_ms: s.end_ms, text: e.text, type: e.type, grounding: (s.grounded_entities||{})[e.text] || '' });
+    });
+  });
+  layers.entities = { source: 'spacy', items: entItems };
+
+  const relItems = [];
+  segments.forEach(s => {
+    (s.relations||[]).forEach(r => {
+      if (Array.isArray(r) && r.length >= 3) {
+        relItems.push({ id: `rel_${relItems.length}`, start_ms: s.start_ms, end_ms: s.end_ms, subject: r[0], predicate: r[1], object: r[2], relation_type: 'svo' });
+      }
+    });
+  });
+  layers.relations = { source: 'spacy', items: relItems };
+
+  return layers;
+}
+
+// ============================================================
+// Render stats bar
+// ============================================================
+function renderStats() {
+  const bar = document.getElementById('statsBar');
+  bar.innerHTML = '';
+  LAYER_ORDER.forEach(name => {
+    const layer = currentLayers[name];
+    if (!layer || !layer.items || !layer.items.length) return;
+    const color = LAYER_COLORS[name] || '#8b949e';
+    bar.innerHTML += `<div class="stat"><span class="stat-dot" style="background:${color}"></span><span class="stat-value">${layer.items.length}</span><span class="stat-label">${name}</span></div>`;
+  });
+}
+
+// ============================================================
+// Render timeline
+// ============================================================
+function renderTimeline() {
+  const container = document.getElementById('timelineLanes');
+  // Keep playhead and cursor
+  const playhead = document.getElementById('playhead');
+  const cursor = document.getElementById('cursorLine');
+  container.innerHTML = '';
+  container.appendChild(playhead);
+  container.appendChild(cursor);
+
+  if (!durationMs) return;
+
+  const trackWidth = Math.max(container.parentElement.clientWidth - 120, 600) * zoomLevel;
+
+  LAYER_ORDER.forEach(name => {
+    const layer = currentLayers[name];
+    if (!layer || !layer.items || !layer.items.length) return;
+
+    const lane = document.createElement('div');
+    lane.className = 'lane';
+
+    const label = document.createElement('div');
+    label.className = 'lane-label';
+    label.textContent = name.replace('_', ' ');
+    lane.appendChild(label);
+
+    const track = document.createElement('div');
+    track.className = 'lane-track';
+    track.style.width = trackWidth + 'px';
+    track.dataset.layer = name;
+
+    layer.items.forEach(item => {
+      const left = (item.start_ms / durationMs) * 100;
+      const width = Math.max(((item.end_ms - item.start_ms) / durationMs) * 100, 0.15);
+      const el = document.createElement('div');
+      el.className = 'lane-item';
+      el.style.left = left + '%';
+      el.style.width = width + '%';
+      el.dataset.layer = name;
+      el.dataset.id = item.id;
+
+      // Color
+      if (name === 'scenes') {
+        el.style.background = SCENE_COLORS[item.label] || '#3fb950';
+      } else if (name === 'speakers') {
+        const spkIdx = getSpeakerIndex(item.speaker_id);
+        el.style.background = SPEAKER_COLORS[spkIdx % SPEAKER_COLORS.length];
+      } else {
+        el.style.background = LAYER_COLORS[name];
+      }
+
+      // Tooltip
+      el.addEventListener('mouseenter', e => showTooltip(e, name, item));
+      el.addEventListener('mouseleave', hideTooltip);
+      el.addEventListener('click', e => { e.stopPropagation(); selectItem(name, item); });
+
+      track.appendChild(el);
+    });
+
+    // Track click → set playhead
+    track.addEventListener('click', e => {
+      const rect = track.getBoundingClientRect();
+      const pct = (e.clientX - rect.left) / rect.width;
+      setPlayhead(pct * durationMs);
+    });
+    track.addEventListener('mousemove', e => {
+      const rect = track.getBoundingClientRect();
+      const pct = (e.clientX - rect.left) / rect.width;
+      showCursor(pct * durationMs);
+    });
+    track.addEventListener('mouseleave', () => { cursor.style.display = 'none'; });
+
+    lane.appendChild(track);
+    container.appendChild(lane);
+  });
+}
+
+function getSpeakerIndex(spkId) {
+  if (!(spkId in speakerColorMap)) {
+    speakerColorMap[spkId] = Object.keys(speakerColorMap).length;
+  }
+  return speakerColorMap[spkId];
+}
+
+function showCursor(timeMs) {
+  const cursor = document.getElementById('cursorLine');
+  const pct = (timeMs / durationMs) * 100;
+  cursor.style.left = `calc(100px + (100% - 100px) * ${pct / 100})`;
+  cursor.style.display = 'block';
+  document.getElementById('timeDisplay').textContent = formatTime(timeMs);
+}
+
+function setPlayhead(timeMs) {
+  playheadMs = timeMs;
+  const ph = document.getElementById('playhead');
+  const tracks = document.querySelectorAll('.lane-track');
+  if (!tracks.length) return;
+  const firstTrack = tracks[0];
+  const pct = (timeMs / durationMs) * 100;
+
+  // Position playhead relative to lanes container
+  ph.style.left = `calc(100px + (${firstTrack.clientWidth}px) * ${pct / 100})`;
+  ph.style.display = 'block';
+  document.getElementById('timeDisplay').textContent = `${formatTime(timeMs)} (click)`;
+
+  // Show all items at this time
+  renderItemsAtTime(timeMs);
+}
+
+// ============================================================
+// Items at time (cross-modal view)
+// ============================================================
+function renderItemsAtTime(timeMs) {
+  const list = document.getElementById('detailList');
+  const items = [];
+
+  LAYER_ORDER.forEach(name => {
+    const layer = currentLayers[name];
+    if (!layer || !layer.items) return;
+    layer.items.forEach(item => {
+      if (item.start_ms <= timeMs && item.end_ms > timeMs) {
+        items.push({ layer: name, item });
+      }
+    });
+  });
+
+  if (!items.length) {
+    list.innerHTML = '<div class="empty-state">No items at this time position</div>';
+    return;
+  }
+
+  list.innerHTML = `<div class="detail-heading">${items.length} items at ${formatTime(timeMs)}</div>`;
+  items.forEach(({layer, item}) => {
+    const card = document.createElement('div');
+    card.className = 'item-card';
+    card.onclick = () => selectItem(layer, item);
+
+    const color = LAYER_COLORS[layer];
+    const text = getItemDisplayText(layer, item);
+
+    card.innerHTML = `
+      <div class="item-header">
+        <span class="item-badge" style="background:${color}">${layer}</span>
+        <span class="item-time">${formatTime(item.start_ms)} - ${formatTime(item.end_ms)}</span>
+      </div>
+      <div class="item-body">${escHtml(text).substring(0, 200)}${text.length > 200 ? '<span class="truncated">...</span>' : ''}</div>
+    `;
+    list.appendChild(card);
+  });
+}
+
+// ============================================================
+// Select item → show in sidebar
+// ============================================================
+function selectItem(layerName, item) {
+  selectedItem = { layer: layerName, item };
+  // Highlight in timeline
+  document.querySelectorAll('.lane-item.selected').forEach(el => el.classList.remove('selected'));
+  const el = document.querySelector(`.lane-item[data-id="${item.id}"][data-layer="${layerName}"]`);
+  if (el) el.classList.add('selected');
+  // Highlight in detail list
+  document.querySelectorAll('.item-card.selected').forEach(el => el.classList.remove('selected'));
+
+  const sidebar = document.getElementById('detailSidebar');
+  sidebar.innerHTML = '';
+
+  // Thumbnail
+  const videoId = currentDoc.video_id;
+  const thumbIdx = Math.round(item.start_ms / 5000) + 1;
+  const thumbPath = `data/thumbnails_5s/${videoId}/thumb_${String(thumbIdx).padStart(5,'0')}.jpg`;
+  sidebar.innerHTML += `<img class="sidebar-thumb" src="${thumbPath}" onerror="this.style.display='none'" alt="">`;
+
+  // Layer + time
+  sidebar.innerHTML += `<div class="sidebar-section"><h3>${layerName}</h3><div class="content" style="font-family:monospace;font-size:12px;color:#f0883e">${formatTime(item.start_ms)} - ${formatTime(item.end_ms)} (${((item.end_ms-item.start_ms)/1000).toFixed(1)}s)</div></div>`;
+
+  // Layer-specific detail
+  if (layerName === 'scenes') {
+    sidebar.innerHTML += `<div class="sidebar-section"><h3>Label</h3><div class="content">${item.label || ''}</div></div>`;
+    if (item.classification) {
+      const scores = Object.entries(item.classification).sort((a,b) => b[1]-a[1]).slice(0,5).map(([k,v]) => `${k}: ${(v*100).toFixed(1)}%`).join(', ');
+      sidebar.innerHTML += `<div class="sidebar-section"><h3>Classification</h3><div class="content" style="font-size:12px">${scores}</div></div>`;
+    }
+  } else if (layerName === 'asr' || layerName === 'ocr' || layerName === 'visual_captions') {
+    sidebar.innerHTML += `<div class="sidebar-section"><h3>Text</h3><div class="content">${escHtml(item.text || '')}</div></div>`;
+    if (item.scene_label) sidebar.innerHTML += `<div class="sidebar-section"><h3>Scene Label</h3><div class="content">${item.scene_label}</div></div>`;
+  } else if (layerName === 'speakers') {
+    sidebar.innerHTML += `<div class="sidebar-section"><h3>Speaker</h3><div class="content">${item.speaker_name || item.speaker_id || '?'}</div></div>`;
+    if (item.text) sidebar.innerHTML += `<div class="sidebar-section"><h3>Transcript</h3><div class="content">${escHtml(item.text)}</div></div>`;
+    if (item.speaker_title) sidebar.innerHTML += `<div class="sidebar-section"><h3>Title</h3><div class="content">${item.speaker_title}</div></div>`;
+  } else if (layerName === 'chapters') {
+    sidebar.innerHTML += `<div class="sidebar-section"><h3>Chapter</h3><div class="content" style="font-size:15px;color:#58a6ff">${escHtml(item.title || '')}</div></div>`;
+  } else if (layerName === 'credits') {
+    const entries = (item.entries || []).map(e => `<div>${escHtml(e.name)} <span style="color:#8b949e">- ${escHtml(e.role)}</span></div>`).join('');
+    sidebar.innerHTML += `<div class="sidebar-section"><h3>Credits</h3><div class="content">${entries}</div></div>`;
+  } else if (layerName === 'entities') {
+    sidebar.innerHTML += `<div class="sidebar-section"><h3>Entity</h3><div class="content"><span class="entity-tag ${item.type || ''}">${escHtml(item.text)} (${item.type})</span></div></div>`;
+    if (item.grounding) sidebar.innerHTML += `<div class="sidebar-section"><h3>Grounding</h3><div class="content" style="font-size:12px">${escHtml(item.grounding)}</div></div>`;
+    if (item.source_layer) sidebar.innerHTML += `<div class="sidebar-section"><h3>Source</h3><div class="content">${item.source_layer}:${item.source_id || ''}</div></div>`;
+  } else if (layerName === 'relations') {
+    sidebar.innerHTML += `<div class="sidebar-section"><h3>Relation</h3><div class="content"><span style="color:#79c0ff">${escHtml(item.subject||'')}</span> <span class="rel-arrow">&rarr;</span> <span style="color:#ffa657">${escHtml(item.predicate||'')}</span> <span class="rel-arrow">&rarr;</span> <span style="color:#56d364">${escHtml(item.object||'')}</span></div></div>`;
+    sidebar.innerHTML += `<div class="sidebar-section"><h3>Type</h3><div class="content">${item.relation_type || ''}</div></div>`;
+  }
+}
+
+// ============================================================
+// Tooltip
+// ============================================================
+function showTooltip(e, layer, item) {
+  const tt = document.getElementById('tooltip');
+  const text = getItemDisplayText(layer, item);
+  tt.innerHTML = `<div class="tt-layer">${layer}</div><div class="tt-time">${formatTime(item.start_ms)} - ${formatTime(item.end_ms)}</div><div class="tt-text">${escHtml(text).substring(0, 200)}</div>`;
+  tt.style.display = 'block';
+  tt.style.left = Math.min(e.clientX + 12, window.innerWidth - 420) + 'px';
+  tt.style.top = (e.clientY + 16) + 'px';
+}
+function hideTooltip() { document.getElementById('tooltip').style.display = 'none'; }
+
+// ============================================================
+// Transcript tab
+// ============================================================
+function renderTranscript() {
+  const panel = document.getElementById('transcriptPanel');
+  if (!currentLayers) { panel.innerHTML = ''; return; }
+
+  // Interleave ASR (with speakers) and OCR by time
+  const events = [];
+  const speakerNames = currentLayers.speakers?.speaker_names || {};
+
+  (currentLayers.speakers?.items || []).forEach(item => {
+    events.push({ time: item.start_ms, type: 'speaker', item });
+  });
+  (currentLayers.asr?.items || []).forEach(item => {
+    events.push({ time: item.start_ms, type: 'asr', item });
+  });
+  (currentLayers.ocr?.items || []).forEach(item => {
+    if (item.text && item.text.length > 5) {
+      events.push({ time: item.start_ms, type: 'ocr', item });
+    }
+  });
+
+  events.sort((a,b) => a.time - b.time);
+
+  let html = '';
+  let lastSpeaker = '';
+  events.forEach(ev => {
+    if (ev.type === 'speaker') {
+      const name = ev.item.speaker_name || speakerNames[ev.item.speaker_id] || ev.item.speaker_id || '';
+      if (name !== lastSpeaker) {
+        lastSpeaker = name;
+      }
+    } else if (ev.type === 'asr') {
+      const spkColor = lastSpeaker ? SPEAKER_COLORS[getSpeakerIndex(lastSpeaker) % SPEAKER_COLORS.length] : '#8b949e';
+      html += `<div class="transcript-turn" style="border-color:${spkColor}">`;
+      if (lastSpeaker) html += `<div class="transcript-speaker" style="color:${spkColor}">${escHtml(lastSpeaker)}</div>`;
+      html += `<span class="transcript-time">${formatTime(ev.item.start_ms)}</span>`;
+      html += `<div class="transcript-text">${escHtml(ev.item.text || '')}</div></div>`;
+    } else if (ev.type === 'ocr') {
+      html += `<div class="transcript-ocr">[${ev.item.scene_label || 'OCR'}] ${escHtml(ev.item.text || '')}</div>`;
+    }
+  });
+
+  panel.innerHTML = html || '<div class="empty-state">No transcript data</div>';
+}
+
+// ============================================================
+// Entities tab
+// ============================================================
+function renderEntities() {
+  const panel = document.getElementById('entitiesPanel');
+  if (!currentLayers?.entities?.items?.length) {
+    panel.innerHTML = '<div class="empty-state">No entities extracted</div>';
+    return;
+  }
+
+  // Group by type, count occurrences
+  const byType = {};
+  currentLayers.entities.items.forEach(e => {
+    const t = e.type || 'UNKNOWN';
+    if (!byType[t]) byType[t] = {};
+    byType[t][e.text] = (byType[t][e.text] || 0) + 1;
+  });
+
+  let html = '';
+  ['PERSON','ORG','GPE','DATE','EVENT','NORP','LOC','FAC','PRODUCT','WORK_OF_ART','LAW'].forEach(type => {
+    const entities = byType[type];
+    if (!entities) return;
+    const sorted = Object.entries(entities).sort((a,b) => b[1]-a[1]);
+    html += `<div class="entity-group"><h3>${type} (${sorted.length})</h3>`;
+    sorted.forEach(([text, count]) => {
+      html += `<span class="entity-item" onclick="searchFor('${escHtml(text)}')">${escHtml(text)}<span class="entity-count">x${count}</span></span>`;
+    });
+    html += '</div>';
+  });
+
+  panel.innerHTML = html;
+}
+
+// ============================================================
+// Search
+// ============================================================
+function handleSearch(e) {
+  if (e.key === 'Escape') {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('searchResults').innerHTML = '<div class="empty-state">Type to search</div>';
+    document.getElementById('searchCount').textContent = '';
+    return;
+  }
+  const query = document.getElementById('searchInput').value.trim().toLowerCase();
+  if (query.length < 2) {
+    document.getElementById('searchResults').innerHTML = '<div class="empty-state">Type at least 2 characters</div>';
+    document.getElementById('searchCount').textContent = '';
+    return;
+  }
+
+  const results = [];
+  LAYER_ORDER.forEach(name => {
+    const layer = currentLayers[name];
+    if (!layer?.items) return;
+    layer.items.forEach(item => {
+      const searchable = getItemSearchText(name, item).toLowerCase();
+      if (searchable.includes(query)) {
+        results.push({ layer: name, item, text: getItemDisplayText(name, item) });
+      }
+    });
+  });
+
+  document.getElementById('searchCount').textContent = `${results.length} results`;
+  const container = document.getElementById('searchResults');
+  if (!results.length) {
+    container.innerHTML = '<div class="empty-state">No results</div>';
+    return;
+  }
+
+  container.innerHTML = '';
+  results.slice(0, 100).forEach(({layer, item, text}) => {
+    const card = document.createElement('div');
+    card.className = 'item-card';
+    card.onclick = () => { switchTab('timeline'); setPlayhead(item.start_ms); selectItem(layer, item); };
+    const highlighted = highlightMatch(escHtml(text).substring(0, 300), query);
+    card.innerHTML = `
+      <div class="item-header">
+        <span class="item-badge" style="background:${LAYER_COLORS[layer]}">${layer}</span>
+        <span class="item-time">${formatTime(item.start_ms)}</span>
+      </div>
+      <div class="item-body">${highlighted}</div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function searchFor(text) {
+  switchTab('search');
+  document.getElementById('searchInput').value = text;
+  handleSearch({ key: '' });
+}
+
+function highlightMatch(html, query) {
+  const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+  return html.replace(regex, '<mark>$1</mark>');
+}
+
+// ============================================================
+// Tab switching
+// ============================================================
+function switchTab(tab) {
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === `tab-${tab}`));
+  if (tab === 'search') document.getElementById('searchInput').focus();
+}
+
+// ============================================================
+// Zoom
+// ============================================================
+function zoomTimeline(dir) {
+  if (dir === 0) zoomLevel = 1;
+  else if (dir > 0) zoomLevel = Math.min(zoomLevel * 1.5, 20);
+  else zoomLevel = Math.max(zoomLevel / 1.5, 1);
+  renderTimeline();
+}
+
+// ============================================================
+// Helpers
+// ============================================================
+function formatTime(ms) {
+  const s = Math.floor(ms / 1000);
+  const m = Math.floor(s / 60);
+  const h = Math.floor(m / 60);
+  const ss = String(s % 60).padStart(2, '0');
+  const mm = String(m % 60).padStart(2, '0');
+  return h > 0 ? `${h}:${mm}:${ss}` : `${mm}:${ss}`;
+}
+
+function escHtml(s) {
+  if (!s) return '';
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function getItemDisplayText(layer, item) {
+  if (layer === 'scenes') return item.label || '';
+  if (layer === 'shots') return `Shot ${item.id}`;
+  if (layer === 'asr' || layer === 'ocr' || layer === 'visual_captions') return item.text || '';
+  if (layer === 'speakers') return (item.speaker_name || item.speaker_id || '') + (item.text ? ': ' + item.text : '');
+  if (layer === 'chapters') return item.title || '';
+  if (layer === 'credits') return (item.entries||[]).map(e => `${e.name} (${e.role})`).join(', ');
+  if (layer === 'entities') return `${item.text} (${item.type})`;
+  if (layer === 'relations') return `${item.subject} -> ${item.predicate} -> ${item.object}`;
+  return item.id || '';
+}
+
+function getItemSearchText(layer, item) {
+  let parts = [getItemDisplayText(layer, item)];
+  if (item.grounding) parts.push(item.grounding);
+  if (item.entries) item.entries.forEach(e => parts.push(e.name, e.role));
+  return parts.join(' ');
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.key === '/') { e.preventDefault(); switchTab('search'); }
+  if (e.key === '1') switchTab('timeline');
+  if (e.key === '2') switchTab('transcript');
+  if (e.key === '3') switchTab('entities');
+  if (e.key === '4') switchTab('search');
+  if (e.key === '5') switchTab('visual');
+  if (e.key === '6') switchTab('qa');
+  if (e.key === '[' || e.key === ']') {
+    // Jump to prev/next chapter
+    const chapters = currentLayers?.chapters?.items || [];
+    if (!chapters.length || playheadMs < 0) return;
+    if (e.key === ']') {
+      const next = chapters.find(c => c.start_ms > playheadMs + 500);
+      if (next) setPlayhead(next.start_ms);
+    } else {
+      const prev = [...chapters].reverse().find(c => c.start_ms < playheadMs - 500);
+      if (prev) setPlayhead(prev.start_ms);
+    }
+  }
+});
+
+// ============================================================
+// Visual Search (CLIP)
+// ============================================================
+
+async function clipFindSimilar(shotIdx) {
+  if (!currentDoc) return;
+  const vid = currentDoc.video_id;
+  const crossVideo = document.getElementById('crossVideoCheck').checked;
+  const url = `/api/similar/${vid}/${shotIdx}?k=24&cross_video=${crossVideo}`;
+
+  const queryCard = document.getElementById('clipQueryCard');
+  const thumbIdx = Math.round(
+    ((currentLayers.shots?.items?.[shotIdx]?.start_ms || 0) +
+     (currentLayers.shots?.items?.[shotIdx]?.end_ms || 0)) / 2 / 5000
+  ) + 1;
+  const thumbPath = `data/thumbnails_5s/${vid}/thumb_${String(thumbIdx).padStart(5,'0')}.jpg`;
+  const shotInfo = currentLayers.shots?.items?.[shotIdx];
+  queryCard.innerHTML = `<div class="visual-query-card">
+    <img src="${thumbPath}" onerror="this.style.background='#21262d'">
+    <div class="info">
+      <div>Query: Shot ${shotIdx}</div>
+      <div>${formatTime(shotInfo?.start_ms||0)} - ${formatTime(shotInfo?.end_ms||0)}</div>
+      <div>Finding similar shots...</div>
+    </div>
+  </div>`;
+
+  try {
+    const resp = await fetch(url);
+    const data = await resp.json();
+    if (data.error) {
+      document.getElementById('clipResults').innerHTML = `<div class="empty-state" style="grid-column:1/-1">${data.error}</div>`;
+      return;
+    }
+    renderClipResults(data.results);
+  } catch(e) {
+    document.getElementById('clipResults').innerHTML = `<div class="empty-state" style="grid-column:1/-1">Error: ${e.message}. Is serve_viewer.py running?</div>`;
+  }
+}
+
+async function clipTextSearch() {
+  const query = document.getElementById('clipSearchInput').value.trim();
+  if (!query || !currentDoc) return;
+  const vid = currentDoc.video_id;
+
+  document.getElementById('clipQueryCard').innerHTML = '';
+  document.getElementById('clipResults').innerHTML = '<div class="empty-state" style="grid-column:1/-1">Searching...</div>';
+
+  try {
+    const resp = await fetch(`/api/text_search_clip/${vid}?q=${encodeURIComponent(query)}&k=24`);
+    const data = await resp.json();
+    if (data.error) {
+      document.getElementById('clipResults').innerHTML = `<div class="empty-state" style="grid-column:1/-1">${data.error}</div>`;
+      return;
+    }
+    renderClipResults(data.results);
+  } catch(e) {
+    document.getElementById('clipResults').innerHTML = `<div class="empty-state" style="grid-column:1/-1">Error: ${e.message}</div>`;
+  }
+}
+
+function renderClipResults(results) {
+  const container = document.getElementById('clipResults');
+  if (!results.length) {
+    container.innerHTML = '<div class="empty-state" style="grid-column:1/-1">No results</div>';
+    return;
+  }
+
+  const labels = ['interview', 'b-roll', 'graphic', 'title-card', 'crowd', 'exterior'];
+
+  container.innerHTML = results.map((r, i) => {
+    const thumbIdx = Math.round((r.start_ms + (r.end_ms - r.start_ms) / 2) / 5000) + 1;
+    const vid = r.video_id;
+    const thumbPath = `data/thumbnails_5s/${vid}/thumb_${String(thumbIdx).padStart(5,'0')}.jpg`;
+    const labelBtns = labels.map(l =>
+      `<span class="visual-label-btn" onclick="event.stopPropagation(); toggleLabel(this, '${vid}', ${r.shot_idx}, '${l}')">${l}</span>`
+    ).join('');
+
+    return `<div class="visual-result" onclick="jumpToShot('${vid}', ${r.start_ms})">
+      <img src="${thumbPath}" onerror="this.style.background='#21262d'" alt="">
+      <div class="visual-result-info">
+        <span class="score">${(r.score * 100).toFixed(0)}%</span>
+        <span class="time">${formatTime(r.start_ms)}-${formatTime(r.end_ms)}</span>
+        ${r.video_id !== (currentDoc?.video_id) ? `<div class="vid">${r.video_id.substring(0,40)}</div>` : ''}
+        <div class="visual-label-bar">${labelBtns}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function jumpToShot(videoId, startMs) {
+  if (currentDoc && currentDoc.video_id === videoId) {
+    switchTab('timeline');
+    setPlayhead(startMs);
+  } else {
+    loadVideo(videoId);
+    setTimeout(() => { switchTab('timeline'); setPlayhead(startMs); }, 500);
+  }
+}
+
+// Labels storage (in-memory for now)
+const shotLabels = {};
+function toggleLabel(el, videoId, shotIdx, label) {
+  const key = `${videoId}:${shotIdx}`;
+  if (!shotLabels[key]) shotLabels[key] = new Set();
+  if (shotLabels[key].has(label)) {
+    shotLabels[key].delete(label);
+    el.classList.remove('active');
+  } else {
+    shotLabels[key].add(label);
+    el.classList.add('active');
+  }
+}
+
+// Hook: when a shot is selected in timeline, enable "find similar"
+const _origSelectItem = selectItem;
+selectItem = function(layerName, item) {
+  _origSelectItem(layerName, item);
+  if (layerName === 'shots' && currentLayers?.shots?.items) {
+    const shotIdx = currentLayers.shots.items.findIndex(s => s.id === item.id);
+    if (shotIdx >= 0) {
+      // Auto-search when switching to visual tab
+      window._pendingClipSearch = shotIdx;
+    }
+  }
+};
+
+// When switching to visual tab, run pending search
+const _origSwitchTab = switchTab;
+switchTab = function(tab) {
+  _origSwitchTab(tab);
+  if (tab === 'visual' && window._pendingClipSearch !== undefined) {
+    clipFindSimilar(window._pendingClipSearch);
+    window._pendingClipSearch = undefined;
+  }
+};
+
+// Handle enter key in search box
+document.getElementById('clipSearchInput')?.addEventListener('keydown', e => {
+  if (e.key === 'Enter') clipTextSearch();
+});
+
+// ============================================================
+// QA Tab
+// ============================================================
+let allQuestions = [];
+
+async function loadQuestions() {
+  try {
+    const resp = await fetch('qa-data/raw/llm_comprehension_qa.jsonl');
+    const text = await resp.text();
+    allQuestions = text.trim().split('\n').filter(l => l).map(l => JSON.parse(l));
+    document.getElementById('qaCount').textContent = allQuestions.length;
+    renderQA();
+  } catch(e) {
+    console.warn('Could not load QA:', e);
+    document.getElementById('qaPanel').innerHTML = '<div class="empty-state">QA file not found</div>';
+  }
+}
+
+function renderQA(filterVideoId) {
+  const panel = document.getElementById('qaPanel');
+  const vid = filterVideoId || (currentDoc ? currentDoc.video_id : null);
+
+  const filtered = vid ? allQuestions.filter(q => q.video_id === vid) : allQuestions;
+  const byVideo = {};
+  filtered.forEach(q => {
+    if (!byVideo[q.video_id]) byVideo[q.video_id] = [];
+    byVideo[q.video_id].push(q);
+  });
+
+  const totalVids = new Set(allQuestions.map(q => q.video_id)).size;
+  const modCounts = {};
+  allQuestions.forEach(q => (q.modalities_required || []).forEach(m => modCounts[m] = (modCounts[m]||0) + 1));
+
+  let html = `<div class="qa-stats">
+    <span><span class="stat-val">${allQuestions.length}</span> total questions</span>
+    <span><span class="stat-val">${totalVids}</span> videos</span>
+    <span><span class="stat-val">${filtered.length}</span> shown</span>
+  </div>`;
+
+  html += `<div class="qa-filter">
+    <select onchange="renderQA(this.value || null)">
+      <option value="">All videos (${allQuestions.length})</option>
+      <option value="__current__" ${vid && vid !== '__current__' ? 'selected' : ''}>Current video</option>`;
+  Object.keys(byVideo).sort().forEach(v => {
+    const sel = v === vid ? 'selected' : '';
+    html += `<option value="${v}" ${sel}>${v.substring(0,50)} (${byVideo[v].length})</option>`;
+  });
+  html += '</select></div>';
+
+  const display = vid === '__current__' && currentDoc
+    ? allQuestions.filter(q => q.video_id === currentDoc.video_id)
+    : filtered;
+
+  display.forEach((q, i) => {
+    const mods = (q.modalities_required || []).map(m =>
+      `<span class="qa-mod">${m}</span>`
+    ).join('');
+    const grounding = q.grounding || {};
+    const gParts = [];
+    if (grounding.speech_excerpt) gParts.push(`<span>Speech: "${grounding.speech_excerpt.substring(0,60)}..."</span>`);
+    if (grounding.visual_reference) gParts.push(`<span>Visual: "${grounding.visual_reference.substring(0,60)}..."</span>`);
+    if (grounding.ocr_reference) gParts.push(`<span>OCR: "${grounding.ocr_reference.substring(0,60)}..."</span>`);
+
+    const times = (q.source_segment_times || []).map(t =>
+      `${(t.start_ms/1000).toFixed(0)}s-${(t.end_ms/1000).toFixed(0)}s`
+    ).join(', ');
+
+    html += `<div class="qa-card">
+      <div class="qa-header">
+        <span class="qa-vid">${q.video_id.substring(0,40)} ${times ? '@ ' + times : ''}</span>
+        <div class="qa-mods">${mods}</div>
+      </div>
+      <div class="qa-question">${escHtml(q.question)}</div>
+      <div class="qa-answer"><strong>A:</strong> ${escHtml(q.answer)}</div>
+      ${gParts.length ? '<div class="qa-grounding">' + gParts.join('') + '</div>' : ''}
+    </div>`;
+  });
+
+  if (!display.length) {
+    html += '<div class="empty-state">No questions for this video yet</div>';
+  }
+
+  panel.innerHTML = html;
+}
+
+// Load QA on init
+loadQuestions();
+
+// ============================================================
+// Video player
+// ============================================================
+function initVideoPlayer() {
+  const video = document.getElementById('videoPlayer');
+  const unavail = document.getElementById('videoUnavailable');
+  const videoId = currentDoc?.video_id;
+  if (!videoId) return;
+
+  // Try loading via our server's API
+  const src = `/api/video/${videoId}`;
+  video.src = src;
+  video.style.display = 'block';
+  unavail.textContent = '';
+
+  video.onerror = () => {
+    video.style.display = 'none';
+    unavail.textContent = 'Video unavailable (start serve_viewer.py with SSH tunnel)';
+  };
+
+  video.ontimeupdate = () => {
+    document.getElementById('videoTime').textContent = formatTime(video.currentTime * 1000);
+  };
+}
+
+function syncVideoToPlayhead() {
+  const video = document.getElementById('videoPlayer');
+  if (playheadMs >= 0 && video.src) {
+    video.currentTime = playheadMs / 1000;
+  }
+}
+
+function syncPlayheadToVideo() {
+  const video = document.getElementById('videoPlayer');
+  if (video.src && !isNaN(video.currentTime)) {
+    setPlayhead(video.currentTime * 1000);
+  }
+}
+
+// ============================================================
+// Timeline range selection (shift+drag)
+// ============================================================
+let selectionStart = -1;
+let selectionEnd = -1;
+let isSelecting = false;
+
+function initSelectionHandlers() {
+  const lanes = document.getElementById('timelineLanes');
+  if (!lanes) return;
+
+  lanes.addEventListener('mousedown', e => {
+    if (!e.shiftKey) return;
+    const track = e.target.closest('.lane-track');
+    if (!track) return;
+    e.preventDefault();
+    isSelecting = true;
+    const rect = track.getBoundingClientRect();
+    selectionStart = ((e.clientX - rect.left) / rect.width) * durationMs;
+    selectionEnd = selectionStart;
+    updateSelectionOverlay();
+  });
+
+  document.addEventListener('mousemove', e => {
+    if (!isSelecting) return;
+    const track = document.querySelector('.lane-track');
+    if (!track) return;
+    const rect = track.getBoundingClientRect();
+    selectionEnd = Math.max(0, Math.min(durationMs, ((e.clientX - rect.left) / rect.width) * durationMs));
+    updateSelectionOverlay();
+  });
+
+  document.addEventListener('mouseup', e => {
+    if (!isSelecting) return;
+    isSelecting = false;
+    const range = Math.abs(selectionEnd - selectionStart);
+    if (range < 1000) {
+      // Too small — treat as click, clear selection
+      clearSelection();
+      return;
+    }
+    // Normalize start/end
+    if (selectionEnd < selectionStart) {
+      [selectionStart, selectionEnd] = [selectionEnd, selectionStart];
+    }
+    showSummarizeBar();
+  });
+}
+
+function updateSelectionOverlay() {
+  let overlay = document.getElementById('selectionOverlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.className = 'selection-overlay';
+    overlay.id = 'selectionOverlay';
+    document.getElementById('timelineLanes').appendChild(overlay);
+  }
+
+  const s = Math.min(selectionStart, selectionEnd);
+  const e = Math.max(selectionStart, selectionEnd);
+  const track = document.querySelector('.lane-track');
+  if (!track) return;
+
+  const leftPct = (s / durationMs) * 100;
+  const widthPct = ((e - s) / durationMs) * 100;
+
+  overlay.style.left = `calc(100px + (${track.clientWidth}px) * ${leftPct / 100})`;
+  overlay.style.width = `calc((${track.clientWidth}px) * ${widthPct / 100})`;
+  overlay.style.display = 'block';
+}
+
+function showSummarizeBar() {
+  const bar = document.getElementById('summarizeBar');
+  bar.classList.add('visible');
+  const dur = ((selectionEnd - selectionStart) / 1000).toFixed(1);
+  document.getElementById('selectionInfo').textContent =
+    `${formatTime(selectionStart)} - ${formatTime(selectionEnd)} (${dur}s)`;
+}
+
+function clearSelection() {
+  selectionStart = -1;
+  selectionEnd = -1;
+  const overlay = document.getElementById('selectionOverlay');
+  if (overlay) overlay.style.display = 'none';
+  document.getElementById('summarizeBar').classList.remove('visible');
+}
+
+// ============================================================
+// LLM Summarization
+// ============================================================
+async function summarizeSelection() {
+  if (selectionStart < 0 || selectionEnd < 0) return;
+
+  const s = Math.min(selectionStart, selectionEnd);
+  const e = Math.max(selectionStart, selectionEnd);
+
+  // Gather all layer data in the selected range
+  const context = buildContextForRange(s, e);
+  if (!context) {
+    alert('No data in selected range');
+    return;
+  }
+
+  // Show modal with loading state
+  const modal = document.getElementById('summaryModal');
+  const title = document.getElementById('summaryTitle');
+  const text = document.getElementById('summaryText');
+  title.textContent = `Summary: ${formatTime(s)} - ${formatTime(e)}`;
+  text.innerHTML = '<span class="summary-loading">Generating summary...</span>';
+  modal.classList.add('visible');
+
+  document.getElementById('summarizeBtn').disabled = true;
+
+  try {
+    const resp = await fetch('/api/summarize', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        video_id: currentDoc.video_id,
+        start_ms: s,
+        end_ms: e,
+        context: context,
+      }),
+    });
+
+    const data = await resp.json();
+    if (data.error) {
+      text.innerHTML = `<span class="summary-error">${escHtml(data.error)}</span>`;
+    } else {
+      text.textContent = data.summary;
+    }
+  } catch (err) {
+    text.innerHTML = `<span class="summary-error">Connection failed. Is serve_viewer.py running with SSH tunnel?</span>`;
+  }
+
+  document.getElementById('summarizeBtn').disabled = false;
+}
+
+function buildContextForRange(startMs, endMs) {
+  if (!currentLayers) return '';
+  const parts = [];
+
+  // Chapters
+  (currentLayers.chapters?.items || []).forEach(item => {
+    if (item.start_ms < endMs && item.end_ms > startMs) {
+      parts.push(`CHAPTER: ${item.title}`);
+    }
+  });
+
+  // Speakers
+  const spkNames = currentLayers.speakers?.speaker_names || {};
+  const seenSpeakers = new Set();
+  (currentLayers.speakers?.items || []).forEach(item => {
+    if (item.start_ms < endMs && item.end_ms > startMs) {
+      const name = item.speaker_name || spkNames[item.speaker_id] || item.speaker_id;
+      if (!seenSpeakers.has(name)) {
+        seenSpeakers.add(name);
+        parts.push(`SPEAKER: ${name}`);
+      }
+    }
+  });
+
+  // ASR
+  const asrTexts = [];
+  (currentLayers.asr?.items || []).forEach(item => {
+    if (item.start_ms < endMs && item.end_ms > startMs) {
+      asrTexts.push(item.text);
+    }
+  });
+  if (asrTexts.length) parts.push(`SPEECH TRANSCRIPT:\n${asrTexts.join(' ').substring(0, 2000)}`);
+
+  // OCR
+  const ocrTexts = [];
+  (currentLayers.ocr?.items || []).forEach(item => {
+    if (item.start_ms < endMs && item.end_ms > startMs && item.text) {
+      ocrTexts.push(`[${item.scene_label || 'text'}] ${item.text}`);
+    }
+  });
+  if (ocrTexts.length) parts.push(`ON-SCREEN TEXT:\n${ocrTexts.join('\n').substring(0, 1000)}`);
+
+  // Visual captions
+  const capTexts = [];
+  (currentLayers.visual_captions?.items || []).forEach(item => {
+    if (item.start_ms < endMs && item.end_ms > startMs && item.text) {
+      capTexts.push(item.text);
+    }
+  });
+  if (capTexts.length) parts.push(`VISUAL DESCRIPTIONS:\n${capTexts.join('\n').substring(0, 1000)}`);
+
+  // Entities
+  const ents = new Set();
+  (currentLayers.entities?.items || []).forEach(item => {
+    if (item.start_ms < endMs && item.end_ms > startMs) {
+      ents.add(`${item.text} (${item.type})`);
+    }
+  });
+  if (ents.size) parts.push(`ENTITIES: ${[...ents].join(', ')}`);
+
+  // Relations
+  const rels = [];
+  (currentLayers.relations?.items || []).forEach(item => {
+    if (item.start_ms < endMs && item.end_ms > startMs) {
+      rels.push(`${item.subject} -> ${item.predicate} -> ${item.object}`);
+    }
+  });
+  if (rels.length) parts.push(`RELATIONS: ${rels.join('; ')}`);
+
+  return parts.join('\n\n');
+}
+
+function closeSummary() {
+  document.getElementById('summaryModal').classList.remove('visible');
+}
+
+// Close modal on Escape
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && document.getElementById('summaryModal').classList.contains('visible')) {
+    closeSummary();
+  }
+});
+
+// ============================================================
+// Patch loadVideo to init new features
+// ============================================================
+const _origLoadVideo = loadVideo;
+loadVideo = async function(videoId) {
+  await _origLoadVideo(videoId);
+  initVideoPlayer();
+  clearSelection();
+  renderQA(currentDoc ? currentDoc.video_id : null);
+  // Re-init selection handlers after timeline renders
+  setTimeout(initSelectionHandlers, 100);
+};
+
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 900px;
+                 background-color: #1a1a2e;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#4e79a7", "entity_type": "person", "font": {"color": "white"}, "id": "ner:cpb-aacip-507-n29p26qt59:Q7747", "label": "Vladimir Putin", "shape": "dot", "size": 20, "title": "\u003cb\u003eVladimir Putin\u003c/b\u003e\u003cbr\u003eType: person\u003cbr\u003eQID: Q7747\u003cbr\u003ecountry_of_citizenship: Russia\u003cbr\u003eposition_held: President of Russia\u003cbr\u003eeducated_at: Saint Petersburg State University, Academy of Foreign Intelligence, Academy of the Federal Security Service of the Russian Federation, Saint Petersburg Mining University, School 281, Faculty of Law, Saint Petersburg State University, School 193, St. Petersburg Institute of the FSB of Russia\u003cbr\u003eoccupation: politician\u003cbr\u003eemployer: KGB, First Chief Directorate, Presidential Administration of Russia, Administrative Directorate of the President of the Russian Federation"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "wikidata:country_of_citizenship:Russia", "label": "wikidata:country_of_citizenship:Russia", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "wikidata:position_held:President_of_Russia", "label": "wikidata:position_held:President_of_Russia", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "wikidata:educated_at:Saint_Petersburg_State_University", "label": "wikidata:educated_at:Saint_Petersburg_State_University", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "wikidata:educated_at:Academy_of_Foreign_Intelligence", "label": "wikidata:educated_at:Academy_of_Foreign_Intelligence", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "wikidata:educated_at:Academy_of_the_Federal_Security_Service_of_the_Russian_Federation", "label": "wikidata:educated_at:Academy_of_the_Federal_Security_Service_of_the_Russian_Federation", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "wikidata:educated_at:Saint_Petersburg_Mining_University", "label": "wikidata:educated_at:Saint_Petersburg_Mining_University", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "wikidata:educated_at:School_281", "label": "wikidata:educated_at:School_281", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "wikidata:educated_at:Faculty_of_Law,_Saint_Petersburg_State_University", "label": "wikidata:educated_at:Faculty_of_Law,_Saint_Petersburg_State_University", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "wikidata:educated_at:School_193", "label": "wikidata:educated_at:School_193", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "wikidata:educated_at:St._Petersburg_Institute_of_the_FSB_of_Russia", "label": "wikidata:educated_at:St._Petersburg_Institute_of_the_FSB_of_Russia", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "wikidata:occupation:politician", "label": "wikidata:occupation:politician", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "wikidata:employer:KGB", "label": "wikidata:employer:KGB", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "wikidata:employer:First_Chief_Directorate", "label": "wikidata:employer:First_Chief_Directorate", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "wikidata:employer:Presidential_Administration_of_Russia", "label": "wikidata:employer:Presidential_Administration_of_Russia", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "wikidata:employer:Administrative_Directorate_of_the_President_of_the_Russian_Federation", "label": "wikidata:employer:Administrative_Directorate_of_the_President_of_the_Russian_Federation", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "wikidata:date_of_birth:1952-10-07", "label": "wikidata:date_of_birth:1952-10-07", "shape": "dot", "size": 10}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#ff9da7", "from": "ner:cpb-aacip-507-n29p26qt59:Q7747", "label": "related_to", "title": "related_to\u003cbr\u003esource: wikidata\u003cbr\u003eevidence: country_of_citizenship: Russia", "to": "wikidata:country_of_citizenship:Russia", "width": 1}, {"arrows": "to", "color": "#ff9da7", "from": "ner:cpb-aacip-507-n29p26qt59:Q7747", "label": "related_to", "title": "related_to\u003cbr\u003esource: wikidata\u003cbr\u003eevidence: position_held: President of Russia", "to": "wikidata:position_held:President_of_Russia", "width": 1}, {"arrows": "to", "color": "#ff9da7", "from": "ner:cpb-aacip-507-n29p26qt59:Q7747", "label": "related_to", "title": "related_to\u003cbr\u003esource: wikidata\u003cbr\u003eevidence: educated_at: Saint Petersburg State University", "to": "wikidata:educated_at:Saint_Petersburg_State_University", "width": 1}, {"arrows": "to", "color": "#ff9da7", "from": "ner:cpb-aacip-507-n29p26qt59:Q7747", "label": "related_to", "title": "related_to\u003cbr\u003esource: wikidata\u003cbr\u003eevidence: educated_at: Academy of Foreign Intelligence", "to": "wikidata:educated_at:Academy_of_Foreign_Intelligence", "width": 1}, {"arrows": "to", "color": "#ff9da7", "from": "ner:cpb-aacip-507-n29p26qt59:Q7747", "label": "related_to", "title": "related_to\u003cbr\u003esource: wikidata\u003cbr\u003eevidence: educated_at: Academy of the Federal Security Service of the Russian Federation", "to": "wikidata:educated_at:Academy_of_the_Federal_Security_Service_of_the_Russian_Federation", "width": 1}, {"arrows": "to", "color": "#ff9da7", "from": "ner:cpb-aacip-507-n29p26qt59:Q7747", "label": "related_to", "title": "related_to\u003cbr\u003esource: wikidata\u003cbr\u003eevidence: educated_at: Saint Petersburg Mining University", "to": "wikidata:educated_at:Saint_Petersburg_Mining_University", "width": 1}, {"arrows": "to", "color": "#ff9da7", "from": "ner:cpb-aacip-507-n29p26qt59:Q7747", "label": "related_to", "title": "related_to\u003cbr\u003esource: wikidata\u003cbr\u003eevidence: educated_at: School 281", "to": "wikidata:educated_at:School_281", "width": 1}, {"arrows": "to", "color": "#ff9da7", "from": "ner:cpb-aacip-507-n29p26qt59:Q7747", "label": "related_to", "title": "related_to\u003cbr\u003esource: wikidata\u003cbr\u003eevidence: educated_at: Faculty of Law, Saint Petersburg State University", "to": "wikidata:educated_at:Faculty_of_Law,_Saint_Petersburg_State_University", "width": 1}, {"arrows": "to", "color": "#ff9da7", "from": "ner:cpb-aacip-507-n29p26qt59:Q7747", "label": "related_to", "title": "related_to\u003cbr\u003esource: wikidata\u003cbr\u003eevidence: educated_at: School 193", "to": "wikidata:educated_at:School_193", "width": 1}, {"arrows": "to", "color": "#ff9da7", "from": "ner:cpb-aacip-507-n29p26qt59:Q7747", "label": "related_to", "title": "related_to\u003cbr\u003esource: wikidata\u003cbr\u003eevidence: educated_at: St. Petersburg Institute of the FSB of Russia", "to": "wikidata:educated_at:St._Petersburg_Institute_of_the_FSB_of_Russia", "width": 1}, {"arrows": "to", "color": "#ff9da7", "from": "ner:cpb-aacip-507-n29p26qt59:Q7747", "label": "related_to", "title": "related_to\u003cbr\u003esource: wikidata\u003cbr\u003eevidence: occupation: politician", "to": "wikidata:occupation:politician", "width": 1}, {"arrows": "to", "color": "#ff9da7", "from": "ner:cpb-aacip-507-n29p26qt59:Q7747", "label": "related_to", "title": "related_to\u003cbr\u003esource: wikidata\u003cbr\u003eevidence: employer: KGB", "to": "wikidata:employer:KGB", "width": 1}, {"arrows": "to", "color": "#ff9da7", "from": "ner:cpb-aacip-507-n29p26qt59:Q7747", "label": "related_to", "title": "related_to\u003cbr\u003esource: wikidata\u003cbr\u003eevidence: employer: First Chief Directorate", "to": "wikidata:employer:First_Chief_Directorate", "width": 1}, {"arrows": "to", "color": "#ff9da7", "from": "ner:cpb-aacip-507-n29p26qt59:Q7747", "label": "related_to", "title": "related_to\u003cbr\u003esource: wikidata\u003cbr\u003eevidence: employer: Presidential Administration of Russia", "to": "wikidata:employer:Presidential_Administration_of_Russia", "width": 1}, {"arrows": "to", "color": "#ff9da7", "from": "ner:cpb-aacip-507-n29p26qt59:Q7747", "label": "related_to", "title": "related_to\u003cbr\u003esource: wikidata\u003cbr\u003eevidence: employer: Administrative Directorate of the President of the Russian Federation", "to": "wikidata:employer:Administrative_Directorate_of_the_President_of_the_Russian_Federation", "width": 1}, {"arrows": "to", "color": "#ff9da7", "from": "ner:cpb-aacip-507-n29p26qt59:Q7747", "label": "related_to", "title": "related_to\u003cbr\u003esource: wikidata\u003cbr\u003eevidence: date_of_birth: 1952-10-07", "to": "wikidata:date_of_birth:1952-10-07", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {"physics": {"forceAtlas2Based": {"gravitationalConstant": -50, "centralGravity": 0.005, "springLength": 150, "springConstant": 0.08}, "solver": "forceAtlas2Based", "stabilization": {"iterations": 150}}, "interaction": {"hover": true, "tooltipDelay": 100, "navigationButtons": true}, "edges": {"font": {"size": 10, "color": "#888888"}, "smooth": {"type": "continuous"}}, "nodes": {"font": {"size": 12}}};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

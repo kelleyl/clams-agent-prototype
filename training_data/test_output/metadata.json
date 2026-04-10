@@ -1,0 +1,44 @@
+{
+  "generated_at": "2026-02-04T10:07:45.432985",
+  "config": {
+    "num_tasks": 20,
+    "seed": 42,
+    "balanced": true,
+    "incremental": true
+  },
+  "statistics": {
+    "total_tasks": 20,
+    "total_examples": 88,
+    "splits": {
+      "train": 70,
+      "val": 8,
+      "test": 10
+    }
+  },
+  "task_categories": {
+    "quality_control": 2,
+    "slate_extraction": 4,
+    "credits_analysis": 4,
+    "content_indexing": 2,
+    "transcription": 3,
+    "entity_extraction": 2,
+    "chyron_extraction": 3
+  },
+  "difficulty_distribution": {
+    "medium": 16,
+    "hard": 2,
+    "easy": 2
+  },
+  "tools_usage": {
+    "swt_detection": 17,
+    "doctr_ocr": 17,
+    "slate_parser": 6,
+    "forced_alignment": 2,
+    "smolvlm2_captioner": 2,
+    "credits_parser": 4,
+    "scene_detection": 3,
+    "whisper_transcription": 7,
+    "spacy_ner": 7,
+    "chyron_parser": 3
+  }
+}

@@ -1,0 +1,26 @@
+default_prompt: "-"
+
+custom_prompts:
+  "Slate": |
+    Describe this video frame in detail. Include what you see: people, objects, setting, actions, and any visible text. Be specific and concise.
+
+  "Credits": |
+    Describe this video frame in detail. Include what you see: people, objects, setting, actions, and any visible text. Be specific and concise.
+
+  "Chyron": |
+    Describe this video frame in detail. Include what you see: people, objects, setting, actions, and any visible text. Be specific and concise.
+
+  "Other-text": |
+    Describe this video frame in detail. Include what you see: people, objects, setting, actions, and any visible text. Be specific and concise.
+
+context_config:
+  input_context: "timeframe"
+
+  timeframe:
+    app_uri: "http://apps.clams.ai/swt-detection/"
+    label_mapping:
+      "Slate": "Slate"
+      "Credits": "Credits"
+      "Chyron": "Chyron"
+      "Other-text": "Other-text"
+    ignore_other_labels: true

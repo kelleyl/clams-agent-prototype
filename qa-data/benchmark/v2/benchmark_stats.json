@@ -1,0 +1,23 @@
+{
+  "total": 705,
+  "mc_generated": 385,
+  "mc_adversarial_pass": 321,
+  "mc_adversarial_fail": 315,
+  "mc_hardened": 64,
+  "freetext": 320,
+  "distractor_failed": 320,
+  "mc_by_reasoning_type": {
+    "cross-modal": 381,
+    "single-modality": 1,
+    "single-modal": 1,
+    "visual-only": 2
+  },
+  "ft_by_reasoning_type": {
+    "cross-modal": 319,
+    "single-modal": 1
+  },
+  "mc_count": 385,
+  "ft_count": 320,
+  "total_benchmark": 705,
+  "model": "qwen3:8b"
+}

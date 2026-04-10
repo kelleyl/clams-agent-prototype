@@ -143,23 +143,32 @@ class CLAMSTool(BaseTool):
     
     def _find_app_directory(self) -> Optional[str]:
         """Find the app directory for this tool."""
-        # Common app directory patterns
-        clams_apps_root = "/home/kmlynch/clams_apps"
-        
+        # Get apps directory from config or environment
+        from .config import get_config_manager
+        try:
+            config = get_config_manager().get_config()
+            clams_apps_root = config.execution.cli_apps_dir
+        except Exception:
+            # Fallback to environment variable or default
+            clams_apps_root = os.environ.get(
+                "CLAMS_APPS_DIR",
+                str(Path.home() / "clams")
+            )
+
         # Try different naming patterns
         patterns = [
             f"app-{self.name}",
-            f"app-{self.name}-wrapper", 
+            f"app-{self.name}-wrapper",
             f"app-{self.name.replace('-wrapper', '')}",
             self.name
         ]
-        
+
         for pattern in patterns:
             app_path = os.path.join(clams_apps_root, pattern)
             if os.path.isdir(app_path) and os.path.exists(os.path.join(app_path, 'app.py')):
                 return app_path
-        
-        logger.warning(f"Could not find app directory for {self.name}")
+
+        logger.warning(f"Could not find app directory for {self.name} in {clams_apps_root}")
         return None
     
     def _create_temp_cli_wrapper(self, app_dir: str, input_file: str, config: str = None, parameters: str = None) -> Optional[str]:
@@ -246,8 +255,23 @@ class CLAMSToolbox:
     """Collection of CLAMS tools for use with LangChain agents."""
     
     def __init__(self):
-        """Initialize the CLAMS toolbox."""
-        self.app_metadata = get_app_metadata()
+        """Initialize the CLAMS toolbox.
+
+        Prefers cached app directory data from data/app_directory.json to avoid
+        blocking network I/O during initialization (which conflicts with
+        blockbuster/langgraph-api in Python 3.13).
+        """
+        cache_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'app_directory.json')
+        if os.path.exists(cache_path):
+            try:
+                with open(cache_path) as f:
+                    self.app_metadata = json.load(f)
+                logger.info(f"Loaded {len(self.app_metadata)} apps from cached directory")
+            except Exception as e:
+                logger.warning(f"Failed to load cached app directory: {e}, downloading fresh")
+                self.app_metadata = get_app_metadata()
+        else:
+            self.app_metadata = get_app_metadata()
         self.tools = self._create_tools()
         
     def _create_tools(self) -> Dict[str, BaseTool]:

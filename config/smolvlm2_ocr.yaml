@@ -1,0 +1,27 @@
+default_prompt: |
+  Please transcribe all visible text on this video frame. Be as accurate and complete as possible.
+
+custom_prompts:
+  "Slate": |
+    Please transcribe all key-value pairs visible on this slate. Format your response as a list of "key: value" pairs.
+
+  "Credits": |
+    Please transcribe all key-value pairs visible in these credits. Format your response as a list of "key: value" pairs.
+
+  "Chyron": |
+    Please transcribe the chyron text in this video frame, including any names and titles.
+
+  "Other-text": |
+    Please transcribe all visible text on this video frame. Be as accurate and complete as possible.
+
+context_config:
+  input_context: "timeframe"
+
+  timeframe:
+    app_uri: "http://apps.clams.ai/swt-detection/"
+    label_mapping:
+      "Slate": "Slate"
+      "Credits": "Credits"
+      "Chyron": "Chyron"
+      "Other-text": "Other-text"
+    ignore_other_labels: true

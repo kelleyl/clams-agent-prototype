@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cross-Modal QA Showcase</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f1117; color: #e0e0e0; padding: 24px; }
+h1 { font-size: 28px; margin-bottom: 8px; color: #fff; }
+.subtitle { color: #888; margin-bottom: 32px; font-size: 14px; }
+
+.question-card {
+  background: #1a1d27;
+  border: 1px solid #2a2d3a;
+  border-radius: 12px;
+  margin-bottom: 40px;
+  overflow: hidden;
+}
+.question-header {
+  background: #222639;
+  padding: 20px 24px;
+  border-bottom: 1px solid #2a2d3a;
+}
+.question-header .qid { color: #6b7fff; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+.question-header h2 { font-size: 18px; color: #fff; margin: 8px 0; line-height: 1.4; }
+.question-header .answer { color: #4ade80; font-size: 15px; margin-top: 4px; }
+.question-header .meta { display: flex; gap: 16px; margin-top: 10px; flex-wrap: wrap; }
+.question-header .tag {
+  background: #2a2d3a;
+  color: #a0a8c0;
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+.tag.cross-modal { background: #1e3a5f; color: #60a5fa; }
+.tag.inferential { background: #3b1f4e; color: #c084fc; }
+
+.evidence-chain {
+  padding: 20px 24px;
+}
+.evidence-chain h3 {
+  font-size: 14px;
+  color: #6b7fff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+}
+
+.timeline {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+  margin-bottom: 20px;
+}
+.thumb-frame {
+  flex-shrink: 0;
+  text-align: center;
+}
+.thumb-frame img {
+  width: 220px;
+  height: auto;
+  border-radius: 6px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.15s;
+}
+.thumb-frame img:hover {
+  transform: scale(1.05);
+  border-color: #4a4d6a;
+}
+.thumb-frame img.highlight {
+  border-color: #6b7fff;
+  box-shadow: 0 0 12px rgba(107, 127, 255, 0.3);
+}
+.thumb-frame .time {
+  font-size: 10px;
+  color: #666;
+  margin-top: 2px;
+}
+/* Lightbox overlay */
+.lightbox {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.92);
+  z-index: 1000;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+.lightbox.active { display: flex; }
+.lightbox img {
+  max-width: 90vw;
+  max-height: 85vh;
+  border-radius: 8px;
+  box-shadow: 0 0 40px rgba(0,0,0,0.5);
+}
+.lightbox .caption {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #aaa;
+  font-size: 14px;
+  background: rgba(0,0,0,0.7);
+  padding: 8px 20px;
+  border-radius: 6px;
+}
+.lightbox .close-hint {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  color: #666;
+  font-size: 13px;
+}
+
+.layers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+@media (max-width: 900px) { .layers { grid-template-columns: 1fr; } }
+
+.layer-box {
+  background: #12141c;
+  border: 1px solid #2a2d3a;
+  border-radius: 8px;
+  padding: 16px;
+}
+.layer-box.full-width { grid-column: 1 / -1; }
+.layer-box h4 {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.layer-box h4 .icon { font-size: 16px; }
+.layer-box.asr h4 { color: #60a5fa; }
+.layer-box.ocr h4 { color: #f59e0b; }
+.layer-box.visual h4 { color: #a78bfa; }
+.layer-box.speaker h4 { color: #34d399; }
+.layer-box.entity h4 { color: #fb7185; }
+
+.layer-item {
+  font-size: 13px;
+  line-height: 1.5;
+  margin-bottom: 8px;
+  padding: 8px 10px;
+  background: #1a1d27;
+  border-radius: 4px;
+}
+.layer-item .timestamp {
+  color: #6b7fff;
+  font-size: 11px;
+  font-family: monospace;
+}
+.layer-item .text { color: #d0d4e0; margin-top: 2px; }
+.layer-item .label {
+  display: inline-block;
+  background: #2a2d3a;
+  color: #a0a8c0;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 11px;
+  margin-left: 6px;
+}
+.highlight-text { color: #fbbf24; font-weight: 600; }
+
+.chain-arrow {
+  text-align: center;
+  padding: 16px;
+  font-size: 13px;
+  color: #6b7fff;
+  border-top: 1px solid #2a2d3a;
+  background: #181b25;
+}
+.chain-arrow .step {
+  display: inline-block;
+  background: #222639;
+  padding: 6px 14px;
+  border-radius: 20px;
+  margin: 0 4px;
+  font-size: 12px;
+}
+.chain-arrow .arrow { margin: 0 2px; color: #4a4d5a; }
+
+/* Viewer link + search */
+.card-actions {
+  display: flex;
+  gap: 12px;
+  padding: 12px 24px;
+  border-top: 1px solid #2a2d3a;
+  background: #181b25;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.btn {
+  padding: 6px 16px;
+  border-radius: 6px;
+  border: 1px solid #30363d;
+  background: #21262d;
+  color: #c9d1d9;
+  cursor: pointer;
+  font-size: 13px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn:hover { background: #30363d; color: #fff; }
+.btn.primary { background: #1f6feb; border-color: #1f6feb; color: #fff; }
+.btn.primary:hover { background: #388bfd; }
+.inline-search {
+  flex: 1;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  min-width: 250px;
+}
+.inline-search input {
+  flex: 1;
+  padding: 6px 10px;
+  background: #21262d;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  color: #c9d1d9;
+  font-size: 13px;
+}
+.inline-search input:focus { outline: none; border-color: #58a6ff; }
+.search-results-inline {
+  display: none;
+  padding: 12px 24px;
+  border-top: 1px solid #2a2d3a;
+  background: #12141c;
+  max-height: 400px;
+  overflow-y: auto;
+}
+.search-results-inline.active { display: block; }
+.search-results-inline h4 { color: #6b7fff; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.search-result-item {
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  background: #1a1d27;
+  border-radius: 4px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.search-result-item .sr-layer {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-right: 6px;
+}
+.sr-layer.asr { background: #1e3a5f; color: #60a5fa; }
+.sr-layer.ocr { background: #3d2e00; color: #f59e0b; }
+.sr-layer.visual_captions { background: #2d1f4e; color: #a78bfa; }
+.sr-layer.speakers { background: #0d3320; color: #34d399; }
+.sr-layer.entities { background: #3b1128; color: #fb7185; }
+.search-result-item .sr-time { color: #6b7fff; font-family: monospace; font-size: 11px; }
+.search-result-item .sr-text { color: #d0d4e0; }
+mark { background: #5a4400; color: #fbbf24; border-radius: 2px; padding: 0 2px; }
+</style>
+</head>
+<body>
+<h1>Cross-Modal QA Showcase</h1>
+<p class="subtitle">5 questions demonstrating multi-layer evidence chains from the CLAMS-Agent benchmark (1,602 questions, 108 videos)</p>
+
+<!-- Q1: Angels in America -->
+<div class="question-card">
+  <div class="question-header">
+    <div class="qid">Q-0523 &middot; cpb-aacip-507-4f1mg7gc44 &middot; NewsHour</div>
+    <h2>What play is referenced in the on-screen Playbill and how does it relate to the anchor's discussion about media coverage?</h2>
+    <div class="answer">Answer: Angels in America</div>
+    <div class="meta">
+      <span class="tag cross-modal">cross-modal</span>
+      <span class="tag">5 evidence layers</span>
+      <span class="tag">multiple choice</span>
+      <span class="tag">L4 difficulty</span>
+    </div>
+  </div>
+  <div class="evidence-chain">
+    <h3>Evidence Timeline (~3191s-3232s) -- Essay: "Hollywood Values" segment</h3>
+    <div class="timeline">
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-507-4f1mg7gc44/thumb_00639.jpg"><div class="time">3195s</div></div>
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-507-4f1mg7gc44/thumb_00640.jpg"><div class="time">3200s</div></div>
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-507-4f1mg7gc44/thumb_00641.jpg"><div class="time">3205s</div></div>
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-507-4f1mg7gc44/thumb_00642.jpg"><div class="time">3210s</div></div>
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-507-4f1mg7gc44/thumb_00643.jpg" class="highlight"><div class="time">3215s</div></div>
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-507-4f1mg7gc44/thumb_00644.jpg" class="highlight"><div class="time">3220s</div></div>
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-507-4f1mg7gc44/thumb_00645.jpg"><div class="time">3225s</div></div>
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-507-4f1mg7gc44/thumb_00646.jpg"><div class="time">3230s</div></div>
+    </div>
+    <div class="layers">
+      <div class="layer-box asr">
+        <h4><span class="icon">🎙</span> ASR (Speech Transcript)</h4>
+        <div class="layer-item">
+          <div class="timestamp">[3179s-3211s]</div>
+          <div class="text">And even if many of those people aren't steady churchgoers... what is clear is that Hollywood, without a big to-do, is taking advantage.</div>
+        </div>
+        <div class="layer-item">
+          <div class="timestamp">[3212s-3222s]</div>
+          <div class="text">From calendars to the covers of news magazines, from book jackets to the <span class="highlight-text">Broadway stage</span>, they've been hovering over the <span class="highlight-text">national landscape</span> in the last couple of years.</div>
+        </div>
+      </div>
+      <div class="layer-box ocr">
+        <h4><span class="icon">📝</span> OCR (On-Screen Text)</h4>
+        <div class="layer-item">
+          <div class="timestamp">[3215s-3222s] <span class="label">Other-text</span></div>
+          <div class="text"><span class="highlight-text">PLAYBILL<br>WALTER KERR THEATRE<br>Angels in America</span><br>A Handbook for Aspiring Angels<br>Images '93 &middot; Pictures of the Year</div>
+        </div>
+      </div>
+      <div class="layer-box visual">
+        <h4><span class="icon">👁</span> Visual Captions</h4>
+        <div class="layer-item">
+          <div class="timestamp">[3213s-3214s]</div>
+          <div class="text">A copy of <span class="highlight-text">Time magazine</span>. Headline: "<span class="highlight-text">THE NEW AGE OF Angels</span>". A young woman with dark hair on the cover.</div>
+        </div>
+        <div class="layer-item">
+          <div class="timestamp">[3216s-3222s]</div>
+          <div class="text">A stack of books and a <span class="highlight-text">Playbill</span>. The most prominent item is a Playbill for "<span class="highlight-text">Angels in America</span>" at the <span class="highlight-text">Walter Kerr Theatre</span>. It features a butterfly with a silhouette of a person.</div>
+        </div>
+      </div>
+      <div class="layer-box speaker">
+        <h4><span class="icon">🗣</span> Speaker Identification</h4>
+        <div class="layer-item">
+          <div class="timestamp">[3212s-3222s]</div>
+          <div class="text"><span class="highlight-text">Ann Taylor Fleming</span>: Essay on Hollywood's embrace of angels as a cultural phenomenon -- from TV shows to Broadway</div>
+        </div>
+      </div>
+      <div class="layer-box entity full-width">
+        <h4><span class="icon">🏷</span> Named Entities</h4>
+        <div class="layer-item">
+          <div class="text">
+            <span class="highlight-text">Angels in America</span> <span class="label">WORK_OF_ART (OCR + Visual)</span>
+            <span class="highlight-text">Walter Kerr Theatre</span> <span class="label">ORG (OCR + Visual)</span>
+            <span class="highlight-text">Broadway</span> <span class="label">FAC (ASR)</span>
+            <span class="highlight-text">Ann Taylor Fleming</span> <span class="label">PERSON (Speaker)</span>
+            <span class="highlight-text">Karen Kingsbury</span> <span class="label">PERSON (Visual)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="chain-arrow">
+    <span class="step">ASR: "...the Broadway stage"</span>
+    <span class="arrow">&#8594;</span>
+    <span class="step">Visual: Playbill with butterfly silhouette</span>
+    <span class="arrow">&#8594;</span>
+    <span class="step">OCR: "ANGELS IN AMERICA / WALTER KERR THEATRE"</span>
+    <span class="arrow">&#8594;</span>
+    <span class="step">Answer: Angels in America</span>
+  </div>
+  <div class="card-actions">
+    <a class="btn primary" href="http://localhost:8769/layer_viewer.html#cpb-aacip-507-4f1mg7gc44" target="_blank">Open in Layer Viewer</a>
+    <div class="inline-search">
+      <input type="text" placeholder="Search this video's index..." data-video="cpb-aacip-507-4f1mg7gc44" onkeydown="if(event.key==='Enter')searchIndex(this)">
+      <button class="btn" onclick="searchIndex(this.previousElementSibling)">Search</button>
+    </div>
+  </div>
+  <div class="search-results-inline" data-video="cpb-aacip-507-4f1mg7gc44"></div>
+</div>
+
+<!-- Q2: Mohawk Valley Map -->
+<div class="question-card">
+  <div class="question-header">
+    <div class="qid">Q-0300 &middot; cpb-aacip-189-8279cwzq &middot; Peabody</div>
+    <h2>According to the map shown during Mel's discussion of the Four Indian Kings, what specific location in New York State was associated with the silver they retrieved in 1784?</h2>
+    <div class="answer">Answer: Mohawk Valley</div>
+    <div class="meta">
+      <span class="tag cross-modal">cross-modal</span>
+      <span class="tag">5 evidence layers</span>
+      <span class="tag">multiple choice</span>
+      <span class="tag">L4 difficulty</span>
+    </div>
+  </div>
+  <div class="evidence-chain">
+    <h3>Evidence Timeline (~126s-168s)</h3>
+    <div class="timeline">
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-189-8279cwzq/thumb_00025.jpg"><div class="time">125s</div></div>
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-189-8279cwzq/thumb_00026.jpg"><div class="time">130s</div></div>
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-189-8279cwzq/thumb_00027.jpg"><div class="time">135s</div></div>
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-189-8279cwzq/thumb_00028.jpg"><div class="time">140s</div></div>
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-189-8279cwzq/thumb_00029.jpg" class="highlight"><div class="time">145s</div></div>
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-189-8279cwzq/thumb_00030.jpg" class="highlight"><div class="time">150s</div></div>
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-189-8279cwzq/thumb_00031.jpg"><div class="time">155s</div></div>
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-189-8279cwzq/thumb_00032.jpg"><div class="time">160s</div></div>
+    </div>
+    <div class="layers">
+      <div class="layer-box asr">
+        <h4><span class="icon">🎙</span> ASR (Speech Transcript)</h4>
+        <div class="layer-item">
+          <div class="timestamp">[126s-134s]</div>
+          <div class="text">In 1710, there were four Mohawk [who] left the <span class="highlight-text">Mohawk Valley, New York State</span>, and went to England and had an audience with <span class="highlight-text">Queen Anne</span>.</div>
+        </div>
+        <div class="layer-item">
+          <div class="timestamp">[134s-151s]</div>
+          <div class="text">And at that time, they asked the Queen to send them a missionary to preach the gospel to their people and also build them a chapel and a fort at the <span class="highlight-text">Mohawk Valley</span>...</div>
+        </div>
+        <div class="layer-item">
+          <div class="timestamp">[153s-154s]</div>
+          <div class="text">...[they] were called the <span class="highlight-text">Four Indian Kings</span>.</div>
+        </div>
+      </div>
+      <div class="layer-box ocr">
+        <h4><span class="icon">📝</span> OCR (Map Labels)</h4>
+        <div class="layer-item">
+          <div class="timestamp">[145s-153s] <span class="label">Other-text</span></div>
+          <div class="text"><span class="highlight-text">Little Falls</span> &middot; <span class="highlight-text">Fulton 30A</span> &middot; <span class="highlight-text">Gloversville</span> &middot; <span class="highlight-text">Johnstown</span> &middot; <span class="highlight-text">Fonda</span> &middot; Garnet mines &middot; <span class="highlight-text">Gore Mountain</span></div>
+        </div>
+      </div>
+      <div class="layer-box visual">
+        <h4><span class="icon">👁</span> Visual Captions</h4>
+        <div class="layer-item">
+          <div class="timestamp">[134s-138s]</div>
+          <div class="text">Display board featuring two historical portraits. Oval engravings of men with long hair, wearing white collars -- <span class="highlight-text">the Four Indian Kings</span></div>
+        </div>
+        <div class="layer-item">
+          <div class="timestamp">[144s-153s]</div>
+          <div class="text"><span class="highlight-text">Close-up of a map.</span> Labels: "FULTON", "Gloversville", "Johnstown", "Fonda". Road markers: 30A, 46, 90, 80. This is <span class="highlight-text">Fulton County, New York</span> in the Mohawk Valley.</div>
+        </div>
+      </div>
+      <div class="layer-box speaker">
+        <h4><span class="icon">🗣</span> Speaker Identification</h4>
+        <div class="layer-item">
+          <div class="timestamp">[126s-251s]</div>
+          <div class="text"><span class="highlight-text">Mel</span>: Narrating the history of the Four Indian Kings, their journey to England, and the communion silver</div>
+        </div>
+      </div>
+      <div class="layer-box entity full-width">
+        <h4><span class="icon">🏷</span> Named Entities</h4>
+        <div class="layer-item">
+          <div class="text">
+            <span class="highlight-text">Mohawk Valley</span> <span class="label">GPE (ASR)</span>
+            <span class="highlight-text">Queen Anne</span> <span class="label">PERSON (ASR)</span>
+            <span class="highlight-text">Fulton County</span> <span class="label">GPE (OCR + Visual)</span>
+            <span class="highlight-text">Gloversville</span> <span class="label">WORK_OF_ART (Visual)</span>
+            <span class="highlight-text">Four Indian Kings</span> <span class="label">implicit (ASR)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="chain-arrow">
+    <span class="step">ASR: "Mohawk Valley" + "Four Indian Kings"</span>
+    <span class="arrow">&#8594;</span>
+    <span class="step">Visual: Map of Fulton County, NY</span>
+    <span class="arrow">&#8594;</span>
+    <span class="step">OCR: Read map labels (Gloversville, Fonda...)</span>
+    <span class="arrow">&#8594;</span>
+    <span class="step">Answer: Mohawk Valley</span>
+  </div>
+  <div class="card-actions">
+    <a class="btn primary" href="http://localhost:8769/layer_viewer.html#cpb-aacip-189-8279cwzq" target="_blank">Open in Layer Viewer</a>
+    <div class="inline-search">
+      <input type="text" placeholder="Search this video's index..." data-video="cpb-aacip-189-8279cwzq" onkeydown="if(event.key==='Enter')searchIndex(this)">
+      <button class="btn" onclick="searchIndex(this.previousElementSibling)">Search</button>
+    </div>
+  </div>
+  <div class="search-results-inline" data-video="cpb-aacip-189-8279cwzq"></div>
+</div>
+
+<!-- Q3: National Urban League -->
+<div class="question-card">
+  <div class="question-header">
+    <div class="qid">Q-1030 &middot; cpb-aacip-507-r785h7cp0z &middot; NewsHour 1984</div>
+    <h2>According to the on-screen text and the speech, what organization is John Jacob representing when discussing unemployment statistics for Black Americans?</h2>
+    <div class="answer">Answer: National Urban League</div>
+    <div class="meta">
+      <span class="tag cross-modal">cross-modal</span>
+      <span class="tag">5 evidence layers</span>
+      <span class="tag">multiple choice</span>
+      <span class="tag">L4 difficulty</span>
+    </div>
+  </div>
+  <div class="evidence-chain">
+    <h3>Evidence Timeline (~935s-985s)</h3>
+    <div class="timeline">
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-507-r785h7cp0z/thumb_00187.jpg"><div class="time">935s</div></div>
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-507-r785h7cp0z/thumb_00188.jpg"><div class="time">940s</div></div>
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-507-r785h7cp0z/thumb_00189.jpg" class="highlight"><div class="time">945s</div></div>
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-507-r785h7cp0z/thumb_00190.jpg" class="highlight"><div class="time">950s</div></div>
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-507-r785h7cp0z/thumb_00191.jpg"><div class="time">955s</div></div>
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-507-r785h7cp0z/thumb_00192.jpg"><div class="time">960s</div></div>
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-507-r785h7cp0z/thumb_00193.jpg"><div class="time">965s</div></div>
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-507-r785h7cp0z/thumb_00194.jpg"><div class="time">970s</div></div>
+    </div>
+    <div class="layers">
+      <div class="layer-box asr">
+        <h4><span class="icon">🎙</span> ASR (Speech Transcript)</h4>
+        <div class="layer-item">
+          <div class="timestamp">[944s-963s]</div>
+          <div class="text">We believe that all the evidence points in that direction. Clearly, as the nation is moving toward an economic recovery, its <span class="highlight-text">unemployment</span> is going down...</div>
+        </div>
+        <div class="layer-item">
+          <div class="timestamp">[963s-975s]</div>
+          <div class="text">A third of <span class="highlight-text">black people</span> are living in poverty. Therefore, even as the nation is going through a spirited recovery, it is <span class="highlight-text">not trickling down to black America</span>.</div>
+        </div>
+      </div>
+      <div class="layer-box ocr">
+        <h4><span class="icon">📝</span> OCR (Chyron)</h4>
+        <div class="layer-item">
+          <div class="timestamp">[947s-952s] <span class="label">Chyron</span></div>
+          <div class="text"><span class="highlight-text">JOHN JACOB<br>NATIONAL URBAN LEAGUE</span></div>
+        </div>
+      </div>
+      <div class="layer-box visual">
+        <h4><span class="icon">👁</span> Visual Captions</h4>
+        <div class="layer-item">
+          <div class="timestamp">[944s-977s]</div>
+          <div class="text">A man with <span class="highlight-text">dark skin, short dark hair, and glasses</span>. Wearing a dark suit jacket, white collared shirt, and patterned tie. He appears to be speaking.</div>
+        </div>
+        <div class="layer-item">
+          <div class="timestamp">[899s-935s]</div>
+          <div class="text">Graphic overlay: "<span class="highlight-text">STATE OF BLACK AMERICA</span>" -- segment title establishing the topic</div>
+        </div>
+      </div>
+      <div class="layer-box speaker">
+        <h4><span class="icon">🗣</span> Speaker Identification</h4>
+        <div class="layer-item">
+          <div class="timestamp">[944s-975s]</div>
+          <div class="text">Speaker (unresolved in diarization): Discussing unemployment statistics and the economic recovery's failure to reach Black Americans</div>
+        </div>
+      </div>
+      <div class="layer-box entity full-width">
+        <h4><span class="icon">🏷</span> Named Entities</h4>
+        <div class="layer-item">
+          <div class="text">
+            <span class="highlight-text">John Jacob</span> <span class="label">PERSON (ASR + OCR)</span>
+            <span class="highlight-text">National Urban League</span> <span class="label">ORG (ASR + OCR)</span>
+            <span class="highlight-text">State of Black America</span> <span class="label">ORG (ASR)</span>
+            <span class="highlight-text">Ronald Reagan</span> <span class="label">PERSON (ASR)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="chain-arrow">
+    <span class="step">OCR: Read chyron "JOHN JACOB / NATIONAL URBAN LEAGUE"</span>
+    <span class="arrow">&#8594;</span>
+    <span class="step">ASR: Speaker discusses Black unemployment</span>
+    <span class="arrow">&#8594;</span>
+    <span class="step">Entity: Cross-reference name across modalities</span>
+    <span class="arrow">&#8594;</span>
+    <span class="step">Answer: National Urban League</span>
+  </div>
+  <div class="card-actions">
+    <a class="btn primary" href="http://localhost:8769/layer_viewer.html#cpb-aacip-507-r785h7cp0z" target="_blank">Open in Layer Viewer</a>
+    <div class="inline-search">
+      <input type="text" placeholder="Search this video's index..." data-video="cpb-aacip-507-r785h7cp0z" onkeydown="if(event.key==='Enter')searchIndex(this)">
+      <button class="btn" onclick="searchIndex(this.previousElementSibling)">Search</button>
+    </div>
+  </div>
+  <div class="search-results-inline" data-video="cpb-aacip-507-r785h7cp0z"></div>
+</div>
+
+<!-- Q4: McTeague / Greed -->
+<div class="question-card">
+  <div class="question-header">
+    <div class="qid">Q-1272 &middot; cpb-aacip-526-8s4jm24g9m &middot; NJN</div>
+    <h2>According to the visual description and speech, what was the subject of the film that Eric von Stroheim filmed every page of?</h2>
+    <div class="answer">Answer: The book McTeague</div>
+    <div class="meta">
+      <span class="tag inferential">inferential</span>
+      <span class="tag">6 evidence layers</span>
+      <span class="tag">free text</span>
+      <span class="tag">L4 difficulty</span>
+    </div>
+  </div>
+  <div class="evidence-chain">
+    <h3>Evidence Timeline (~246s-303s)</h3>
+    <div class="timeline">
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-526-8s4jm24g9m/thumb_00050.jpg"><div class="time">250s</div></div>
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-526-8s4jm24g9m/thumb_00051.jpg"><div class="time">255s</div></div>
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-526-8s4jm24g9m/thumb_00052.jpg"><div class="time">260s</div></div>
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-526-8s4jm24g9m/thumb_00053.jpg"><div class="time">265s</div></div>
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-526-8s4jm24g9m/thumb_00054.jpg"><div class="time">270s</div></div>
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-526-8s4jm24g9m/thumb_00055.jpg" class="highlight"><div class="time">275s</div></div>
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-526-8s4jm24g9m/thumb_00056.jpg"><div class="time">280s</div></div>
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-526-8s4jm24g9m/thumb_00057.jpg"><div class="time">285s</div></div>
+    </div>
+    <div class="layers">
+      <div class="layer-box asr">
+        <h4><span class="icon">🎙</span> ASR (Speech Transcript)</h4>
+        <div class="layer-item">
+          <div class="timestamp">[246s-279s]</div>
+          <div class="text">And so the hero of the book was not a knight fallen from grace or a king or a noble spirit, but a brute. Most of the respected literary critics hated it... <span class="highlight-text">Eric von Stroheim</span> [...] filmed every page of it, a film that ran <span class="highlight-text">10 hours</span>...</div>
+        </div>
+        <div class="layer-item">
+          <div class="timestamp">[283s-303s]</div>
+          <div class="text">...the Lyric Opera Company of <span class="highlight-text">Chicago</span> commissioned William Balcombe, American composer... <span class="highlight-text">McTeague</span>...</div>
+        </div>
+      </div>
+      <div class="layer-box visual">
+        <h4><span class="icon">👁</span> Visual Captions</h4>
+        <div class="layer-item">
+          <div class="timestamp">[273s-277s]</div>
+          <div class="text">Title card for a movie: "<span class="highlight-text">ERICH VON STROHEIM'S production</span>", "<span class="highlight-text">GREED</span>" (large, stylized letters), "The Picture the world has waited TWO YEARS to see"</div>
+        </div>
+        <div class="layer-item">
+          <div class="timestamp">[266s-273s]</div>
+          <div class="text">A man sitting in a director's chair wearing a white outfit, white head covering, and dark boots -- early Hollywood film set</div>
+        </div>
+      </div>
+      <div class="layer-box ocr">
+        <h4><span class="icon">📝</span> OCR</h4>
+        <div class="layer-item">
+          <div class="timestamp">[278s-285s]</div>
+          <div class="text">Minimal OCR -- the visual caption captured the title card text more completely</div>
+        </div>
+      </div>
+      <div class="layer-box speaker">
+        <h4><span class="icon">🗣</span> Speaker / Chapter</h4>
+        <div class="layer-item">
+          <div class="timestamp">[164s-414s]</div>
+          <div class="text">Speaker <span class="highlight-text">"Trina"</span> (narrator): Reading from the novel, intercut with discussion of the film adaptation</div>
+        </div>
+      </div>
+      <div class="layer-box entity full-width">
+        <h4><span class="icon">🏷</span> Named Entities</h4>
+        <div class="layer-item">
+          <div class="text">
+            <span class="highlight-text">Eric von Stroheim</span> <span class="label">PERSON (ASR)</span>
+            <span class="highlight-text">GREED</span> <span class="label">WORK_OF_ART (Visual)</span>
+            <span class="highlight-text">McTeague</span> <span class="label">PERSON (ASR + Visual)</span>
+            <span class="highlight-text">Lyric Opera</span> <span class="label">ORG (ASR)</span>
+            <span class="highlight-text">Chicago</span> <span class="label">GPE (ASR)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="chain-arrow">
+    <span class="step">ASR: "von Stroheim filmed every page"</span>
+    <span class="arrow">&#8594;</span>
+    <span class="step">Visual: Title card "GREED" by von Stroheim</span>
+    <span class="arrow">&#8594;</span>
+    <span class="step">ASR: "McTeague" named as source book</span>
+    <span class="arrow">&#8594;</span>
+    <span class="step">Infer: GREED = film of McTeague</span>
+  </div>
+  <div class="card-actions">
+    <a class="btn primary" href="http://localhost:8769/layer_viewer.html#cpb-aacip-526-8s4jm24g9m" target="_blank">Open in Layer Viewer</a>
+    <div class="inline-search">
+      <input type="text" placeholder="Search this video's index..." data-video="cpb-aacip-526-8s4jm24g9m" onkeydown="if(event.key==='Enter')searchIndex(this)">
+      <button class="btn" onclick="searchIndex(this.previousElementSibling)">Search</button>
+    </div>
+  </div>
+  <div class="search-results-inline" data-video="cpb-aacip-526-8s4jm24g9m"></div>
+</div>
+
+<!-- Q5: Admiral / U.S. Navy -->
+<div class="question-card">
+  <div class="question-header">
+    <div class="qid">Q-0793 &middot; cpb-aacip-507-dv1cj8881m &middot; NewsHour 2001</div>
+    <h2>What organization did the person identified in the lower third graphic as 'Admiral' represent during the discussion of the submarine collision?</h2>
+    <div class="answer">Answer: The U.S. Navy</div>
+    <div class="meta">
+      <span class="tag cross-modal">cross-modal</span>
+      <span class="tag">5 evidence layers</span>
+      <span class="tag">free text</span>
+      <span class="tag">L4 difficulty</span>
+    </div>
+  </div>
+  <div class="evidence-chain">
+    <h3>Evidence Timeline (~0s-17s, intro; ~387s-414s, segment)</h3>
+    <div class="timeline">
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-507-dv1cj8881m/thumb_00001.jpg"><div class="time">0s</div></div>
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-507-dv1cj8881m/thumb_00002.jpg" class="highlight"><div class="time">5s</div></div>
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-507-dv1cj8881m/thumb_00003.jpg" class="highlight"><div class="time">10s</div></div>
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-507-dv1cj8881m/thumb_00004.jpg"><div class="time">15s</div></div>
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-507-dv1cj8881m/thumb_00078.jpg"><div class="time">390s</div></div>
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-507-dv1cj8881m/thumb_00079.jpg"><div class="time">395s</div></div>
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-507-dv1cj8881m/thumb_00080.jpg"><div class="time">400s</div></div>
+      <div class="thumb-frame"><img src="data/thumbnails_5s/cpb-aacip-507-dv1cj8881m/thumb_00081.jpg"><div class="time">405s</div></div>
+    </div>
+    <div class="layers">
+      <div class="layer-box asr">
+        <h4><span class="icon">🎙</span> ASR (Speech Transcript)</h4>
+        <div class="layer-item">
+          <div class="timestamp">[7s-17s]</div>
+          <div class="text">I'm Jim Lehrer. A school shooting in California. Vice President <span class="highlight-text">Cheney</span> is hospitalized and <span class="highlight-text">civilians on submarines</span>. Tonight, on the NewsHour.</div>
+        </div>
+      </div>
+      <div class="layer-box visual">
+        <h4><span class="icon">👁</span> Visual Captions</h4>
+        <div class="layer-item">
+          <div class="timestamp">[12s-15s]</div>
+          <div class="text">Title card: "FOCUS" (top) &middot; "<span class="highlight-text">CIVILIANS ON BOARD</span>" (large gold text) -- segment preview graphic</div>
+        </div>
+        <div class="layer-item">
+          <div class="timestamp">[7s-8s]</div>
+          <div class="text">A middle-aged man with short brown hair wearing a dark suit, light blue striped shirt, and maroon tie -- <span class="highlight-text">Jim Lehrer</span> at anchor desk</div>
+        </div>
+      </div>
+      <div class="layer-box ocr">
+        <h4><span class="icon">📝</span> OCR (Lower Third)</h4>
+        <div class="layer-item">
+          <div class="timestamp">Later in segment (~390s):</div>
+          <div class="text">Lower third graphic identifies speaker as <span class="highlight-text">Admiral</span> -- linking the person on screen to <span class="highlight-text">U.S. Navy</span></div>
+        </div>
+      </div>
+      <div class="layer-box speaker">
+        <h4><span class="icon">🗣</span> Speaker Identification</h4>
+        <div class="layer-item">
+          <div class="timestamp">[7s-149s]</div>
+          <div class="text"><span class="highlight-text">Jim Lehrer</span>: Opening the show, previewing the submarine collision segment</div>
+        </div>
+      </div>
+      <div class="layer-box entity full-width">
+        <h4><span class="icon">🏷</span> Named Entities</h4>
+        <div class="layer-item">
+          <div class="text">
+            <span class="highlight-text">Jim Lehrer</span> <span class="label">PERSON (Visual + ASR)</span>
+            <span class="highlight-text">US Navy</span> <span class="label">ORG (Visual)</span>
+            <span class="highlight-text">Cheney</span> <span class="label">PERSON (ASR)</span>
+            <span class="highlight-text">Southern California</span> <span class="label">GPE (ASR)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="chain-arrow">
+    <span class="step">Visual: "CIVILIANS ON BOARD" graphic</span>
+    <span class="arrow">&#8594;</span>
+    <span class="step">OCR: Lower third says "Admiral"</span>
+    <span class="arrow">&#8594;</span>
+    <span class="step">ASR: "civilians on submarines"</span>
+    <span class="arrow">&#8594;</span>
+    <span class="step">Entity: Admiral + submarine = U.S. Navy</span>
+  </div>
+  <div class="card-actions">
+    <a class="btn primary" href="http://localhost:8769/layer_viewer.html#cpb-aacip-507-dv1cj8881m" target="_blank">Open in Layer Viewer</a>
+    <div class="inline-search">
+      <input type="text" placeholder="Search this video's index..." data-video="cpb-aacip-507-dv1cj8881m" onkeydown="if(event.key==='Enter')searchIndex(this)">
+      <button class="btn" onclick="searchIndex(this.previousElementSibling)">Search</button>
+    </div>
+  </div>
+  <div class="search-results-inline" data-video="cpb-aacip-507-dv1cj8881m"></div>
+</div>
+
+<div style="text-align: center; padding: 32px; color: #555; font-size: 13px;">
+  CLAMS-Agent Benchmark &middot; 1,602 questions &middot; 108 videos &middot; 6 annotation layers<br>
+  Generated from multi-layer v2 video indexes built with CLAMS tools (Parakeet ASR, SWT, Qwen 3.5 VLM, pyannote, SpaCy NER)
+</div>
+
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <span class="close-hint">click anywhere or press Esc to close</span>
+  <img id="lightbox-img" src="" alt="">
+  <div class="caption" id="lightbox-caption"></div>
+</div>
+
+<script>
+// Index cache
+const indexCache = {};
+
+async function loadIndex(videoId) {
+  if (indexCache[videoId]) return indexCache[videoId];
+  try {
+    const resp = await fetch(`data/video_indexes/${videoId}.json`);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data = await resp.json();
+    indexCache[videoId] = data;
+    return data;
+  } catch (e) {
+    console.error('Failed to load index:', e);
+    return null;
+  }
+}
+
+async function searchIndex(input) {
+  const query = input.value.trim().toLowerCase();
+  if (!query) return;
+  const videoId = input.dataset.video;
+  const resultsDiv = input.closest('.question-card').querySelector('.search-results-inline');
+
+  resultsDiv.innerHTML = '<h4>Loading index...</h4>';
+  resultsDiv.classList.add('active');
+
+  const idx = await loadIndex(videoId);
+  if (!idx) {
+    resultsDiv.innerHTML = '<h4>Failed to load index</h4>';
+    return;
+  }
+
+  const layers = idx.layers || {};
+  const searchLayers = ['asr', 'ocr', 'visual_captions', 'speakers', 'entities'];
+  const results = [];
+  const queryTerms = query.split(/\s+/);
+
+  for (const layerName of searchLayers) {
+    const items = (layers[layerName] || {}).items || [];
+    for (const item of items) {
+      const text = Object.entries(item)
+        .filter(([k,v]) => typeof v === 'string' && !['id','origin_layer','source_layer','source_id'].includes(k))
+        .map(([k,v]) => v)
+        .join(' ');
+      const textLower = text.toLowerCase();
+      if (queryTerms.every(t => textLower.includes(t))) {
+        results.push({ layer: layerName, start: item.start_ms, end: item.end_ms, text: text.substring(0, 300), item });
+      }
+    }
+  }
+
+  results.sort((a, b) => a.start - b.start);
+
+  if (results.length === 0) {
+    resultsDiv.innerHTML = `<h4>No results for "${query}" in ${videoId}</h4>`;
+    return;
+  }
+
+  // Highlight matches in text
+  function highlight(text) {
+    let h = text;
+    for (const t of queryTerms) {
+      const re = new RegExp(`(${t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+      h = h.replace(re, '<mark>$1</mark>');
+    }
+    return h;
+  }
+
+  let html = `<h4>${results.length} results for "${query}" across ${new Set(results.map(r=>r.layer)).size} layers</h4>`;
+  for (const r of results.slice(0, 30)) {
+    const startS = (r.start / 1000).toFixed(0);
+    const endS = (r.end / 1000).toFixed(0);
+    html += `<div class="search-result-item">
+      <span class="sr-layer ${r.layer}">${r.layer}</span>
+      <span class="sr-time">[${startS}s-${endS}s]</span>
+      <div class="sr-text">${highlight(r.text)}</div>
+    </div>`;
+  }
+  if (results.length > 30) {
+    html += `<div style="color:#666; padding:8px; font-size:12px;">...and ${results.length - 30} more results</div>`;
+  }
+  resultsDiv.innerHTML = html;
+}
+
+document.querySelectorAll('.thumb-frame img').forEach(img => {
+  img.addEventListener('click', () => {
+    const lb = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lightbox-img');
+    const lbCap = document.getElementById('lightbox-caption');
+    lbImg.src = img.src;
+    const time = img.closest('.thumb-frame').querySelector('.time');
+    const card = img.closest('.question-card');
+    const qid = card ? card.querySelector('.qid').textContent : '';
+    lbCap.textContent = (qid ? qid + ' \u2014 ' : '') + (time ? time.textContent : '');
+    lb.classList.add('active');
+  });
+});
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('active');
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeLightbox();
+});
+</script>
+</body>
+</html>

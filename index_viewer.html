@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Video Index Viewer</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0d1117; color: #c9d1d9; }
+
+  /* Header */
+  .header { background: #161b22; border-bottom: 1px solid #30363d; padding: 12px 20px; display: flex; align-items: center; gap: 16px; position: sticky; top: 0; z-index: 100; }
+  .header h1 { font-size: 16px; color: #58a6ff; white-space: nowrap; }
+  .header select { background: #21262d; color: #c9d1d9; border: 1px solid #30363d; padding: 6px 12px; border-radius: 6px; font-size: 13px; max-width: 400px; }
+  .broadcast-date { color: #f0883e; font-size: 13px; white-space: nowrap; }
+
+  /* Stats */
+  .stats-bar { background: #161b22; border-bottom: 1px solid #30363d; padding: 8px 20px; display: flex; gap: 20px; font-size: 12px; flex-wrap: wrap; }
+  .stat { display: flex; align-items: center; gap: 4px; }
+  .stat-value { color: #58a6ff; font-weight: 600; font-size: 14px; }
+  .stat-label { color: #8b949e; }
+
+  /* Nav tabs */
+  .nav-tabs { background: #161b22; border-bottom: 1px solid #30363d; padding: 0 20px; display: flex; gap: 0; }
+  .nav-tab { padding: 8px 16px; font-size: 13px; color: #8b949e; cursor: pointer; border-bottom: 2px solid transparent; }
+  .nav-tab:hover { color: #c9d1d9; }
+  .nav-tab.active { color: #58a6ff; border-bottom-color: #58a6ff; }
+
+  /* Layout */
+  .main { height: calc(100vh - 130px); overflow: hidden; }
+  .tab-content { display: none; height: 100%; }
+  .tab-content.active { display: flex; }
+
+  /* Timeline tab */
+  .timeline-layout { display: grid; grid-template-columns: 1fr 380px; height: 100%; }
+  .timeline-panel { overflow-y: auto; padding: 12px 16px; }
+  .sidebar { border-left: 1px solid #30363d; overflow-y: auto; padding: 12px 16px; background: #161b22; }
+
+  /* Timeline bar */
+  .timeline-bar { height: 28px; background: #21262d; border-radius: 4px; margin-bottom: 12px; position: relative; overflow: hidden; cursor: crosshair; }
+  .timeline-block { position: absolute; height: 100%; min-width: 1px; }
+  .timeline-block:hover { opacity: 0.7; }
+  .timeline-block.Chyron, .timeline-block.chyron { background: #1f6feb; }
+  .timeline-block.Neg { background: #30363d; }
+  .timeline-block.Slate, .timeline-block.slate { background: #f0883e; }
+  .timeline-block.Credits, .timeline-block.credits { background: #a371f7; }
+  .timeline-block.Other-text { background: #3fb950; }
+  .timeline-block.Bars { background: #f85149; }
+  .timeline-block.gap { background: #1c2028; }
+  .timeline-cursor { position: absolute; top: 0; height: 100%; width: 2px; background: #f0883e; pointer-events: none; display: none; }
+
+  /* Search & filters */
+  .toolbar { display: flex; gap: 8px; margin-bottom: 12px; align-items: center; }
+  .search-box { flex: 1; padding: 6px 10px; background: #21262d; border: 1px solid #30363d; border-radius: 6px; color: #c9d1d9; font-size: 13px; }
+  .search-box:focus { outline: none; border-color: #58a6ff; }
+  .filter-btn { padding: 4px 10px; background: #21262d; border: 1px solid #30363d; border-radius: 4px; color: #8b949e; font-size: 11px; cursor: pointer; }
+  .filter-btn.active { background: #1f6feb33; color: #58a6ff; border-color: #1f6feb; }
+  .seg-count { color: #484f58; font-size: 12px; white-space: nowrap; }
+
+  /* Segment card */
+  .segment { border: 1px solid #30363d; border-radius: 6px; margin-bottom: 6px; overflow: hidden; cursor: pointer; transition: border-color 0.1s; }
+  .segment:hover { border-color: #484f58; }
+  .segment.selected { border-color: #58a6ff; box-shadow: 0 0 0 1px #58a6ff; }
+  .seg-header { display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: #21262d; }
+  .seg-time { font-family: 'SF Mono', 'Consolas', monospace; font-size: 11px; color: #8b949e; }
+  .seg-label { font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 8px; }
+  .seg-label.Chyron { background: #1f6feb33; color: #58a6ff; }
+  .seg-label.Neg { background: #21262d; color: #8b949e; }
+  .seg-label.Slate { background: #f0883e33; color: #f0883e; }
+  .seg-label.Credits { background: #a371f733; color: #a371f7; }
+  .seg-label.Other-text { background: #3fb95033; color: #3fb950; }
+  .seg-label.Bars { background: #f8514933; color: #f85149; }
+  .seg-label.gap { background: #21262d; color: #484f58; }
+
+  .seg-body { display: flex; gap: 10px; padding: 8px 10px; font-size: 12px; line-height: 1.5; }
+  .seg-thumb { width: 120px; min-width: 120px; height: 68px; object-fit: cover; border-radius: 4px; background: #21262d; }
+  .seg-thumb.empty { display: flex; align-items: center; justify-content: center; color: #484f58; font-size: 10px; }
+  .seg-text { flex: 1; overflow: hidden; }
+  .field { margin-bottom: 4px; }
+  .field-label { color: #8b949e; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .field-value { color: #c9d1d9; font-size: 12px; }
+  .asr { border-left: 2px solid #3fb950; padding-left: 6px; }
+  .ocr { border-left: 2px solid #f0883e; padding-left: 6px; }
+  .caption { border-left: 2px solid #a371f7; padding-left: 6px; }
+  .speaker-badge { display: inline-block; font-size: 9px; padding: 1px 5px; border-radius: 3px; background: #da3633; color: #fff; margin-right: 4px; font-weight: 600; }
+  .speaker-badge.s0 { background: #da3633; } .speaker-badge.s1 { background: #1f6feb; }
+  .speaker-badge.s2 { background: #3fb950; } .speaker-badge.s3 { background: #a371f7; }
+  .speaker-badge.s4 { background: #f0883e; } .speaker-badge.s5 { background: #db61a2; }
+  .speaker-badge.s6 { background: #79c0ff; } .speaker-badge.s7 { background: #d2a8ff; }
+  .speaker-badge.s8 { background: #56d364; } .speaker-badge.s9 { background: #ffa657; }
+
+  /* Entity tags */
+  .entity-tag { display: inline-block; font-size: 10px; padding: 0px 5px; border-radius: 3px; margin: 1px; cursor: pointer; }
+  .entity-tag:hover { filter: brightness(1.3); }
+
+  .tooltip { position: fixed; background: #21262d; border: 1px solid #30363d; padding: 8px 12px; border-radius: 6px; font-size: 11px; color: #c9d1d9; z-index: 300; pointer-events: none; max-width: 300px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+  .tooltip .tt-title { color: #58a6ff; font-weight: 600; margin-bottom: 4px; }
+  .tooltip .tt-row { color: #8b949e; }
+  .tooltip .tt-val { color: #c9d1d9; }
+  .entity-tag.PERSON { background: #1f6feb33; color: #58a6ff; }
+  .entity-tag.ORG { background: #f0883e33; color: #f0883e; }
+  .entity-tag.GPE, .entity-tag.LOC { background: #3fb95033; color: #3fb950; }
+  .entity-tag.DATE, .entity-tag.TIME { background: #a371f733; color: #a371f7; }
+  .entity-tag.EVENT { background: #f8514933; color: #f85149; }
+  .entity-tag.WORK_OF_ART { background: #db61a233; color: #db61a2; }
+  .entity-tag.NORP, .entity-tag.FAC { background: #79c0ff33; color: #79c0ff; }
+  .entity-count { font-size: 10px; color: #484f58; }
+
+  /* Sidebar */
+  .sidebar h3 { font-size: 12px; color: #8b949e; text-transform: uppercase; letter-spacing: 0.5px; margin: 12px 0 6px; }
+  .sidebar h3:first-child { margin-top: 0; }
+  .sidebar .thumb-large { width: 100%; border-radius: 6px; margin-bottom: 8px; }
+  .relation { font-size: 11px; padding: 3px 0; border-bottom: 1px solid #21262d; }
+  .rel-subj, .rel-pred, .rel-obj { cursor: pointer; }
+  .rel-subj:hover, .rel-pred:hover, .rel-obj:hover { text-decoration: underline; }
+  .rel-subj { color: #58a6ff; }
+  .rel-pred { color: #f0883e; font-style: italic; }
+  .rel-obj { color: #3fb950; }
+  .rel-arrow { color: #484f58; margin: 0 3px; }
+  .grounded { font-size: 11px; color: #8b949e; padding: 4px 6px; background: #21262d; border-radius: 4px; margin-bottom: 3px; }
+  .grounded .g-name { color: #58a6ff; font-weight: 500; }
+  .no-data { color: #484f58; font-style: italic; font-size: 12px; padding: 20px 0; text-align: center; }
+
+  /* Entities tab */
+  .entities-layout { padding: 16px 20px; overflow-y: auto; width: 100%; }
+  .entity-group { margin-bottom: 16px; }
+  .entity-group h3 { font-size: 13px; color: #8b949e; margin-bottom: 6px; }
+  .entity-grid { display: flex; flex-wrap: wrap; gap: 4px; }
+  .entity-chip { font-size: 12px; padding: 3px 8px; border-radius: 4px; cursor: pointer; }
+  .entity-chip:hover { opacity: 0.8; }
+
+  /* Relations tab */
+  .relations-layout { padding: 16px 20px; overflow-y: auto; width: 100%; }
+  .rel-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .rel-table th { text-align: left; color: #8b949e; font-size: 11px; padding: 4px 8px; border-bottom: 1px solid #30363d; }
+  .rel-table td { padding: 4px 8px; border-bottom: 1px solid #21262d; }
+
+  /* Keyboard hint */
+  .kbd-hint { position: fixed; bottom: 12px; right: 12px; background: #21262d; border: 1px solid #30363d; padding: 6px 12px; border-radius: 6px; font-size: 11px; color: #8b949e; z-index: 200; }
+  .kbd-hint kbd { background: #30363d; padding: 1px 4px; border-radius: 3px; color: #c9d1d9; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Video Index Viewer</h1>
+  <select id="videoSelect" onchange="loadVideo()"></select>
+  <span id="broadcastDate" class="broadcast-date"></span>
+</div>
+<div class="stats-bar" id="statsBar"></div>
+<div class="nav-tabs">
+  <div class="nav-tab active" onclick="switchTab('timeline')">Timeline</div>
+  <div class="nav-tab" onclick="switchTab('entities')">Entities</div>
+  <div class="nav-tab" onclick="switchTab('relations')">Relations</div>
+</div>
+
+<div class="main">
+  <!-- Timeline Tab -->
+  <div class="tab-content active" id="tab-timeline">
+    <div class="timeline-layout">
+      <div class="timeline-panel">
+        <div class="timeline-bar" id="timelineBar"><div class="timeline-cursor" id="timelineCursor"></div></div>
+        <div class="toolbar">
+          <input type="text" class="search-box" id="searchBox" placeholder="Search segments..." oninput="filterSegments()">
+          <button class="filter-btn" onclick="toggleFilter('asr')" id="btn-asr">ASR</button>
+          <button class="filter-btn" onclick="toggleFilter('entities')" id="btn-entities">Entities</button>
+          <button class="filter-btn" onclick="toggleFilter('relations')" id="btn-relations">Relations</button>
+          <button class="filter-btn" onclick="toggleFilter('speakers')" id="btn-speakers">Speakers</button>
+          <span class="seg-count" id="segCount"></span>
+        </div>
+        <div id="segmentList"></div>
+      </div>
+      <div class="sidebar" id="sidebar">
+        <p class="no-data">Select a segment (or press J/K to navigate)</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Entities Tab -->
+  <div class="tab-content" id="tab-entities">
+    <div class="entities-layout" id="entitiesContent"></div>
+  </div>
+
+  <!-- Relations Tab -->
+  <div class="tab-content" id="tab-relations">
+    <div class="relations-layout" id="relationsContent"></div>
+  </div>
+</div>
+
+<div class="tooltip" id="tooltip" style="display:none"></div>
+<div class="kbd-hint"><kbd>J</kbd>/<kbd>K</kbd> navigate &nbsp; <kbd>/</kbd> search &nbsp; <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> tabs</div>
+
+<script>
+let currentData = null;
+let allSegments = [];
+let filteredSegments = [];
+let selectedIdx = -1;
+let activeFilters = new Set();
+let thumbCache = {};
+
+// Global cross-dataset entity/relation stats (preloaded from all indexes)
+let globalEntityCounts = {};   // "entity_text_lower" → { total: N, videos: ["vid1", ...] }
+let globalRelationCounts = {}; // "subj|||pred|||obj" → { total: N, videos: [...] }
+let localEntityCounts = {};    // per-current-video counts
+
+const THUMB_INTERVAL = 5; // seconds between thumbnails
+
+const VIDEOS = [
+  "ABC_Network_-_Barbary_Coast_-_Funny_Money_-_WCVB_Channel_5_Complete_Broadcast_9_8_1975",
+  "ABC_Network_-_Future_Cop_-_The_Kansas_City_Kid_-_WCVB-TV_Complete_Broadcast_4_30_1977",
+  "ABC_Network_-_General_Hospital_Last_14_Minutes_11_20_1979",
+  "ABC_Network_-_Let_s_Make_a_Deal_-_WLS_Channel_7_Pre-Show_Break_Opening_Moments_2_5_1976",
+  "ABC_News_Nightline_-_Bitter_Cold_-_WLS_Channel_7_1st_16_Minutes_1_11_1982",
+  "ABC_News_Special_Report_-_The_President_at_the_United_Nations_-_WLS-TV_1985",
+  "ABC_News_Weekend_Report_-_WLS_Channel_7_Complete_Broadcast_2_18_1979",
+  "ABC_News_Weekend_Report_-_WLS_Channel_7_Complete_Broadcast_3_9_1980",
+  "A_CBS_Family_Presentation_Bumper_1973",
+  "Alexander_s_Star_by_Ideal_-_Don_t_Pick_It_Up_Commercial_1982",
+  "cpb-aacip-225-009w0w1j",
+  "cpb-aacip-507-154dn40c26","cpb-aacip-507-1v5bc3tf81","cpb-aacip-507-4t6f18t178",
+  "cpb-aacip-507-6w96689725","cpb-aacip-507-7659c6sk7z","cpb-aacip-507-9882j68s35",
+  "cpb-aacip-507-cf9j38m509","cpb-aacip-507-n29p26qt59","cpb-aacip-507-nk3610wp6s","cpb-aacip-507-pc2t43js98",
+];
+
+async function init() {
+  const select = document.getElementById('videoSelect');
+  VIDEOS.forEach(v => {
+    const opt = document.createElement('option');
+    opt.value = v;
+    opt.textContent = v.length > 60 ? v.slice(0, 60) + '...' : v;
+    select.appendChild(opt);
+  });
+  // Preload global stats from all indexes in background
+  preloadGlobalStats();
+  loadVideo();
+}
+
+async function preloadGlobalStats() {
+  globalEntityCounts = {};
+  globalRelationCounts = {};
+  for (const vid of VIDEOS) {
+    try {
+      const resp = await fetch(`data/video_indexes/${vid}.json`);
+      const d = await resp.json();
+      (d.segments || []).forEach(seg => {
+        (seg.named_entities || []).forEach(e => {
+          const key = e.text.trim().toLowerCase();
+          if (!globalEntityCounts[key]) globalEntityCounts[key] = { total: 0, videos: new Set() };
+          globalEntityCounts[key].total++;
+          globalEntityCounts[key].videos.add(vid);
+        });
+        (seg.relations || []).forEach(r => {
+          const key = r.join('|||').toLowerCase();
+          if (!globalRelationCounts[key]) globalRelationCounts[key] = { total: 0, videos: new Set() };
+          globalRelationCounts[key].total++;
+          globalRelationCounts[key].videos.add(vid);
+        });
+      });
+    } catch(e) { /* skip missing */ }
+  }
+}
+
+function buildLocalCounts() {
+  localEntityCounts = {};
+  allSegments.forEach(seg => {
+    (seg.named_entities || []).forEach(e => {
+      const key = e.text.trim().toLowerCase();
+      localEntityCounts[key] = (localEntityCounts[key] || 0) + 1;
+    });
+  });
+}
+
+function showTooltip(e, text, type) {
+  const tt = document.getElementById('tooltip');
+  const key = text.trim().toLowerCase();
+  let html = `<div class="tt-title">${esc(text)}</div>`;
+
+  if (type === 'entity') {
+    const local = localEntityCounts[key] || 0;
+    const global = globalEntityCounts[key];
+    html += `<div class="tt-row">This video: <span class="tt-val">${local} segment${local!==1?'s':''}</span></div>`;
+    if (global) {
+      html += `<div class="tt-row">All videos: <span class="tt-val">${global.total} in ${global.videos.size} video${global.videos.size!==1?'s':''}</span></div>`;
+    } else {
+      html += `<div class="tt-row">All videos: <span class="tt-val">loading...</span></div>`;
+    }
+    html += `<div class="tt-row" style="margin-top:4px;color:#58a6ff">Click to filter</div>`;
+  } else if (type === 'relation') {
+    const global = globalRelationCounts[key];
+    if (global) {
+      html += `<div class="tt-row">All videos: <span class="tt-val">${global.total} in ${global.videos.size} video${global.videos.size!==1?'s':''}</span></div>`;
+    }
+    html += `<div class="tt-row" style="margin-top:4px;color:#58a6ff">Click to filter</div>`;
+  }
+
+  tt.innerHTML = html;
+  tt.style.display = 'block';
+  const x = Math.min(e.clientX + 12, window.innerWidth - 320);
+  const y = Math.min(e.clientY + 12, window.innerHeight - 100);
+  tt.style.left = x + 'px';
+  tt.style.top = y + 'px';
+}
+
+function hideTooltip() {
+  document.getElementById('tooltip').style.display = 'none';
+}
+
+async function loadVideo() {
+  const vid = document.getElementById('videoSelect').value;
+  try {
+    const resp = await fetch(`data/video_indexes/${vid}.json`);
+    currentData = await resp.json();
+    selectedIdx = -1;
+    activeFilters.clear();
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    render();
+  } catch(e) { console.error(e); }
+}
+
+function formatTime(ms) {
+  const s = Math.floor(ms / 1000);
+  const m = Math.floor(s / 60);
+  const h = Math.floor(m / 60);
+  if (h > 0) return `${h}:${String(m%60).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+  return `${m}:${String(s%60).padStart(2,'0')}`;
+}
+
+function getThumbUrl(videoId, ms) {
+  const idx = Math.max(1, Math.round(ms / 1000 / THUMB_INTERVAL) + 1);
+  return `data/thumbnails_5s/${videoId}/thumb_${String(idx).padStart(5, '0')}.jpg`;
+}
+
+function render() {
+  const d = currentData;
+  allSegments = (d.segments || []).sort((a, b) => a.start_ms - b.start_ms);
+  filteredSegments = [...allSegments];
+  buildLocalCounts();
+
+  document.getElementById('broadcastDate').textContent = d.broadcast_date ? `Broadcast: ${d.broadcast_date}` : '';
+
+  const totalEnt = allSegments.reduce((a, s) => a + (s.named_entities || []).length, 0);
+  const totalRel = allSegments.reduce((a, s) => a + (s.relations || []).length, 0);
+  const withASR = allSegments.filter(s => s.asr_transcript).length;
+  const withCap = allSegments.filter(s => s.visual_caption).length;
+  const durMs = d.duration_ms || (allSegments.length ? Math.max(...allSegments.map(s => s.end_ms)) : 0);
+
+  document.getElementById('statsBar').innerHTML = `
+    <div class="stat"><span class="stat-value">${allSegments.length}</span><span class="stat-label">segments</span></div>
+    <div class="stat"><span class="stat-value">${formatTime(durMs)}</span><span class="stat-label">duration</span></div>
+    <div class="stat"><span class="stat-value">${withASR}</span><span class="stat-label">ASR</span></div>
+    <div class="stat"><span class="stat-value">${withCap}</span><span class="stat-label">captions</span></div>
+    <div class="stat"><span class="stat-value">${totalEnt}</span><span class="stat-label">entities</span></div>
+    <div class="stat"><span class="stat-value">${totalRel}</span><span class="stat-label">relations</span></div>`;
+
+  renderTimeline(durMs);
+  renderSegmentList();
+  renderEntitiesTab();
+  renderRelationsTab();
+  document.getElementById('sidebar').innerHTML = '<p class="no-data">Select a segment (or press J/K)</p>';
+}
+
+function renderTimeline(durMs) {
+  const bar = document.getElementById('timelineBar');
+  const cursor = document.getElementById('timelineCursor');
+  bar.querySelectorAll('.timeline-block').forEach(e => e.remove());
+  allSegments.forEach((seg, i) => {
+    const left = (seg.start_ms / durMs * 100);
+    const width = ((seg.end_ms - seg.start_ms) / durMs * 100);
+    const label = seg.segment_type === 'gap' ? 'gap' : (seg.scene_label || 'Neg');
+    const block = document.createElement('div');
+    block.className = `timeline-block ${label}`;
+    block.style.left = left + '%';
+    block.style.width = Math.max(width, 0.15) + '%';
+    block.title = `${label} ${formatTime(seg.start_ms)}-${formatTime(seg.end_ms)}`;
+    block.onclick = () => selectSegmentByOrigIdx(i);
+    bar.appendChild(block);
+  });
+  bar.onmousemove = (e) => {
+    const rect = bar.getBoundingClientRect();
+    const pct = (e.clientX - rect.left) / rect.width;
+    const ms = pct * durMs;
+    cursor.style.left = (pct * 100) + '%';
+    cursor.style.display = 'block';
+    cursor.title = formatTime(ms);
+  };
+  bar.onmouseleave = () => { cursor.style.display = 'none'; };
+}
+
+function renderSegmentList() {
+  const list = document.getElementById('segmentList');
+  list.innerHTML = '';
+  const vid = currentData.video_id;
+
+  filteredSegments.forEach((seg, fi) => {
+    const origIdx = allSegments.indexOf(seg);
+    const el = document.createElement('div');
+    el.className = 'segment' + (origIdx === selectedIdx ? ' selected' : '');
+    el.dataset.origIndex = origIdx;
+    el.onclick = () => selectSegmentByOrigIdx(origIdx);
+
+    const label = seg.segment_type === 'gap' ? 'gap' : (seg.scene_label || 'unknown');
+    const durSec = ((seg.end_ms - seg.start_ms) / 1000).toFixed(1);
+    const entCount = (seg.named_entities || []).length;
+    const relCount = (seg.relations || []).length;
+    const thumbUrl = getThumbUrl(vid, seg.start_ms);
+
+    let textHtml = '';
+    if (seg.primary_speaker) {
+      textHtml += speakerBadge(seg.primary_speaker);
+    }
+    if (seg.asr_transcript) {
+      const t = seg.asr_transcript.length > 150 ? seg.asr_transcript.slice(0,150)+'...' : seg.asr_transcript;
+      textHtml += `<div class="field asr"><div class="field-label">Speech</div><div class="field-value">${esc(t)}</div></div>`;
+    }
+    if (seg.ocr_text) {
+      const t = seg.ocr_text.length > 100 ? seg.ocr_text.slice(0,100)+'...' : seg.ocr_text;
+      textHtml += `<div class="field ocr"><div class="field-label">OCR</div><div class="field-value">${esc(t)}</div></div>`;
+    }
+    if (seg.visual_caption && !seg.asr_transcript) {
+      const t = seg.visual_caption.length > 120 ? seg.visual_caption.slice(0,120)+'...' : seg.visual_caption;
+      textHtml += `<div class="field caption"><div class="field-label">Visual</div><div class="field-value">${esc(t)}</div></div>`;
+    }
+    if (entCount > 0) {
+      // Deduplicate entities within segment for display
+      const seen = new Set();
+      const uniqueEnts = (seg.named_entities||[]).filter(e => {
+        const k = e.text.toLowerCase();
+        if (seen.has(k)) return false;
+        seen.add(k);
+        return true;
+      });
+      const tags = uniqueEnts.slice(0,6).map(e => `<span class="entity-tag ${e.type}" onclick="event.stopPropagation();searchEntity('${esc(e.text).replace(/'/g,"\\'")}')" onmouseenter="showTooltip(event,'${esc(e.text).replace(/'/g,"\\'")}','entity')" onmouseleave="hideTooltip()">${esc(e.text)}</span>`).join('');
+      const more = uniqueEnts.length > 6 ? `<span class="entity-count">+${uniqueEnts.length-6}</span>` : '';
+      textHtml += `<div class="field">${tags}${more}</div>`;
+    }
+    if (!textHtml) textHtml = '<div style="color:#484f58;font-size:11px">No annotations</div>';
+
+    const badges = [
+      entCount ? `${entCount} ent` : '',
+      relCount ? `${relCount} rel` : '',
+    ].filter(Boolean).join(' / ');
+
+    el.innerHTML = `
+      <div class="seg-header">
+        <span class="seg-time">${formatTime(seg.start_ms)} - ${formatTime(seg.end_ms)} (${durSec}s)</span>
+        <span class="seg-label ${label}">${label}${badges ? ' / '+badges : ''}</span>
+      </div>
+      <div class="seg-body">
+        <img class="seg-thumb" src="${thumbUrl}" onerror="this.outerHTML='<div class=\\'seg-thumb empty\\'>No thumb</div>'" loading="lazy">
+        <div class="seg-text">${textHtml}</div>
+      </div>`;
+    list.appendChild(el);
+  });
+
+  document.getElementById('segCount').textContent = `${filteredSegments.length} / ${allSegments.length}`;
+}
+
+function selectSegmentByOrigIdx(origIdx) {
+  selectedIdx = origIdx;
+  document.querySelectorAll('.segment').forEach(el => {
+    el.classList.toggle('selected', parseInt(el.dataset.origIndex) === origIdx);
+  });
+  const selEl = document.querySelector(`.segment[data-orig-index="${origIdx}"]`);
+  if (selEl) selEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  renderSidebar(allSegments[origIdx]);
+}
+
+function renderSidebar(seg) {
+  const sb = document.getElementById('sidebar');
+  const vid = currentData.video_id;
+  let html = '';
+
+  // Thumbnail at segment start (matches OCR/caption frame)
+  html += `<img class="thumb-large" src="${getThumbUrl(vid, seg.start_ms)}" onerror="this.style.display='none'">`;
+
+  // Speakers
+  if (seg.speakers && seg.speakers.length) {
+    html += '<h3>Speakers</h3><div style="margin-bottom:8px">';
+    seg.speakers.forEach(sp => {
+      html += `${speakerBadge(sp.id)} <span style="color:#8b949e;font-size:11px">${sp.duration_s}s</span>&nbsp;&nbsp;`;
+    });
+    html += '</div>';
+  }
+
+  // Full text
+  if (seg.asr_transcript) {
+    html += `<h3>ASR Transcript</h3><div class="field asr" style="margin-bottom:8px;font-size:12px">${esc(seg.asr_transcript)}</div>`;
+  }
+  if (seg.ocr_text) {
+    html += `<h3>OCR Text</h3><div class="field ocr" style="margin-bottom:8px;font-size:12px">${esc(seg.ocr_text)}</div>`;
+  }
+  if (seg.visual_caption) {
+    const cap = seg.visual_caption.length > 500 ? seg.visual_caption.slice(0,500)+'...' : seg.visual_caption;
+    html += `<h3>Visual Caption</h3><div class="field caption" style="margin-bottom:8px;font-size:12px">${esc(cap)}</div>`;
+  }
+
+  // Entities (deduplicated)
+  const ents = seg.named_entities || [];
+  if (ents.length) {
+    const seenSb = new Set();
+    const uniqueEntsSb = ents.filter(e => {
+      const k = e.text.toLowerCase() + '|' + e.type;
+      if (seenSb.has(k)) return false;
+      seenSb.add(k);
+      return true;
+    });
+    html += `<h3>Entities (${uniqueEntsSb.length})</h3><div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:8px">`;
+    uniqueEntsSb.forEach(e => { html += `<span class="entity-tag ${e.type}" onclick="searchEntity('${esc(e.text).replace(/'/g,"\\'")}')" onmouseenter="showTooltip(event,'${esc(e.text).replace(/'/g,"\\'")}','entity')" onmouseleave="hideTooltip()">${esc(e.text)}</span>`; });
+    html += '</div>';
+  }
+
+  // Grounded
+  const gr = seg.grounded_entities || {};
+  const gk = Object.keys(gr).filter(k => gr[k]);
+  if (gk.length) {
+    html += `<h3>Grounded (${gk.length})</h3>`;
+    gk.forEach(k => {
+      html += `<div class="grounded"><span class="g-name">${esc(k)}</span>: ${esc(gr[k].slice(0,100))}</div>`;
+    });
+  }
+
+  // Relations (deduplicated)
+  const rels = seg.relations || [];
+  if (rels.length) {
+    const seenRels = new Set();
+    const uniqueRels = rels.filter(r => {
+      const k = r.join('|||');
+      if (seenRels.has(k)) return false;
+      seenRels.add(k);
+      return true;
+    });
+    html += `<h3>Relations (${uniqueRels.length})</h3>`;
+    uniqueRels.forEach(r => {
+      const relKey = r.join('|||').toLowerCase();
+      html += `<div class="relation"><span class="rel-subj" onclick="searchEntity('${esc(r[0]).replace(/'/g,"\\'")}')" onmouseenter="showTooltip(event,'${esc(r[0]).replace(/'/g,"\\'")}','entity')" onmouseleave="hideTooltip()">${esc(r[0])}</span><span class="rel-arrow">&rarr;</span><span class="rel-pred" onmouseenter="showTooltip(event,'${esc(r.join(' > ')).replace(/'/g,"\\'")}','relation')" onmouseleave="hideTooltip()">${esc(r[1])}</span><span class="rel-arrow">&rarr;</span><span class="rel-obj" onclick="searchEntity('${esc(r[2]).replace(/'/g,"\\'")}')" onmouseenter="showTooltip(event,'${esc(r[2]).replace(/'/g,"\\'")}','entity')" onmouseleave="hideTooltip()">${esc(r[2])}</span></div>`;
+    });
+  }
+
+  if (!html) html = '<p class="no-data">No data</p>';
+  sb.innerHTML = html;
+}
+
+// --- Entities Tab ---
+function renderEntitiesTab() {
+  // Deduplicate: normalize text (trim, collapse case variants) and aggregate counts
+  const groups = {};
+  allSegments.forEach(seg => {
+    (seg.named_entities || []).forEach(e => {
+      const type = e.type || 'OTHER';
+      if (!groups[type]) groups[type] = {};
+      const text = e.text.trim();
+      // Normalize: prefer the version with more capitals (e.g., "Jim Lara" over "jim lara")
+      const key = text.toLowerCase();
+      if (!groups[type][key]) {
+        groups[type][key] = { display: text, count: 0 };
+      } else if (text !== text.toLowerCase() && groups[type][key].display === groups[type][key].display.toLowerCase()) {
+        groups[type][key].display = text; // upgrade to capitalized version
+      }
+      groups[type][key].count += 1;
+    });
+  });
+
+  const typeOrder = ['PERSON','ORG','GPE','LOC','EVENT','WORK_OF_ART','DATE','TIME','NORP','FAC','PRODUCT','LAW','LANGUAGE'];
+  let html = '';
+  typeOrder.forEach(type => {
+    const ents = groups[type];
+    if (!ents) return;
+    const sorted = Object.values(ents).sort((a,b) => b.count - a.count);
+    html += `<div class="entity-group"><h3>${type} (${sorted.length} unique)</h3><div class="entity-grid">`;
+    sorted.forEach(({display, count}) => {
+      html += `<span class="entity-chip entity-tag ${type}" onclick="searchEntity('${esc(display).replace(/'/g,"\\'")}')" title="${count} occurrence${count>1?'s':''}">${esc(display)} <span class="entity-count">${count}</span></span>`;
+    });
+    html += '</div></div>';
+  });
+  document.getElementById('entitiesContent').innerHTML = html || '<p class="no-data">No entities</p>';
+}
+
+// --- Relations Tab ---
+function renderRelationsTab() {
+  // Deduplicate relations: same (subj, pred, obj) → count + list of times
+  const relMap = {};
+  allSegments.forEach((seg, i) => {
+    (seg.relations || []).forEach(r => {
+      const key = `${r[0]}|||${r[1]}|||${r[2]}`;
+      if (!relMap[key]) {
+        relMap[key] = { subj: r[0], pred: r[1], obj: r[2], count: 0, times: [], firstSegIdx: i };
+      }
+      relMap[key].count++;
+      relMap[key].times.push(formatTime(seg.start_ms));
+    });
+  });
+
+  const unique = Object.values(relMap).sort((a, b) => b.count - a.count);
+  const totalRaw = Object.values(relMap).reduce((a, r) => a + r.count, 0);
+
+  let html = `<div style="margin-bottom:8px;color:#8b949e;font-size:12px">${unique.length} unique relations (${totalRaw} total occurrences)</div>`;
+  html += '<table class="rel-table"><thead><tr><th>Subject</th><th>Predicate</th><th>Object</th><th>#</th><th>First at</th></tr></thead><tbody>';
+  unique.slice(0, 500).forEach(r => {
+    html += `<tr>
+      <td><span class="rel-subj" onclick="searchEntity('${esc(r.subj).replace(/'/g,"\\'")}')" onmouseenter="showTooltip(event,'${esc(r.subj).replace(/'/g,"\\'")}','entity')" onmouseleave="hideTooltip()">${esc(r.subj)}</span></td>
+      <td><span class="rel-pred">${esc(r.pred)}</span></td>
+      <td><span class="rel-obj" onclick="searchEntity('${esc(r.obj).replace(/'/g,"\\'")}')" onmouseenter="showTooltip(event,'${esc(r.obj).replace(/'/g,"\\'")}','entity')" onmouseleave="hideTooltip()">${esc(r.obj)}</span></td>
+      <td style="color:#8b949e">${r.count > 1 ? r.count + 'x' : ''}</td>
+      <td class="seg-time" style="cursor:pointer" onclick="switchTab('timeline');selectSegmentByOrigIdx(${r.firstSegIdx})">${r.times[0]}</td></tr>`;
+  });
+  html += '</tbody></table>';
+  if (unique.length > 500) html += `<p class="no-data">Showing 500 of ${unique.length}</p>`;
+  document.getElementById('relationsContent').innerHTML = html || '<p class="no-data">No relations</p>';
+}
+
+// --- Tabs ---
+function switchTab(name) {
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelector(`.nav-tab:nth-child(${name==='timeline'?1:name==='entities'?2:3})`).classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+// --- Filters ---
+function toggleFilter(name) {
+  const btn = document.getElementById('btn-' + name);
+  if (activeFilters.has(name)) { activeFilters.delete(name); btn.classList.remove('active'); }
+  else { activeFilters.add(name); btn.classList.add('active'); }
+  filterSegments();
+}
+
+function filterSegments() {
+  const q = document.getElementById('searchBox').value.toLowerCase();
+  filteredSegments = allSegments.filter(s => {
+    if (activeFilters.has('asr') && !s.asr_transcript) return false;
+    if (activeFilters.has('entities') && !(s.named_entities||[]).length) return false;
+    if (activeFilters.has('relations') && !(s.relations||[]).length) return false;
+    if (activeFilters.has('speakers') && !s.primary_speaker) return false;
+    if (!q) return true;
+    const text = [s.asr_transcript, s.ocr_text, s.visual_caption, s.scene_label,
+      ...(s.named_entities||[]).map(e=>e.text), ...(s.relations||[]).map(r=>r.join(' '))
+    ].join(' ').toLowerCase();
+    return text.includes(q);
+  });
+  renderSegmentList();
+}
+
+function searchEntity(text) {
+  switchTab('timeline');
+  document.getElementById('searchBox').value = text;
+  filterSegments();
+}
+
+// --- Keyboard navigation ---
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') {
+    if (e.key === 'Escape') e.target.blur();
+    return;
+  }
+  if (e.key === 'j' || e.key === 'ArrowDown') {
+    e.preventDefault();
+    const maxIdx = filteredSegments.length - 1;
+    const curFiltered = filteredSegments.findIndex(s => allSegments.indexOf(s) === selectedIdx);
+    const next = Math.min(curFiltered + 1, maxIdx);
+    if (next >= 0) selectSegmentByOrigIdx(allSegments.indexOf(filteredSegments[next]));
+  } else if (e.key === 'k' || e.key === 'ArrowUp') {
+    e.preventDefault();
+    const curFiltered = filteredSegments.findIndex(s => allSegments.indexOf(s) === selectedIdx);
+    const prev = Math.max(curFiltered - 1, 0);
+    if (prev >= 0) selectSegmentByOrigIdx(allSegments.indexOf(filteredSegments[prev]));
+  } else if (e.key === '/') {
+    e.preventDefault();
+    document.getElementById('searchBox').focus();
+  } else if (e.key === '1') { switchTab('timeline'); }
+  else if (e.key === '2') { switchTab('entities'); }
+  else if (e.key === '3') { switchTab('relations'); }
+});
+
+function esc(s) { return s ? s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') : ''; }
+
+function speakerBadge(spk) {
+  if (!spk) return '';
+  const num = parseInt(spk.replace('speaker_', '')) || 0;
+  const names = currentData && currentData.speaker_names || {};
+  const name = names[spk];
+  const label = name || spk.replace('speaker_', 'S');
+  return `<span class="speaker-badge s${num % 10}" title="${spk}${name ? ': ' + name : ''}">${label}</span>`;
+}
+
+init();
+</script>
+</body>
+</html>

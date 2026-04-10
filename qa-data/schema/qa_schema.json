@@ -1,0 +1,265 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CLAMS Agent QA Entry",
+  "description": "Schema for question-answering data derived from AAPB annotations",
+  "type": "object",
+  "required": ["id", "category", "question", "answer"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^(qa-|mhqa-)[a-z0-9-]+$",
+      "description": "Unique identifier for this QA pair"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "tool_selection",
+        "scene_classification",
+        "text_extraction",
+        "named_entity",
+        "entity_linking",
+        "role_filler",
+        "cross_annotation",
+        "pipeline_design",
+        "multi_turn",
+        "visual_description",
+        "cross_modal",
+        "temporal_reasoning",
+        "entity_identification",
+        "narrative_comprehension",
+        "factual_extraction",
+        "multi_hop"
+      ],
+      "description": "Category of the QA task"
+    },
+    "source_project": {
+      "type": "string",
+      "enum": [
+        "scene-recognition",
+        "january-slates",
+        "understanding-slates",
+        "understanding-chyrons",
+        "newshour-chyron",
+        "newshour-namedentity",
+        "newshour-namedentity-wikipedialink",
+        "role-filler-binding",
+        "role-filler-binding-seqtag",
+        "newshour-transcript-sync",
+        "derived"
+      ],
+      "description": "Source annotation project"
+    },
+    "source_guid": {
+      "type": "string",
+      "description": "Identifier of the source media (AAPB GUID or video filename)"
+    },
+    "question": {
+      "type": "string",
+      "minLength": 10,
+      "description": "The question to be answered"
+    },
+    "answer": {
+      "oneOf": [
+        { "$ref": "#/definitions/scene_answer" },
+        { "$ref": "#/definitions/text_answer" },
+        { "$ref": "#/definitions/entity_answer" },
+        { "$ref": "#/definitions/tool_answer" },
+        { "$ref": "#/definitions/role_filler_answer" },
+        { "$ref": "#/definitions/cross_annotation_answer" },
+        { "$ref": "#/definitions/simple_answer" }
+      ],
+      "description": "The answer object"
+    },
+    "context": {
+      "$ref": "#/definitions/context",
+      "description": "Additional context for the question"
+    },
+    "conversation": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/turn" },
+      "description": "Multi-turn conversation (for multi_turn category)"
+    },
+    "metadata": {
+      "$ref": "#/definitions/metadata",
+      "description": "Provenance and creation metadata"
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": ["easy", "medium", "hard"],
+      "description": "Estimated difficulty level"
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Additional tags for filtering"
+    }
+  },
+  "definitions": {
+    "scene_answer": {
+      "type": "object",
+      "properties": {
+        "scene_label": { "type": "string" },
+        "scene_subtype": { "type": "string" },
+        "exists": { "type": "boolean" },
+        "count": { "type": "integer" },
+        "timestamps": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}$" }
+        },
+        "confidence": { "type": "string" }
+      }
+    },
+    "text_answer": {
+      "type": "object",
+      "properties": {
+        "text": { "type": "string" },
+        "raw_text": { "type": "string" },
+        "lines": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "entity_answer": {
+      "type": "object",
+      "properties": {
+        "entities": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "text": { "type": "string" },
+              "type": { "type": "string", "enum": ["person", "organization", "location", "event", "other"] },
+              "span": {
+                "type": "array",
+                "items": { "type": "integer" },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "wiki_url": { "type": "string", "format": "uri" },
+              "wikidata_qid": { "type": "string", "pattern": "^Q[0-9]+$" }
+            }
+          }
+        },
+        "people": { "type": "array", "items": { "type": "string" } },
+        "organizations": { "type": "array", "items": { "type": "string" } },
+        "locations": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "tool_answer": {
+      "type": "object",
+      "required": ["tools"],
+      "properties": {
+        "tools": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "purpose": { "type": "string" }
+            }
+          }
+        },
+        "pipeline_order": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "reasoning": { "type": "string" }
+      }
+    },
+    "role_filler_answer": {
+      "type": "object",
+      "properties": {
+        "role": { "type": "string" },
+        "filler": { "type": "string" },
+        "credits": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "role": { "type": "string" },
+              "name": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "simple_answer": {
+      "type": "object",
+      "properties": {
+        "value": { "type": ["string", "number", "boolean"] },
+        "explanation": { "type": "string" }
+      }
+    },
+    "cross_annotation_answer": {
+      "type": "object",
+      "description": "Answer for questions requiring multiple annotation sources",
+      "properties": {
+        "entity": { "type": "string", "description": "The entity being searched for" },
+        "total_count": { "type": "integer", "description": "Total number of matches" },
+        "matches": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "guid": { "type": "string" },
+              "timestamp": { "type": "string" },
+              "chyron_text": { "type": "string" },
+              "transcript_snippet": { "type": "string" },
+              "entity_match": {
+                "type": "object",
+                "properties": {
+                  "text": { "type": "string" },
+                  "type": { "type": "string" },
+                  "qid": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "source_annotations": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "List of annotation projects joined to produce this answer"
+        }
+      }
+    },
+    "context": {
+      "type": "object",
+      "properties": {
+        "video_guid": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "time_range": {
+          "type": "object",
+          "properties": {
+            "start": { "type": "string" },
+            "end": { "type": "string" }
+          }
+        },
+        "collection": { "type": "string" },
+        "transcript_snippet": { "type": "string" }
+      }
+    },
+    "turn": {
+      "type": "object",
+      "required": ["role", "content"],
+      "properties": {
+        "role": { "type": "string", "enum": ["user", "assistant"] },
+        "content": { "type": "string" }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "created_from": { "type": "string" },
+        "annotator_count": { "type": "integer" },
+        "conversion_date": { "type": "string", "format": "date" },
+        "derived_from_annotation_project": { "type": "string" },
+        "source_projects": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}

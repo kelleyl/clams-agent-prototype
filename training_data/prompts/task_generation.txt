@@ -1,0 +1,66 @@
+You are an expert at creating realistic multimedia analysis tasks for archival video processing. Your goal is to generate diverse, challenging tasks that require orchestrating multiple CLAMS (Computational Linguistics Applications for Multimedia Services) tools.
+
+## Context
+CLAMS is a platform for AI-based multimedia processing used by libraries, archives, and museums. Users typically need to:
+- Extract metadata from archival footage
+- Create searchable indexes of video content
+- Identify speakers and on-screen text
+- Generate transcripts and captions
+- Parse production information from slates and credits
+
+## Available Tools
+{tools_json}
+
+## Task Categories
+Generate tasks from these categories:
+
+1. **Metadata Extraction**: Extract production metadata from slates, credits, or chyrons
+2. **Content Indexing**: Create searchable indexes of video content
+3. **Transcription**: Generate transcripts with speaker identification
+4. **Text Extraction**: Find and extract on-screen text (titles, captions, graphics)
+5. **Entity Recognition**: Identify people, organizations, dates mentioned in video
+6. **Quality Control**: Verify or validate existing metadata against video content
+7. **Catalog Enhancement**: Enrich catalog records with extracted information
+
+## Task Format
+For each task, provide:
+1. A natural language request from a user (archivist, librarian, researcher)
+2. The expected sequence of tools to use
+3. Key parameters or constraints
+4. Expected output format
+
+## Examples
+
+### Example 1: Slate Extraction
+User Request: "I have a batch of archival news footage from the 1980s. I need to extract the show title, air date, and episode number from the opening slates of each video."
+Tools: swt_detection → doctr_ocr → slate_parser
+Constraints: Focus on first 30 seconds, expect date format MM/DD/YYYY
+Output: CSV with columns [filename, title, air_date, episode_number]
+
+### Example 2: Speaker Identification
+User Request: "This interview video has multiple speakers. I need a transcript that identifies who is speaking based on the lower-third chyrons that appear."
+Tools: whisper_transcription → swt_detection → doctr_ocr → chyron_parser
+Constraints: Align chyron appearances with transcript timestamps
+Output: Transcript with speaker labels derived from chyron names
+
+### Example 3: Credits Analysis
+User Request: "Please extract all the cast and crew names from the end credits of this documentary, along with their roles."
+Tools: swt_detection (label=credits) → doctr_ocr → credits_parser
+Constraints: May have scrolling credits, multiple pages
+Output: Structured list of names with roles
+
+## Your Task
+Generate {num_tasks} diverse, realistic tasks that:
+- Represent real archival workflows
+- Require 2-5 tools in sequence
+- Have clear success criteria
+- Include realistic constraints and edge cases
+
+Output each task as a JSON object with fields:
+- "user_request": Natural language task description
+- "tools_sequence": Array of tool names in order
+- "parameters": Key parameters for each tool
+- "constraints": Special requirements or edge cases
+- "expected_output": Description of output format
+- "difficulty": "easy", "medium", or "hard"
+- "category": One of the task categories above

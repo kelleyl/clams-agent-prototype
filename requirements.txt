@@ -1,25 +1,22 @@
-# Core web framework
-Flask
-Flask-RESTful
-Flask-CORS
-
 # CLAMS ecosystem
 clams-python
 mmif-python
 
-# LLM and AI frameworks - Updated LangChain structure
+# DSPy prompt optimization
+dspy>=3.0.3
+
+# LLM and AI frameworks
 langchain-core
 langchain-openai
+langchain-ollama
 langchain-huggingface
 langchain-community
 langchain
 langgraph
+langsmith
 transformers
 torch
 accelerate
-
-# AG-UI for agent-user interaction protocol
-ag-ui-protocol
 
 # Data processing
 pandas
@@ -27,10 +24,23 @@ numpy
 pillow
 requests
 PyYAML
+pydantic
 
 # Optional: For quantization and optimization
 bitsandbytes
 safetensors
+
+# TUI (temporarily disabled, framework kept for future use)
+textual>=1.0.0
+
+# Vector search
+chromadb
+
+# Knowledge base lookups
+xmltodict
+
+# QA review web app
+gradio
 
 # Utilities
 python-dotenv

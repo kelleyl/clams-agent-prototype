@@ -1,0 +1,329 @@
+{
+  "tools": [
+    {
+      "name": "swt_detection",
+      "description": "Detects scenes containing text in video, including slates, chyrons, and credits. Outputs TimeFrame annotations marking where text appears.",
+      "category": "text_detection",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "video_path": {
+            "type": "string",
+            "description": "Path to the input video file"
+          },
+          "use_classifier": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether to use the CNN classifier for text detection"
+          },
+          "use_stitcher": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether to stitch TimePoints into TimeFrames"
+          },
+          "min_frame_score": {
+            "type": "number",
+            "default": 0.5,
+            "description": "Minimum confidence score for frame classification"
+          },
+          "label_map": {
+            "type": "string",
+            "enum": ["default", "strict", "relaxed"],
+            "default": "default",
+            "description": "Preset for label mapping (slate, chyron, credits, etc.)"
+          }
+        },
+        "required": ["video_path"]
+      },
+      "outputs": ["TimeFrame", "TimePoint"],
+      "output_description": "TimeFrame annotations with labels: slate, chyron, credits, lower-third, etc.",
+      "latency_seconds": 30,
+      "cost_per_minute_video": 0.01,
+      "requires_gpu": true
+    },
+    {
+      "name": "doctr_ocr",
+      "description": "Performs OCR on images or video frames using docTR. Detects text regions and recognizes text content, outputting hierarchical structure (pages > blocks > lines > words).",
+      "category": "ocr",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "input_path": {
+            "type": "string",
+            "description": "Path to image file or video with TimeFrame annotations"
+          },
+          "timeframes": {
+            "type": "array",
+            "items": {"type": "object"},
+            "description": "TimeFrame annotations specifying which frames to process"
+          },
+          "output_format": {
+            "type": "string",
+            "enum": ["text", "structured", "both"],
+            "default": "both",
+            "description": "Output format for recognized text"
+          }
+        },
+        "required": ["input_path"]
+      },
+      "outputs": ["TextDocument", "Paragraph", "Sentence", "Token", "BoundingBox"],
+      "output_description": "Recognized text with spatial coordinates and confidence scores",
+      "latency_seconds": 5,
+      "cost_per_frame": 0.001,
+      "requires_gpu": true
+    },
+    {
+      "name": "smolvlm2_captioner",
+      "description": "Uses SmolVLM2-2.2B vision-language model to generate captions and descriptions for video frames. Can answer questions about visual content.",
+      "category": "captioning",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "input_path": {
+            "type": "string",
+            "description": "Path to video file or image"
+          },
+          "timeframes": {
+            "type": "array",
+            "items": {"type": "object"},
+            "description": "TimeFrame annotations specifying which frames to caption"
+          },
+          "prompt": {
+            "type": "string",
+            "default": "Describe this image in detail.",
+            "description": "Prompt to guide the captioning"
+          },
+          "max_tokens": {
+            "type": "integer",
+            "default": 256,
+            "description": "Maximum tokens in generated caption"
+          }
+        },
+        "required": ["input_path"]
+      },
+      "outputs": ["TextDocument"],
+      "output_description": "Natural language descriptions of visual content",
+      "latency_seconds": 10,
+      "cost_per_frame": 0.005,
+      "requires_gpu": true
+    },
+    {
+      "name": "whisper_transcription",
+      "description": "Transcribes speech in audio/video using OpenAI Whisper. Outputs time-aligned text with word-level timestamps.",
+      "category": "speech",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "input_path": {
+            "type": "string",
+            "description": "Path to audio or video file"
+          },
+          "language": {
+            "type": "string",
+            "default": "en",
+            "description": "Language code for transcription"
+          },
+          "model_size": {
+            "type": "string",
+            "enum": ["tiny", "base", "small", "medium", "large"],
+            "default": "base",
+            "description": "Whisper model size"
+          }
+        },
+        "required": ["input_path"]
+      },
+      "outputs": ["TextDocument", "TimeFrame", "Alignment", "Token"],
+      "output_description": "Transcribed text with time alignments",
+      "latency_seconds": 60,
+      "cost_per_minute_audio": 0.006,
+      "requires_gpu": true
+    },
+    {
+      "name": "spacy_ner",
+      "description": "Performs Named Entity Recognition on text using spaCy. Identifies people, organizations, locations, dates, and other entities.",
+      "category": "nlp",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "text_input": {
+            "type": "string",
+            "description": "Text to analyze, or reference to TextDocument"
+          },
+          "model": {
+            "type": "string",
+            "enum": ["en_core_web_sm", "en_core_web_md", "en_core_web_lg"],
+            "default": "en_core_web_sm",
+            "description": "spaCy model to use"
+          }
+        },
+        "required": ["text_input"]
+      },
+      "outputs": ["NamedEntity", "Span"],
+      "output_description": "Named entities with types: PERSON, ORG, GPE, DATE, etc.",
+      "latency_seconds": 2,
+      "cost_per_1k_tokens": 0.0001,
+      "requires_gpu": false
+    },
+    {
+      "name": "scene_detection",
+      "description": "Detects scene boundaries in video using PySceneDetect. Identifies cuts, fades, and transitions.",
+      "category": "video_analysis",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "video_path": {
+            "type": "string",
+            "description": "Path to input video"
+          },
+          "threshold": {
+            "type": "number",
+            "default": 30.0,
+            "description": "Threshold for content-aware scene detection"
+          },
+          "min_scene_len": {
+            "type": "integer",
+            "default": 15,
+            "description": "Minimum scene length in frames"
+          }
+        },
+        "required": ["video_path"]
+      },
+      "outputs": ["TimeFrame"],
+      "output_description": "TimeFrame annotations marking scene boundaries",
+      "latency_seconds": 20,
+      "cost_per_minute_video": 0.005,
+      "requires_gpu": false
+    },
+    {
+      "name": "forced_alignment",
+      "description": "Aligns transcript text to audio using forced alignment. Produces word-level and phoneme-level time alignments.",
+      "category": "speech",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "audio_path": {
+            "type": "string",
+            "description": "Path to audio file"
+          },
+          "transcript": {
+            "type": "string",
+            "description": "Text transcript to align"
+          }
+        },
+        "required": ["audio_path", "transcript"]
+      },
+      "outputs": ["Alignment", "Token", "TimePoint"],
+      "output_description": "Time-aligned tokens with start/end timestamps",
+      "latency_seconds": 30,
+      "cost_per_minute_audio": 0.003,
+      "requires_gpu": false
+    },
+    {
+      "name": "chyron_parser",
+      "description": "Parses and structures chyron text (lower-thirds, name titles). Extracts person names, titles, affiliations from on-screen text.",
+      "category": "text_understanding",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "ocr_text": {
+            "type": "string",
+            "description": "OCR text from chyron region"
+          },
+          "context": {
+            "type": "string",
+            "description": "Additional context about the video content"
+          }
+        },
+        "required": ["ocr_text"]
+      },
+      "outputs": ["NamedEntity", "Relation"],
+      "output_description": "Structured data: person name, title, organization",
+      "latency_seconds": 3,
+      "cost_per_call": 0.001,
+      "requires_gpu": false
+    },
+    {
+      "name": "slate_parser",
+      "description": "Parses production slate text to extract structured metadata: show title, episode, air date, production company, etc.",
+      "category": "text_understanding",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "ocr_text": {
+            "type": "string",
+            "description": "OCR text from slate frame"
+          },
+          "expected_fields": {
+            "type": "array",
+            "items": {"type": "string"},
+            "default": ["title", "episode", "date", "producer"],
+            "description": "Fields to extract from slate"
+          }
+        },
+        "required": ["ocr_text"]
+      },
+      "outputs": ["NamedEntity", "Relation"],
+      "output_description": "Structured metadata extracted from production slate",
+      "latency_seconds": 3,
+      "cost_per_call": 0.001,
+      "requires_gpu": false
+    },
+    {
+      "name": "credits_parser",
+      "description": "Parses end credits to extract cast and crew information with roles.",
+      "category": "text_understanding",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "ocr_text": {
+            "type": "string",
+            "description": "OCR text from credits sequence"
+          },
+          "format": {
+            "type": "string",
+            "enum": ["scroll", "static", "mixed"],
+            "default": "scroll",
+            "description": "Credits display format"
+          }
+        },
+        "required": ["ocr_text"]
+      },
+      "outputs": ["NamedEntity", "Relation"],
+      "output_description": "Person names with their roles (actor, director, producer, etc.)",
+      "latency_seconds": 5,
+      "cost_per_call": 0.002,
+      "requires_gpu": false
+    }
+  ],
+  "tool_categories": {
+    "text_detection": "Tools that detect and locate text in video/images",
+    "ocr": "Tools that recognize and extract text content",
+    "captioning": "Tools that generate natural language descriptions",
+    "speech": "Tools for speech transcription and alignment",
+    "nlp": "Natural language processing tools",
+    "video_analysis": "Tools for analyzing video structure",
+    "text_understanding": "Tools that parse and structure extracted text"
+  },
+  "common_pipelines": [
+    {
+      "name": "slate_extraction",
+      "description": "Extract metadata from video slate",
+      "tools": ["swt_detection", "doctr_ocr", "slate_parser"]
+    },
+    {
+      "name": "chyron_extraction",
+      "description": "Extract and parse lower-third chyrons",
+      "tools": ["swt_detection", "doctr_ocr", "chyron_parser"]
+    },
+    {
+      "name": "full_transcription",
+      "description": "Complete speech transcription with speaker identification",
+      "tools": ["whisper_transcription", "spacy_ner"]
+    },
+    {
+      "name": "video_indexing",
+      "description": "Create searchable index of video content",
+      "tools": ["scene_detection", "swt_detection", "whisper_transcription", "doctr_ocr", "spacy_ner"]
+    }
+  ]
+}

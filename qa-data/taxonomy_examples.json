@@ -1,0 +1,143 @@
+{
+  "description": "Example questions for each cell of the two-axis taxonomy (cognitive level x information need). All examples grounded in real video index content.",
+
+  "L1_Identify": {
+    "Cataloging": {
+      "question": "What is the air date shown on the slate?",
+      "answer": "1/19/84",
+      "video_id": "cpb-aacip-507-r785h7cp0z",
+      "evidence": "Slate OCR at 55s: 'REC: 1/19/84 AIR: 1/19/84'",
+      "layers_needed": ["ocr"],
+      "notes": "Single lookup from slate text. Requires identifying the slate scene and reading the date."
+    },
+    "Factual": {
+      "question": "What name appears in the chyron during the birth control pill discussion?",
+      "answer": "DR. HOWARD ORY, CENTERS FOR DISEASE CONTROL",
+      "video_id": "cpb-aacip-507-r785h7cp0z",
+      "evidence": "OCR chyron at 2583s: 'ATLANTA / DR. HOWARD ORY / CENTERS FOR DISEASE CONTROL'",
+      "layers_needed": ["ocr"],
+      "notes": "Direct chyron readout. Single modality, single lookup."
+    },
+    "Subject": {
+      "question": "What type of program is this broadcast?",
+      "answer": "A nightly news magazine (The MacNeil/Lehrer NewsHour)",
+      "video_id": "cpb-aacip-507-r785h7cp0z",
+      "evidence": "Slate: 'THE MACNEIL/LEHRER NEWSHOUR'. Visual: news studio with anchors.",
+      "layers_needed": ["ocr", "visual_captions"],
+      "notes": "Classify the program format from title + visual cues."
+    },
+    "Interpretive": {
+      "question": "What role does the guest from Atlanta hold?",
+      "answer": "Medical researcher at the Centers for Disease Control",
+      "video_id": "cpb-aacip-507-r785h7cp0z",
+      "evidence": "Chyron: 'DR. HOWARD ORY / CENTERS FOR DISEASE CONTROL'. Speech: discusses oral contraceptive risks and epidemiological data.",
+      "layers_needed": ["ocr", "asr"],
+      "notes": "Requires combining the chyron (identity) with speech content (role context)."
+    }
+  },
+
+  "L2_Retrieve": {
+    "Cataloging": {
+      "question": "Who directed this episode?",
+      "answer": "Tony Marshall",
+      "video_id": "cpb-aacip-507-r785h7cp0z",
+      "evidence": "Slate OCR at 55s: 'DIRECTOR: TONY MARSHALL'",
+      "layers_needed": ["ocr"],
+      "notes": "Retrieve specific metadata from slate. Requires knowing where to look."
+    },
+    "Factual": {
+      "question": "What does the guest from the Washington Post discuss?",
+      "answer": "The FCC ruling on long-distance telephone access charges and the proposed $2 monthly fee for AT&T competitors",
+      "video_id": "cpb-aacip-507-r785h7cp0z",
+      "evidence": "Chyron at 485s: 'MERRILL BROWN / WASHINGTON POST'. ASR at 105s+: discusses FCC ruling on access charges.",
+      "layers_needed": ["ocr", "asr"],
+      "notes": "Find the guest (chyron), then retrieve what they said (ASR). Two-step lookup."
+    },
+    "Subject": {
+      "question": "What story follows the commercial break?",
+      "answer": "Continuation of the birth control pill discussion with Dr. Petiti",
+      "video_id": "cpb-aacip-507-r785h7cp0z",
+      "evidence": "Chapters: 'Commercial Break' at 1745-1890s, followed by 'Continuation of Discussion on the Birth Control Pill' at 1890s.",
+      "layers_needed": ["chapters", "asr"],
+      "notes": "Requires chapter awareness and sequential navigation."
+    },
+    "Interpretive": {
+      "question": "How is the guest from the National Urban League introduced in the broadcast?",
+      "answer": "As 'the man making that charge' about Black Americans being left behind by economic recovery",
+      "video_id": "cpb-aacip-507-r785h7cp0z",
+      "evidence": "ASR at 124s: 'We talked to the man making that charge, the head of the Urban League.' Chyron at 947s: 'JOHN JACOB / NATIONAL URBAN LEAGUE'.",
+      "layers_needed": ["asr", "ocr", "speakers"],
+      "notes": "Requires finding the introduction (ASR early in show) and connecting it to the chyron (later)."
+    }
+  },
+
+  "L3_Integrate": {
+    "Cataloging": {
+      "question": "What organization produced this series, based on the closing credits and on-screen branding?",
+      "answer": "WNET/WETA (PBS member stations)",
+      "video_id": "cpb-aacip-507-r785h7cp0z",
+      "evidence": "Visual: PBS branding. Credits layer: production credits. Slate: 'THE MACNEIL/LEHRER NEWSHOUR'.",
+      "layers_needed": ["visual_captions", "credits", "ocr"],
+      "notes": "Combine multiple metadata sources to identify the production entity."
+    },
+    "Factual": {
+      "question": "What is the medical background of the guest discussing contraceptive risks from Atlanta?",
+      "answer": "Epidemiologist at the Centers for Disease Control who studied oral contraceptive risk factors",
+      "video_id": "cpb-aacip-507-r785h7cp0z",
+      "evidence": "Chyron: 'DR. HOWARD ORY / CENTERS FOR DISEASE CONTROL'. ASR: discusses epidemiological data, risk ratios, study methodology.",
+      "layers_needed": ["ocr", "asr", "entities"],
+      "notes": "Integrate identity (chyron) with expertise demonstrated in speech."
+    },
+    "Subject": {
+      "question": "What policy topics are discussed in this broadcast?",
+      "answer": "FCC telecom deregulation, Black unemployment and economic inequality, birth control pill safety, US-Soviet nuclear arms talks, giant panda conservation",
+      "video_id": "cpb-aacip-507-r785h7cp0z",
+      "evidence": "Chapters + ASR across full broadcast. Requires scanning all segments.",
+      "layers_needed": ["chapters", "asr"],
+      "notes": "Integrate information across the full broadcast to enumerate topics."
+    },
+    "Interpretive": {
+      "question": "What organization does the guest discussing economic inequality for Black Americans represent?",
+      "answer": "National Urban League",
+      "video_id": "cpb-aacip-507-r785h7cp0z",
+      "evidence": "ASR: discusses unemployment, poverty rates for Black Americans. Chyron: 'JOHN JACOB / NATIONAL URBAN LEAGUE'.",
+      "layers_needed": ["asr", "ocr"],
+      "notes": "Classic cross-modal: find WHO is speaking about WHAT by combining speech content with chyron identity."
+    }
+  },
+
+  "L4_Analyze": {
+    "Cataloging": {
+      "question": "How many distinct segments in this broadcast feature credited guests with on-screen chyrons?",
+      "answer": "Three: Merrill Brown (Washington Post), John Jacob (National Urban League), Dr. Howard Ory (CDC)",
+      "video_id": "cpb-aacip-507-r785h7cp0z",
+      "evidence": "All chyrons across full broadcast: Brown at 485s, Jacob at 947s/1099s/1256s, Ory at 2583s/2715s/3250s.",
+      "layers_needed": ["ocr", "scenes"],
+      "notes": "Requires scanning all chyrons across the full broadcast and deduplicating."
+    },
+    "Factual": {
+      "question": "How do the two medical experts in the birth control segment differ in their assessment of risk?",
+      "answer": "Dr. Ory (CDC) emphasizes increased risks of stroke, heart attack, and blood clots. Dr. Petiti sees the risks differently, finding them less significant based on her seven-year study.",
+      "video_id": "cpb-aacip-507-r785h7cp0z",
+      "evidence": "ASR at 2478s (Ory): links pill to stroke, heart attack. ASR at 2768s (Petiti): 'sees the risks differently'. ASR at 3348s: 'both looking at the same data, slightly different conclusions'.",
+      "layers_needed": ["asr", "speakers", "ocr"],
+      "notes": "Requires identifying two speakers, finding their respective arguments across multiple segments, and comparing."
+    },
+    "Subject": {
+      "question": "Which segments in this broadcast deal with health policy?",
+      "answer": "The birth control pill discussion (434s-3407s) spanning three chapters, covering FDA regulation, epidemiological evidence, and medical expert debate",
+      "video_id": "cpb-aacip-507-r785h7cp0z",
+      "evidence": "Chapters: 'Discussion on the Birth Control Pill' + continuation + conclusion. ASR references FDA, regulation, medical studies.",
+      "layers_needed": ["chapters", "asr", "entities"],
+      "notes": "Requires identifying which segments relate to health policy across the full broadcast structure."
+    },
+    "Interpretive": {
+      "question": "How does the broadcast's framing of the economic recovery differ between the anchor's introduction and the guest's perspective?",
+      "answer": "The anchor introduces 'more good news about the economy' citing income growth and falling unemployment. The guest counters that recovery is not reaching Black Americans, with a third living in poverty and unemployment remaining disproportionately high.",
+      "video_id": "cpb-aacip-507-r785h7cp0z",
+      "evidence": "ASR at 834s (anchor): 'More good news about the economy... personal income up 6.3%'. ASR at 963s (guest): 'A third of black people are living in poverty... not trickling down.'",
+      "layers_needed": ["asr", "speakers", "chapters"],
+      "notes": "Requires comparing framing across two speakers in the same segment, identifying contrasting perspectives."
+    }
+  }
+}

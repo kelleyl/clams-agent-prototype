@@ -1,0 +1,188 @@
+{
+  "tools": [
+    {
+      "name": "swt-detection",
+      "app_uri": "http://apps.clams.ai/swt-detection/v8.3",
+      "description": "Detects scenes containing text in video (slates, chyrons, credits, lower-thirds). Produces TimeFrame annotations marking where text appears with classification labels and confidence scores. Run this FIRST when you need to find on-screen text, speaker chyrons, or title cards.",
+      "category": "text_detection",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "useClassifier": {
+            "type": "boolean",
+            "default": true,
+            "description": "Use CNN classifier for text scene classification"
+          },
+          "tfLabelMapPreset": {
+            "type": "string",
+            "enum": ["default", "strict", "relaxed"],
+            "default": "default",
+            "description": "Preset for mapping raw labels to output labels"
+          }
+        }
+      },
+      "outputs": ["TimeFrame", "TimePoint"],
+      "output_labels": ["Bars", "Slate", "Chyron", "Credits", "Other-text", "Neg"],
+      "latency_seconds_per_minute": 3,
+      "requires_gpu": true,
+      "depends_on": [],
+      "when_to_use": "When the question involves on-screen text, speaker identification from chyrons, title cards, credits, or any text that appears visually on screen."
+    },
+    {
+      "name": "parakeet-wrapper",
+      "app_uri": "http://apps.clams.ai/parakeet-wrapper/v1.0",
+      "description": "NVIDIA Parakeet ASR: transcribes speech to text with word-level timestamps. Uses NeMo TDT 0.6B model. Non-autoregressive architecture avoids repetition artifacts. Produces a full transcript with time-aligned tokens.",
+      "category": "asr",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "modelSize": {
+            "type": "string",
+            "enum": ["0.6b"],
+            "default": "0.6b",
+            "description": "Parakeet model size"
+          }
+        }
+      },
+      "outputs": ["TextDocument", "Token", "TimeFrame"],
+      "latency_seconds_per_minute": 2,
+      "requires_gpu": true,
+      "depends_on": [],
+      "when_to_use": "When the question involves what someone said, speech content, spoken names, dialogue, or any information conveyed through audio/speech."
+    },
+    {
+      "name": "whisper-wrapper",
+      "app_uri": "http://apps.clams.ai/whisper-wrapper/v15",
+      "description": "OpenAI Whisper ASR: alternative speech-to-text. Autoregressive model, may produce repetition on certain content. Use parakeet-wrapper as preferred alternative.",
+      "category": "asr",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "enum": ["tiny", "base", "small", "medium", "large", "turbo"],
+            "default": "turbo",
+            "description": "Whisper model size"
+          },
+          "language": {
+            "type": "string",
+            "default": "en",
+            "description": "Language code"
+          }
+        }
+      },
+      "outputs": ["TextDocument", "Token", "TimeFrame"],
+      "latency_seconds_per_minute": 3,
+      "requires_gpu": true,
+      "depends_on": [],
+      "when_to_use": "Alternative to parakeet-wrapper. Use when parakeet fails or for comparison."
+    },
+    {
+      "name": "transnet-wrapper",
+      "app_uri": "http://apps.clams.ai/transnet-wrapper/v3",
+      "description": "TransNetV2 shot boundary detection: identifies visual transitions (cuts, dissolves) to segment the video into coherent shots. Each shot is a continuous visual unit. Run this BEFORE visual captioning to define the segments to caption.",
+      "category": "shot_detection",
+      "parameters": {
+        "type": "object",
+        "properties": {}
+      },
+      "outputs": ["TimeFrame"],
+      "latency_seconds_per_minute": 1,
+      "requires_gpu": true,
+      "depends_on": [],
+      "when_to_use": "When the question involves visual content, b-roll footage, what was shown on screen, or you need to identify distinct visual segments before captioning."
+    },
+    {
+      "name": "qwen3vl-captioner",
+      "app_uri": "http://apps.clams.ai/qwen3vl-captioner",
+      "description": "Qwen 2.5-VL 3B vision-language model for captioning and OCR. Has TWO modes controlled by the 'config' parameter: (1) swt_transcription - reads on-screen text from SWT-detected text scenes (requires swt-detection output), (2) transnet_shots - describes visual content of each shot (requires transnet-wrapper output). Choose the right config based on what information you need.",
+      "category": "vlm_captioner",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "config": {
+            "type": "string",
+            "enum": ["config/swt_transcription.yaml", "config/transnet_shots.yaml"],
+            "description": "swt_transcription: OCR on text scenes. transnet_shots: visual captioning of shots."
+          },
+          "batchSize": {
+            "type": "string",
+            "default": "64",
+            "description": "Batch size for frame processing"
+          }
+        },
+        "required": ["config"]
+      },
+      "outputs": ["TextDocument"],
+      "latency_seconds_per_minute": 10,
+      "requires_gpu": true,
+      "depends_on": {
+        "config/swt_transcription.yaml": ["swt-detection"],
+        "config/transnet_shots.yaml": ["transnet-wrapper"]
+      },
+      "when_to_use": "Use with swt_transcription config to READ on-screen text (chyrons, titles, credits). Use with transnet_shots config to DESCRIBE visual content (b-roll, scenes, graphics, maps)."
+    },
+    {
+      "name": "spacy-wrapper",
+      "app_uri": "http://apps.clams.ai/spacy-wrapper",
+      "description": "SpaCy named entity recognition: extracts PERSON, ORG, GPE, DATE, etc. from text. Run on ASR transcripts or OCR text to identify who and what is mentioned.",
+      "category": "ner",
+      "parameters": {
+        "type": "object",
+        "properties": {}
+      },
+      "outputs": ["NamedEntity"],
+      "latency_seconds_per_minute": 0.5,
+      "requires_gpu": false,
+      "depends_on": ["parakeet-wrapper OR whisper-wrapper OR qwen3vl-captioner"],
+      "when_to_use": "When the question involves identifying specific people, organizations, or locations mentioned in the video."
+    },
+    {
+      "name": "ffmpeg:get_video_info",
+      "description": "Get video metadata: duration, resolution, codec, FPS, file size. Always run this first to understand what you're working with.",
+      "category": "utility",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "video_path": {
+            "type": "string",
+            "description": "Path to video file"
+          }
+        },
+        "required": ["video_path"]
+      },
+      "outputs": ["metadata"],
+      "latency_seconds_per_minute": 0.01,
+      "requires_gpu": false,
+      "depends_on": [],
+      "when_to_use": "Always run first to get video duration and properties."
+    },
+    {
+      "name": "ffmpeg:extract_frame",
+      "description": "Extract a single frame from the video at a specific timestamp. Use after identifying a relevant time range to get a frame for visual inspection by a VLM.",
+      "category": "utility",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "video_path": {"type": "string"},
+          "timestamp_seconds": {"type": "number", "description": "Time in seconds to extract frame"},
+          "width": {"type": "integer", "default": 640}
+        },
+        "required": ["video_path", "timestamp_seconds"]
+      },
+      "outputs": ["image_path"],
+      "latency_seconds_per_minute": 0.1,
+      "requires_gpu": false,
+      "depends_on": [],
+      "when_to_use": "When you need to visually inspect a specific moment in the video, e.g., to verify what a graphic or chyron shows."
+    }
+  ],
+  "tool_selection_guidelines": {
+    "chyron_questions": "swt-detection → qwen3vl-captioner (swt_transcription) + parakeet-wrapper",
+    "broll_questions": "transnet-wrapper → qwen3vl-captioner (transnet_shots) + parakeet-wrapper",
+    "graphic_questions": "transnet-wrapper → qwen3vl-captioner (transnet_shots) + parakeet-wrapper",
+    "speaker_id_questions": "swt-detection → qwen3vl-captioner (swt_transcription) + parakeet-wrapper",
+    "entity_questions": "parakeet-wrapper → spacy-wrapper + entity grounding",
+    "general_content": "parakeet-wrapper + transnet-wrapper → qwen3vl-captioner (transnet_shots)"
+  }
+}
