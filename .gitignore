@@ -164,3 +164,37 @@ tags
 .tags
 
 node_modules/
+
+# local tool state / alternate environments
+.langgraph_api/
+.venv-langgraph/
+.claude/
+
+# local runtime config
+config.json
+
+# logs and scratch outputs
+*.log
+
+# generated data artifacts
+data/chroma_db/
+data/clip_embeddings/
+data/combined_outputs/
+data/diarization/
+data/face_tracker_comparison/
+data/face_tracker_outputs/
+data/face_tracker_outputs_v2/
+data/face_tracker_plots/
+data/ffmpeg_output/
+data/pipeline_outputs/
+data/qwen_outputs/
+data/thumbnails/
+data/thumbnails_5s/
+data/video_indexes/
+data/videos/
+data/video_file_paths.txt
+
+# local exploration / staging dirs
+chapter-review/
+kg/
+modelling/
