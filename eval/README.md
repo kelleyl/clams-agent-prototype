@@ -2,11 +2,18 @@
 
 ## Thesis Overview
 
-The goal is to train a **video understanding agent** that autonomously selects and runs CLAMS tools to answer questions about long-form archival broadcast content -- videos it has never seen before, with no pre-existing index or annotations.
+The goal is to build and evaluate **video understanding agents** that answer questions about long-form archival broadcast content with explicit evidence provenance. The repo now separates two experimental regimes:
+
+| Regime | Initial State | Main Question |
+|--------|---------------|---------------|
+| Warm-index archive QA | A multimodal CLAMS-style index already exists. | Can the agent query the right evidence layers, localize support, and answer with grounding? |
+| Cold-cache artifact orchestration | The visible cache starts empty, approximating a new raw video. | Can the agent decide which artifacts to create, read, search, reuse, or skip under cost constraints? |
+
+Most current V4.1 scores are warm-index archive QA results. They should not be described as raw-video tool execution from scratch.
 
 ## Canonical Evaluation Workflow
 
-For the current V3 setup, the canonical evaluation flow is:
+For the current V3/V4.1 setup, the canonical evaluation flow is:
 
 1. Generate prediction artifacts with [run_policy_answerer_eval.py](/Users/kelleylynch/clams/clams-agent-prototype/eval/run_policy_answerer_eval.py)
 2. Score those prediction artifacts with [score_predictions.py](/Users/kelleylynch/clams/clams-agent-prototype/eval/score_predictions.py)
@@ -17,9 +24,95 @@ This separation matters because:
 - free-text questions are scored post-hoc by `score_predictions.py`
 
 Recommended current files:
-- benchmark input: `qa-data/benchmark/v3/val_benchmark_gold.jsonl` or `qa-data/benchmark/v3/test_benchmark_gold.jsonl`
+- benchmark input: `qa-data/benchmark/v4_1_fixed_context/test_benchmark.jsonl` for current V4.1 work, or `qa-data/benchmark/v3/test_benchmark_gold.jsonl` for historical V3 comparisons
 - prediction output: `eval/results/*.jsonl`
 - final scoring: `python eval/score_predictions.py --predictions ... --benchmark ...`
+
+## Current V4.1 Result Snapshot
+
+The canonical run history now lives in [docs/RUN_LEDGER.md](/Users/kelleylynch/clams/clams-agent-prototype/docs/RUN_LEDGER.md). Each run there records status, inputs, model stack, scores, supersession, known issues, and representative errors.
+
+### Current Reportable Results
+
+| Run | Status | File | MC Accuracy | Notes |
+|-----|--------|------|-------------|-------|
+| Matched-text oracle | current | `eval/results/v4_1_fixed_oracle_matched_text_test.jsonl` | 194/200 = 97.0% | Upper-bound evidence answerability |
+| Unified current-tool oracle | current | `eval/results/v4_1_unified_oracle_current_tool_test_v2.jsonl` | 184/200 = 92.0% | Tool-visible oracle after layer-name unification, direct verified-layer reads, and centered truncation |
+| Base `Qwen/Qwen3.5-9B` warm-index policy | current baseline | Aristotle `eval/results/v4_1_base_model_shard*.jsonl` | 142/200 = 71.0% | No LoRA adapter; queries the prebuilt index with the same tool schemas and answerer |
+| No-tools parametric control | current control | Aristotle `eval/results/v4_1_no_tools_baseline.jsonl` | 117/200 = 58.5% | Correct answers without video evidence; useful benchmark-artifact / grounding control |
+| Base `Qwen/Qwen3.5-9B` simulated cold-cache diagnostic | current diagnostic | Aristotle `eval/results/v4_1_base_cold_cache_isolated_test.jsonl` | 135/200 = 67.5% | Uses explicit artifact/cache schema; source index remains a read-only simulator fixture |
+| SFT policy, old V4 recovery adapter, max turns 3 | historical baseline | `eval/results/v4_1_sft_recovery_alltools_localbase_test_maxturns3.jsonl` | 133/200 = 66.5% | Valid historical baseline, but worse than base and trained before fixed-context/unified-layer trajectories |
+| Unified V4.1 SFT v2 policy | negative SFT result | Aristotle `eval/results/v4_1_unified_v2_policy_shard*.jsonl` | 124/200 = 62.0% | Corrected native-tool SFT still underperformed the base policy |
+
+Superseded runs remain available for provenance:
+
+| Run | File | Old Score | Superseded Because |
+|-----|------|-----------|--------------------|
+| Old matched-text oracle | `eval/results/v4_1_oracle_matched_text_test.jsonl` | 177/200 = 88.5% | Evidence verifier stored the first 800 chars of long windows and could truncate away the answer-bearing sentence. |
+| Old current-tool oracle | `eval/results/v4_1_oracle_current_tool_test.jsonl` | 171/200 = 85.5% | Used pre-fix evidence context and old replay behavior. |
+| Fixed current-tool oracle | `eval/results/v4_1_fixed_oracle_current_tool_test.jsonl` | 170/200 = 85.0% | Fixed evidence text, but still had layer mismatch, timestamp drift, and less robust truncation. |
+| Unified current-tool oracle v1 | `eval/results/v4_1_unified_oracle_current_tool_test.jsonl` | 180/200 = 90.0% | Replaced by v2 centered truncation. |
+| SFT policy, old V4 recovery adapter, max turns 5 | `eval/results/v4_1_sft_recovery_alltools_localbase_test.jsonl` | 132/200 = 66.0% | Max turns 3 was slightly more accurate and used fewer tools. |
+
+### Layer and Oracle Fixes
+
+On 2026-04-20, the video index layer naming convention was unified:
+
+- `visual_captions` became `caption_qwen3vl-8b_general_scene`
+- `ocr` became `caption_qwen3vl-8b_text_focus`
+- `qwen3vl-8b` means Qwen3-VL-8B-Instruct, distinct from `qwen-8b` / Qwen3.5-9B variant-generation layers
+
+Related code changes:
+
+- `scripts/migrate_layer_names.py` performs the one-time index migration.
+- `simulate_tool_output()` no longer silently falls back from missing requested variant layers to canonical `visual_captions` / `ocr` content.
+- `eval/run_evidence_span_oracle.py` can read directly from the verified layer/window for oracle diagnostics, then truncate long evidence around answer-bearing terms.
+- `utils/layer_utils.py` centralizes layer discovery for OCR/text-focus and visual-caption layers.
+
+The current-tool oracle improved from 85.0% to 92.0% after these fixes. The remaining 5 point gap to the 97.0% matched-text oracle is mostly from multi-item evidence windows, visual/OCR anchoring, and a few QA-quality cases such as near-duplicate distractors.
+
+### Evidence-Context Fix
+
+The verifier now stores matched evidence context centered around the actual matched terms, instead of only the first 800 characters of a verified window.
+
+Fixed benchmark directory: `qa-data/benchmark/v4_1_fixed_context/`
+
+Regeneration stats:
+
+- Train: `439` accepted, `25` rejected
+- Val: `78` accepted, `2` rejected
+- Test: `350` accepted, `23` rejected
+- Combined: `867` accepted, `50` rejected
+- Average source-to-stored matched-text recall on test improved from `0.733` to `0.935`
+- Low-recall test spans (`<=0.5`) dropped from `216` to `38`
+
+## Tool Execution Modes
+
+`run_policy_answerer_eval.py` separates the source index from the visible tool/cache state.
+
+| Mode | Meaning | Use |
+|------|---------|-----|
+| `prebuilt_index` | Warm-index archive QA. Tool calls directly delegate to `simulate_tool_output()` over the full read-only index. `search_transcript` and `search_ocr` are valid because those layers already exist. | Current V3/V4.1 policy-answerer accuracy, grounding, and oracle comparisons |
+| `simulated_cold_cache` | Cold-cache artifact orchestration. The index is still the read-only fixture, but the policy can only read/search artifacts it has explicitly created in the run cache. | Diagnostic raw-video-style orchestration behavior |
+
+The distinction is critical for efficiency claims. In `prebuilt_index`, a policy that calls `search_transcript` is querying an already-computed ASR layer. In `simulated_cold_cache`, the policy must first create or reuse an ASR artifact before transcript search/read behavior is meaningful.
+
+Example cold-cache smoke run:
+
+```bash
+python eval/run_policy_answerer_eval.py \
+  --benchmark qa-data/benchmark/v4/val_benchmark.jsonl \
+  --index-dir data/video_indexes \
+  --output eval/results/v4_cold_cache_smoke.jsonl \
+  --policy-adapter training_data/output/qwen35-9b-sft-v4/adapter \
+  --tool-execution-mode simulated_cold_cache \
+  --clear-artifact-cache \
+  --max-questions 5
+```
+
+In `simulated_cold_cache`, `data/video_indexes/*.json` remains immutable. The simulator uses it to cheaply materialize artifacts that real CLAMS tools would have created. The disposable registry defaults to `OUTPUT.artifact_registry.json`; clear it between independent experimental conditions.
+
+By default, `--tool-schema-mode auto` exposes the legacy locate-inspect schema in `prebuilt_index` mode and the V5 artifact schema in `simulated_cold_cache` mode. Current caveat: the available SFT/GRPO policies were trained mostly on the legacy schema, so cold-cache mode is still a diagnostic bridge until V5 trajectories teach the policy to create artifacts first (`run_asr`, `run_swt`, `run_ocr`, `run_captioner`) and then read bounded evidence (`read_asr`, artifact search).
 
 ### Legacy / Special-Purpose Eval Scripts
 
@@ -34,18 +127,37 @@ These remain in the repo but should not be treated as equivalent to the canonica
 - `eval/run_native_tool_eval.py`, `eval/run_react_eval.py`, `eval/run_langgraph_eval.py`
   - alternative experiment paths, not the main V3 reporting pipeline
 
-### The Agent Loop
+### Warm-Index Agent Loop
 
-When given a question about a new video, the trained agent:
+In the current V4.1 warm-index benchmark, the video index already contains ASR, OCR/text-focus, captions, and related layers. A policy can therefore:
+
+1. **Decide what evidence modality is likely needed** ("This is asking about speech, a chyron, or a visible object")
+2. **Query an existing layer** (e.g., `search_transcript("unemployment")` or `search_ocr("director")`)
+3. **Inspect bounded evidence** (e.g., read ASR around a hit or OCR/caption a relevant timestamp)
+4. **Stop when evidence is sufficient**
+5. **Pass the gathered evidence to the answerer**
+
+This evaluates evidence retrieval, localization, and provenance over a precomputed archive index. It does not measure whether the model would have known to run ASR/OCR before those layers existed.
+
+### Cold-Cache Agent Loop
+
+When given a question about a new video or an empty cache, the agent must instead:
 
 1. **Decides what information it needs** ("I need to know what's being said")
-2. **Selects and runs a CLAMS tool** (e.g., runs Parakeet ASR on the video)
-3. **Processes the tool output** (reads the transcript, identifies relevant segments)
+2. **Selects and runs an artifact-creating tool** (e.g., runs Parakeet ASR on the video, or runs SWT/OCR for title cards and credits)
+3. **Processes or registers the artifact** (reads a bounded transcript range, searches OCR, or records embedding/cache metadata)
 4. **Decides what to do next** ("I found someone discussing unemployment at 15:43 -- who is this person?")
 5. **Runs another tool** (e.g., runs OCR on the frame at 15:47 to read the chyron)
 6. **Answers the question** ("The guest represents the National Urban League")
 
 Tool outputs are cached automatically -- if another question arrives about the same video, the agent checks the cache before running tools again. But the cache is an optimization, not the point. The agent's core capability is making good tool selection decisions under resource constraints.
+
+Concrete examples:
+
+- "Who directed this program?" should usually use text-scene/OCR evidence from slates, credits, or title cards; ASR is optional corroboration, not the default first move.
+- "What did the guest say about unemployment?" usually justifies ASR, then bounded transcript reads and possibly a chyron/OCR check.
+- "Are these two names the same guest or an OCR misspelling?" may require OCR conflict detection, ASR corroboration, edit distance, and eventually face/speaker embeddings.
+- "Show frames like the title cards across this collection" requires cached embeddings or an external FAISS-style index, not one-off per-question transcript reads.
 
 ### Training Pipeline
 
@@ -55,7 +167,7 @@ Tool outputs are cached automatically -- if another question arrives about the s
 
 3. **Reverse-engineer tool execution trajectories** from the QA evidence. Using the provenance chain in the index (which CLAMS app produced each piece of evidence), we construct trajectories showing the sequence of tool execution decisions that would produce the evidence needed to answer each question.
 
-4. **SFT + RL training** on the trajectories. SFT teaches the model the tool calling format and basic strategies. GRPO (RL) teaches efficiency, tool selection optimization, and preference-conditioned behavior.
+4. **Base-model, SFT, and RL comparisons** on the trajectories. Current V4.1 results show that base `Qwen/Qwen3.5-9B` already performs strong native tool use in the warm-index setting, so SFT is not assumed to be necessary. GRPO/RL should be justified as improving groundedness, localization, efficiency, or preference-conditioned behavior beyond the base policy.
 
 ### Preference-Conditioned Tool Selection
 
@@ -69,12 +181,18 @@ This remains a research direction and design goal. Parts of the current GRPO wor
 
 ### Key Distinction from RAG
 
-The current evaluation uses RAG (context-stuffing from pre-built indexes) as a baseline. On the current V3 full MC test split, this is about 75.0% MC accuracy and assumes the full index already exists. The trained agent approach differs fundamentally:
+RAG/context-stuffing baselines assume a prebuilt index and retrieve or pack context directly into the answer prompt. The warm-index agent uses the same kind of existing archive substrate, but the policy must make explicit tool calls and produces an auditable evidence trace before the answerer responds.
 
-- **RAG**: Run all tools on the full video -> build complete index -> stuff context into prompt -> answer
-- **Agent**: Decide which tools to run -> run only what's needed -> process outputs -> decide if more tools are needed -> answer
+The cold-cache agent is a different problem: it must decide which artifacts to create before retrieval is even possible.
 
-RAG is an upper bound on what the index can provide. The agent trades completeness for efficiency -- it should find the right answer with fewer, more targeted tool executions.
+| Approach | Assumption | Main Measurement |
+|----------|------------|------------------|
+| No tools | No video evidence; answer from priors/question text only. | Parametric guessing and MC artifact control. |
+| RAG/context stuffing | Prebuilt index already exists. | How much answer accuracy is possible from broad retrieval/context. |
+| Warm-index agent | Prebuilt index already exists, but evidence must be gathered through explicit tools. | Tool-selection, localization, grounding, and provenance. |
+| Cold-cache agent | Visible cache starts empty. | Artifact creation/reuse decisions, cost, and downstream evidence quality. |
+
+The agent contribution should therefore be reported with both answer accuracy and grounded evidence quality. A correct answer without supporting evidence is not equivalent to a grounded archival answer.
 
 ## Dataset
 
@@ -227,6 +345,43 @@ The +13.5 point MC accuracy improvement from V1/V2 to V3 holds even on hard ques
 - Benchmark-train additionally removes `blind_correct`
 - Soft issues such as `trivial_visual` are retained in train but excluded from gold val/test if rejected by verification
 
+### V4 (current: `qa-data/benchmark/v4/`)
+
+- Same questions as V3 -- **only MC distractors were repaired**
+- Questions and correct answers are unchanged
+- **917 total** (488 MC + 429 FT), same video-level splits
+- Canonical split files:
+  - **Train:** `qa-data/benchmark/v4/train_benchmark.jsonl` (464 = 242 MC + 222 FT)
+  - **Val:** `qa-data/benchmark/v4/val_benchmark.jsonl` (80 = 34 MC + 46 FT)
+  - **Test:** `qa-data/benchmark/v4/test_benchmark.jsonl` (373 = 212 MC + 161 FT)
+  - **Combined:** `qa-data/benchmark/v4/benchmark_combined.jsonl` (917)
+
+**V4 distractor repair process:**
+- Generated by `qa-data/repair_distractors.py` using Gemini 2.5 Flash
+- Each question receives a compact **video entity summary** (people, organizations, places, topics from the index) so Gemini can pick video-grounded distractors
+- Type consistency enforced: all distractors must match the correct answer type
+- 488/488 MC questions repaired, 0 failures
+- Original distractors preserved in `mc_options_original` field
+- Cost: ~$1-2 total
+
+**Why V4 exists:**
+V3 distractors (generated by qwen3:8b) had systematic quality issues:
+- Type mismatches (event question with place/time distractors)
+- Trivially wrong options
+- Non-video-grounded choices
+- 93% of V3 MC questions had identifiable distractor quality issues
+
+**Impact on scores:** MC accuracy is expected to decrease on V4 because weak distractors that could be eliminated without evidence are replaced with harder alternatives. V4 scores are more trustworthy.
+
+**Clarification: V4 is distractor repair only, not question regeneration.**
+`generate_qa_v4.py` exists as a prototype for dense-evidence question generation but is NOT used for the V4 benchmark. The V4 benchmark uses V3 questions with V3 correct answers -- only the wrong MC options were regenerated. Full V4 question generation (with validation, chapter-aware generation, and dense paraphrasing) is future work.
+
+**Known issues in V4 tooling (not blocking current experiments):**
+- `generate_qa_v4.py` lacks validation (no `validate_question()` call) and uses single-pass generation instead of chapter-local -- needs fixing before use
+- `eval/run_ablation_answerer.py` still uses Ollama directly instead of the shared `utils/answerer_utils.py` -- needs patching for consistency
+- GRPO question lookup uses raw question text as key instead of row ID -- fragile for paraphrased/regenerated datasets
+- A small number of inherited V3 questions have grounding text that does not align with the actual indexed ASR at `source_segment_times`. A quick V4 test MC audit found 209 questions with `speech_excerpt`; 11 had <=0.75 token recall against nearby ASR, 9 had <=0.5, and one had 0.0. These are dataset issues, not model errors, because the policy cannot retrieve quoted speech that is absent from the tool-visible index.
+
 ### Canonical V3 Question Formats
 
 | Format | Count | File | Scoring |
@@ -253,9 +408,10 @@ V3 does **not** currently maintain a separate `visual_grounded` benchmark file. 
 | Version | Captions | Location | Notes |
 |---------|----------|----------|-------|
 | 2.5 baseline | Qwen2.5-VL-3B | `data/video_indexes_25_baseline/` | Preserved for comparison |
-| 3.5 (current) | Qwen3.5-9B | `data/video_indexes/` | Production indexes |
+| 3.0 (canonical) | Qwen3-VL captioner | `data/video_indexes/` | Production indexes, canonical visual_captions and ocr layers |
+| 3.5+ (enriched) | Multi-model variants | `data/video_indexes/` (additional layers) | SmolVLM2, Qwen3.5-0.8B, Qwen3.5-9B caption variants + Whisper ASR |
 
-Both use the v2 multi-layer schema with independent timeline layers.
+The canonical indexes use the v2 multi-layer schema. The enriched layers (caption variants, Whisper ASR) are added alongside the canonical layers, not replacing them. Each variant layer tracks provenance (model, task_mode, segment_source).
 
 ### V2 Index Schema
 
@@ -316,36 +472,68 @@ This is analogous to positional encoding (like RoPE) for video structure -- the 
 
 ### Agent Tool Interface
 
-The agent has 7 tools for querying video indexes, executed against real index data:
+The agent follows a **locate-then-inspect** pattern: first discover relevant moments in the video using search or browsing, then inspect specific timestamps with targeted tools. video_id is bound at the system level, not exposed as a parameter.
 
-| Tool | Purpose | Returns |
-|------|---------|---------|
-| `search_asr(video_id, query)` | Find spoken content by keyword | Matching ASR segments with structural timestamps |
-| `search_ocr(video_id, query)` | Find on-screen text (chyrons, titles) | Matching OCR items with scene labels |
-| `search_entities(video_id, query)` | Find named entities | Entity type, source layer, grounding |
-| `get_visual(video_id, start_ms, end_ms)` | Visual descriptions at a time | What's shown on screen |
-| `get_speakers(video_id, start_ms, end_ms)` | Speaker attribution at a time | Speaker names and text |
-| `get_chapter(video_id, time_ms)` | Topic at a time | Chapter title and duration |
-| `browse_timeline(video_id, start_ms, end_ms)` | All layers at a time | Cross-layer snapshot |
+**Discovery tools** (find where to look):
 
-The tools are shared across trajectory generation, ReAct eval, and SFT eval. They execute against the real v2 index, not simulated data.
+| Tool | Purpose | Cost |
+|------|---------|------|
+| `search_transcript(query, top_k)` | Keyword search across all ASR segments. Returns matching segments with timestamps. | 0.0 |
+| `search_ocr(query, top_k)` | Keyword search across on-screen text (chyrons, titles). | 0.0 |
+| `browse_timeline(start_time, end_time)` | Compact summary of a time range: topics, speakers, text, notable timestamps. | 0.0 |
+| `detect_text_scenes()` | Find all frames containing text (chyrons, slates, credits). | 0.1 |
+
+**Inspection tools** (examine specific moments):
+
+| Tool | Models | Task Modes | Cost |
+|------|--------|------------|------|
+| `run_asr(start_time, end_time, model)` | parakeet, whisper | -- | 0.2-0.5 |
+| `extract_text(timestamp, model)` | qwen-small (Qwen3.5-0.8B), qwen-8b (Qwen3.5-9B) | -- | 0.2-0.4 |
+| `caption_frame(timestamp, model, task_mode)` | smolvlm (SmolVLM2-2.2B), qwen-small, qwen-8b | general_scene, text_focus | 0.3-0.5 |
+| `identify_speakers(start_time, end_time)` | -- | -- | 0.3 |
+
+**Dual-mode ASR:**
+- `run_asr()` with no time range: runs full-video ASR (makes transcript searchable)
+- `run_asr(start, end)`: returns transcript for a specific range
+- `search_transcript(query)` requires transcript to be available (pre-indexed or after `run_asr()`)
+
+**Caption lookup:**
+- Returns all captions within +/- 15 seconds of the requested timestamp (up to 3, closest first)
+- Pre-computed per (model, task_mode) and stored as separate index layers (e.g., `caption_qwen-small_text_focus`)
+- General_scene captions are from TransNet shots, text_focus captions are from SWT text scenes
+
+All tool execution logic lives in `construct_tool_trajectories.py:simulate_tool_output()` as a single source of truth. Both the GRPO environment and eval delegate to it.
 
 ## Pipeline Tools
 
-| Step | Tool | Output |
-|------|------|--------|
-| Scene detection | app-swt-detection | scenes layer (Bars, Slate, Chyron, Credits, Other-text) |
-| Shot detection | app-transnet-wrapper | shots layer (frame-level boundaries) |
-| ASR | Parakeet TDT 0.6B | asr layer (sentence-level transcripts) |
-| Visual captioning | simple_captioner_35.py (Qwen3.5-9B) | visual_captions layer |
-| OCR/transcription | app-qwen3vl-captioner (swt_transcription config) | ocr layer |
-| Speaker diarization | pyannote + LLM | speakers + chapters layers |
-| Credits extraction | app-credits-ocr (Qwen3-VL) | credits layer |
-| NER | SpaCy en_core_web_sm | entities layer |
-| Entity resolution | Substring merging, OCR-preferred | entities layer (deduped) |
-| SVO relations | SpaCy dependency parsing | relations layer |
-| Entity grounding | Wikidata + Wikipedia | entities layer (grounding field) |
-| CLIP embeddings | clip-ViT-L-14 via sentence-transformers | data/clip_embeddings/ (FAISS) |
+### Canonical layers (all 107 videos)
+
+| Step | Tool | Layer | Notes |
+|------|------|-------|-------|
+| Scene detection | app-swt-detection | scenes | Bars, Slate, Chyron, Credits, Other-text |
+| Shot detection | app-transnet-wrapper | shots | Frame-level visual boundaries |
+| ASR (Parakeet) | Parakeet TDT 0.6B | asr | Fast CTC-based, 98/107 videos |
+| ASR (Whisper) | Whisper large-v3 | asr_whisper | Higher quality on noisy audio, 107/107 videos |
+| Visual captioning (canonical) | Qwen3-VL captioner | visual_captions | One caption per TransNet shot |
+| OCR | Qwen3-VL (swt_transcription) | ocr | Text from SWT-detected text scenes |
+| Speaker diarization | pyannote + LLM | speakers, chapters | Speaker names + chapter structure |
+| Credits extraction | app-credits-ocr (Qwen3-VL) | credits | Structured credit extraction |
+| NER | SpaCy en_core_web_sm | entities | Named entities from ASR/OCR |
+| Entity resolution | Substring merging | entities (deduped) | Cross-layer entity linking |
+| SVO relations | SpaCy dependency parsing | relations | Subject-verb-object triples |
+
+### Multi-model caption variants (in progress)
+
+Generated by `training_data/generate_caption_variants.py`. Each (model, task_mode) combination produces a separate layer:
+
+| Model | Actual Model | general_scene (TransNet shots) | text_focus (SWT scenes) |
+|-------|-------------|-------------------------------|------------------------|
+| smolvlm | SmolVLM2-2.2B | In progress | In progress |
+| qwen-small | Qwen3.5-0.8B | Done (107/107) | Done (107/107) |
+| qwen-8b | Qwen3.5-9B | In progress | In progress |
+| qwen-30b | Qwen3.5-27B | Deferred | Deferred |
+
+Quality note: Qwen3.5-0.8B produces surprisingly good structured OCR output (JSON with bounding boxes), sometimes outperforming larger models on text_focus tasks. Model quality is not monotonically "bigger = better."
 
 ## Evaluation Results
 
@@ -444,11 +632,16 @@ The gap between oracle and system retrieval is the cost of bad retrieval, and th
 | Scoring | Evaluates | Dimensions | Script |
 |---------|----------|------------|--------|
 | **MC accuracy** | Model answers (MC) | Exact letter match | `score_predictions.py --mode mc-exact` |
+| **Grounded MC accuracy** | Correct MC answers with supporting gathered evidence | answer correctness + evidence support / provenance | planned analysis over prediction tool traces |
 | **Answer quality** | Model answers (free-text) | correctness, completeness, relevance, cross_modal, specificity | `score_predictions.py --mode llm-judge` |
 | **Question quality** | Questions themselves | cognitive_level, naturalness, groundedness, cross_modal_need | `qa-data/score_question_quality.py` |
 | **Retrieval quality** | Segment retrieval | hit rate, temporal IoU, precision | `score_retrieval.py` |
 
+Because the V4.1 no-tools control reaches 58.5% MC, raw MC accuracy must be reported alongside grounding/provenance checks. A correct answer without answer-bearing evidence in the tool trace is a parametric or choice-artifact success, not a grounded archival QA success.
+
 ### Agent Evaluation Results (V2 Benchmark)
+
+This section is historical. It predates the V4.1 base-model comparison and should not be used to justify SFT as the default current path.
 
 All conditions use qwen3:8b. V2 clean benchmark = 385 MC + 320 free-text unless noted.
 
@@ -462,12 +655,14 @@ All conditions use qwen3:8b. V2 clean benchmark = 385 MC + 320 free-text unless 
 | SFT agent (v2, two-stage) | 17.5% | 2.2 | 40 | **Small sample.** Trained on non-interactive trajectories with hallucinated timestamps. Two-stage: SFT model gathers evidence, base model answers MC. Tool selection learned but evidence quality poor. |
 | SFT agent v3 | -- | -- | -- | **Training.** Interactive trajectories + structural timestamps. Expected to fix evidence quality. |
 
-**Key findings:**
-- **Prompted tool use underperforms RAG** regardless of framework (ReAct or LangGraph). The model doesn't learn multi-step evidence gathering from prompting alone. This gap justifies SFT training.
+**Historical findings:**
+- **Prompted tool use underperformed RAG in the older V2 setup** regardless of framework (ReAct or LangGraph). This motivated SFT experiments at the time, but the current V4.1 Qwen3.5 base-policy result shows that SFT is not automatically justified.
 - **SFT teaches tool selection**: The fine-tuned model uses 2.2 tools on average with diverse tool choice (ASR, OCR, visual, speakers) vs 1.0-1.5 for prompted models. But v2 training data had hallucinated timestamps, causing poor evidence retrieval.
 - **V3 trajectories address this**: Interactive generation ensures tool arguments are grounded in real observations. Structural timestamps encode video position (percentage, chapter context) instead of raw milliseconds.
 
 ### Policy + Answerer Architecture (Final Results)
+
+This section records historical V3 results. The current V4.1 baseline is base `Qwen/Qwen3.5-9B` warm-index policy at 71.0% MC, with no-tools control at 58.5% MC and current-tool oracle at 92.0% MC.
 
 The agent is split into two components:
 - **Policy model** (SFT Qwen3.5-9B): decides which CLAMS tools to run. Only makes tool selection decisions.
@@ -513,15 +708,35 @@ This separation was motivated by the finding that a single model trying to both 
 | 7. RAG baseline | 75% | Keyword retrieval + same answerer | Upper bound for retrieval approach |
 | 8. Oracle | 97.2% | Perfect evidence + same answerer | Ceiling -- almost all questions answerable |
 
+### V4 Distractor Repair
+
+V3 MC distractors were generated by qwen3:8b and had systematic quality issues: type mismatches (event question with place/time distractors), trivially wrong options, and non-video-grounded choices.
+
+V4 repairs distractors using Gemini 2.5 Flash with:
+- **Video entity grounding**: compact entity summary from the video index (people, organizations, places, topics) is provided so Gemini can use real entities from the broadcast as wrong answers
+- **Type consistency enforcement**: all distractors must match the correct answer type (all events, all people, etc.)
+- **Quality tracking**: each repair logs what issues were fixed and whether distractors came from the video or were generated
+
+Script: `qa-data/repair_distractors.py`
+
+**Expected impact on scores**: MC accuracy should **decrease** on the repaired benchmark because weak distractors that could be eliminated without evidence are replaced with harder, video-grounded alternatives. The resulting scores are more trustworthy. Models that previously benefited from ruling out obviously wrong options will show their true retrieval quality.
+
+**V4 benchmark files:**
+- `qa-data/benchmark/v4/benchmark_mc_repaired_grounded.jsonl` -- questions with repaired distractors
+- Original distractors preserved in `mc_options_original` field for comparison
+
 ### Remaining Work
 
 | Task | Purpose | Status |
 |------|---------|--------|
-| Richer index variants (Whisper + multi-model captions) | Give policy real quality differences across tools/models | In progress / running on `aristotle` |
-| Trajectory refresh for new tool API | Align training data with model/task-mode-aware tool space | Needed next |
-| GRPO with correctness-first reward | Teach policy to find answers before penalizing tool cost | Next major experiment |
-| Rejection sampling | SFT on successful rollouts only | Candidate follow-up |
-| Process supervision | Score each tool call individually | Designed, not implemented |
+| V4 distractor repair | Harder, video-grounded MC distractors | Running (93% success so far) |
+| Re-eval all models on V4 benchmark | Trustworthy comparison | After repair completes |
+| Caption variant generation (SmolVLM, Qwen3.5-0.8B, 9B) | Real model-specific outputs for training | Done (107/107 each) |
+| GRPO correctness-only | Can RL improve retrieval? | Done (70.3% on V3) |
+| GRPO answerer-in-loop | Aligned train/eval reward | Done (64.2% on V3, underperformed) |
+| GRPO weak-cost | Duration-aware cost penalty | Not started |
+| person_identity + action_event task modes | Broader task mode coverage | Deferred |
+| Human-in-the-loop process scoring | Route low-confidence VLM outputs to review | Future work |
 | VLM direct baseline | Compare against raw frame approach | Ready, not run |
 
 ## Running the Evaluation
@@ -577,16 +792,15 @@ python serve_viewer.py  # runs on port 8769
 
 ## Training Data Pipeline
 
-The indexes and QA pairs are used to generate SFT training data for the agent:
-
 | Step | Script | Input | Output |
 |------|--------|-------|--------|
-| QA generation | `qa-data/generate_qa_v3.py` | Full video indexes | Questions + answers + grounding (via Gemini 2.5 Flash) |
-| Expert trajectories | `training_data/construct_trajectories.py` | QA grounding + indexes | 872 verified ReAct traces with real tool execution |
-| LLM trajectories (alt) | `training_data/generate_trajectories_v2.py` | QA pairs + indexes | Interactive LLM-generated traces (lower quality) |
-| Evidence paths | `training_data/find_evidence_paths.py` | QA pairs + indexes | Per-question evidence layer mapping |
-| SFT data preparation | `training_data/prepare_sft_from_trajectories.py` | Trajectories + benchmark | ShareGPT formatted training examples |
-| SFT training | `training_data/run_sft.py` | ShareGPT data | LoRA adapter for Qwen3-8B |
+| QA generation | `qa-data/generate_qa_v3.py` | Full video indexes | 925 questions + answers + grounding (via Gemini 2.5 Flash) |
+| Caption variants | `training_data/generate_caption_variants.py` | Videos + indexes | Per-(model, task_mode) caption layers in indexes |
+| Whisper ASR | `training_data/run_whisper_asr.py` | Videos | asr_whisper layer in indexes |
+| Expert trajectories | `training_data/construct_tool_trajectories.py` | QA grounding + enriched indexes | 465 trajectories with (tool, model, task_mode) selections |
+| SFT training | `training_data/run_native_sft.py` | Trajectories (includes TOOL_SCHEMAS) | LoRA adapter for Qwen3.5-9B |
+| GRPO training | `training_data/run_grpo_env.py` | SFT adapter + train questions | Refined LoRA adapter |
+| Eval | `eval/run_policy_answerer_eval.py` | Adapter + test benchmark | Prediction JSONL |
 
 ### Trajectory Generation
 
@@ -615,19 +829,19 @@ This produces *expert* trajectories showing the ideal tool-use pattern, rather t
 
 ```
 User: What organization does the guest discussing unemployment represent?
-Assistant: <think>I need to find information about this topic. Let me search the speech
-           transcripts.</think>
-           <tool>search_asr(video_id="cpb-aacip-507-r785h7cp0z", query="unemployment")</tool>
-Tool:      [15:43-16:02 | 73% | Birth Control Pill Discussion (+15s)] We believe that all 
-           the evidence points... unemployment is going down...
-Assistant: <think>I found relevant speech content. Now let me check on-screen text around
-           that time for identification.</think>
-           <tool>search_ocr(video_id="cpb-aacip-507-r785h7cp0z", query="league")</tool>
-Tool:      [15:47-15:52 | 73% | Birth Control Pill Discussion (+19s)] (Chyron) JOHN JACOB
-           NATIONAL URBAN LEAGUE
-Assistant: <think>Based on the evidence: The chyron identifies the speaker as from the
-           National Urban League.</think>
-           <answer>National Urban League</answer>
+Assistant: <think>Let me search the transcript for discussion about
+           unemployment.</think>
+           <tool_call>search_transcript(query="unemployment")</tool_call>
+Tool:      Found 3 matching segments (showing top 3):
+           [15:43 | 73%] We believe that all the evidence points...
+           unemployment is going down...
+Assistant: <think>Found relevant speech at 15:43. Let me check for a name
+           chyron near that timestamp.</think>
+           <tool_call>caption_frame(timestamp="15:47", model="qwen-small",
+                                    task_mode="text_focus")</tool_call>
+Tool:      [15:47] JOHN JACOB / NATIONAL URBAN LEAGUE
+Assistant: The chyron identifies the speaker as representing the
+           National Urban League.
 ```
 
 Key properties:
@@ -651,50 +865,42 @@ Teaches the model the *format* of tool-use interaction.
 - **Loss**: 3.27 -> 0.49 (converges quickly in 1 epoch)
 
 **Phase 2: GRPO (Group Relative Policy Optimization)**
-Teaches the model *what works* -- efficiency, tool selection, stopping criteria.
-- Generate multiple rollouts per question, score with multi-objective reward
-- **Reward**: correctness (gates everything) * efficiency (fewer tools = better) + coverage (diverse tools = bonus)
-- The model learns from its own successes and failures, not just expert demonstrations
-- Following NVIDIA's finding: SFT teaches format, RL teaches when NOT to call a tool
+Teaches the model *what works* through its own rollouts against the simulated environment.
+- TRL `environment_factory` enables real multi-turn tool execution during RL
+- Generate 4 rollouts per question, score with reward function, update policy
+- Three reward variants implemented (`--reward` flag):
+  - **correctness_only**: 1.0 correct, 0.0 wrong. No cost penalty. (Current default)
+  - **weak_cost**: 1.0 - 0.1 * total_cost for correct. Mild efficiency incentive.
+  - **full_cost**: Efficiency decay function gated on correctness. (Original, shown to cause tool avoidance.)
+- **Key finding from first round**: count-based efficiency reward (full_cost) degraded the policy below SFT (45.8% vs 51.9%). The model learned to skip tools rather than select better ones. This motivates the correctness-first experiment sequence.
+- Rollout logs capture full (tool, model, task_mode) per call for behavioral analysis
 
 ### Preference-Conditioned Tool Selection
 
-The agent can be conditioned on user preferences for speed vs accuracy vs cost. This applies at two levels:
+The (tool, model, task_mode) architecture naturally supports preference conditioning. The agent makes cost/quality tradeoffs at three levels:
 
-**Level 1: Index query tools** (searching existing indexes)
+**Tool selection**: which capability to use (ASR, OCR, captioning, diarization)
+**Model selection**: which quality tier (smolvlm/qwen-small/qwen-8b/qwen-30b for VLM, parakeet/whisper for ASR)
+**Task mode**: what information to extract (general_scene vs text_focus)
 
-| Tool | Cost | When to use |
-|------|------|-------------|
-| search_asr | Low | Fast keyword search in speech |
-| search_ocr | Low | Fast keyword search in on-screen text |
-| get_chapter | Very low | Single lookup for topic context |
-| get_visual | Medium | Returns long captions, use when visual detail needed |
-| browse_timeline | High | Cross-layer scan, use sparingly |
+Cost table reflecting actual CLAMS app resource usage:
 
-**Level 2: CLAMS pipeline tools** (building indexes on new videos)
+| Tool + Model | Cost | Quality |
+|-------------|------|---------|
+| search_transcript | 0.0 | Index lookup |
+| search_ocr | 0.0 | Index lookup |
+| browse_timeline | 0.0 | Index summary |
+| detect_text_scenes (SWT) | 0.1 | Fast CNN |
+| run_asr(parakeet) | 0.2 | Fast CTC |
+| run_asr(whisper) | 0.5 | Accurate on noisy audio |
+| extract_text(qwen-small) | 0.2 | Fast OCR |
+| extract_text(qwen-8b) | 0.4 | Good OCR |
+| caption_frame(smolvlm) | 0.3 | Brief descriptions |
+| caption_frame(qwen-small) | 0.3 | Good structured output |
+| caption_frame(qwen-8b) | 0.5 | Detailed descriptions |
+| identify_speakers | 0.3 | Pyannote diarization |
 
-| Tool + Config | Accuracy | Speed | GPU Cost |
-|---------------|----------|-------|----------|
-| Parakeet TDT 0.6B (ASR) | 3/5 | 5/5 | Low |
-| Whisper Large v3 (ASR) | 4/5 | 3/5 | High |
-| SWT detection (scene labels) | 2/5 | 5/5 | Low |
-| VLM captioner "is there text?" (scene labels) | 4/5 | 2/5 | High |
-| Qwen3.5-9B captioner 1fps | 4/5 | 2/5 | High |
-| Qwen3.5-9B captioner 0.2fps | 3/5 | 4/5 | Medium |
-| pyannote diarization | 3/5 | 4/5 | Medium |
-| SpaCy NER | 3/5 | 5/5 | None |
-| Qwen3-VL OCR (chyrons only) | 4/5 | 4/5 | Medium |
-| Qwen3-VL OCR (all frames) | 5/5 | 1/5 | Very High |
-| VLM-as-judge verification | 5/5 | 1/5 | High (but confirmatory) |
-
-The preference vector `[speed, cost, accuracy]` controls which tools and configurations the agent selects:
-- **"Process in 10 minutes"**: Parakeet + SWT + SpaCy. Skip visual captioning.
-- **"Maximum accuracy"**: Whisper + VLM captioner 1fps + full OCR + VLM verification.
-- **"Balanced"**: Parakeet + VLM captioner 0.2fps + OCR on text frames.
-
-During GRPO training, different preference vectors are sampled per batch. The model learns to adapt its tool selection based on the stated preference. At inference, the user specifies their constraint and the agent selects the appropriate pipeline.
-
-This connects to the existing `evaluation_rag.py` which provides empirical performance data (CER, WER, F1) for each CLAMS tool, and `agent.py`'s GPU-aware tool filtering.
+The current iteration trains the agent to select models and modes based on question type. Future work: explicit preference vector conditioning where users specify speed/accuracy/cost constraints and the agent adapts its pipeline accordingly.
 
 ### Future Work: External Knowledge Tools
 
