@@ -152,6 +152,7 @@ Current interpretation:
 | `training_data/` | Trajectory generation, SFT prep, GRPO environment training |
 | `eval/` | Prediction generation, ablations, scoring, and eval documentation |
 | `utils/` | CLAMS execution, MMIF/index handling, supporting utilities |
+| `clams_haystack/` | Chainlit/Haystack cataloging app and CLAMS service endpoint integration |
 
 ## Current Evaluation Pattern
 

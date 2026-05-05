@@ -1,0 +1,112 @@
+{
+  "services": [
+    {
+      "tool_id": "swt_detection",
+      "app_name": "swt-detection",
+      "endpoint_url": "http://127.0.0.1:5561/",
+      "image": "ghcr.io/clamsproject/app-swt-detection:v8.3",
+      "container_name": "clams_swt_detection",
+      "method": "POST",
+      "request_path": "/",
+      "status_path": "/",
+      "enabled": true,
+      "notes": "Aristotle has this image. Existing pipeline scripts used port 5561 and POSTed MMIF to /."
+    },
+    {
+      "tool_id": "asr_whisper",
+      "app_name": "whisper-wrapper",
+      "endpoint_url": "http://127.0.0.1:5562/",
+      "image": "ghcr.io/clamsproject/app-whisper-wrapper:v15",
+      "container_name": "clams_whisper_wrapper",
+      "method": "POST",
+      "request_path": "/",
+      "status_path": "/",
+      "enabled": true,
+      "notes": "Aristotle has this image. Run as a CLAMS web service when ASR should be invoked by HTTP."
+    },
+    {
+      "tool_id": "smolvlm2_captioner",
+      "app_name": "smolvlm2-captioner",
+      "endpoint_url": "http://127.0.0.1:5563/",
+      "image": "ghcr.io/clamsproject/app-smolvlm2-captioner:latest",
+      "container_name": "clams_smolvlm2_captioner",
+      "method": "POST",
+      "request_path": "/",
+      "status_path": "/",
+      "enabled": true,
+      "notes": "Aristotle has this image. This is the first web-service backend for OCR captioning and scene-level visual descriptions."
+    },
+    {
+      "tool_id": "scene_summary",
+      "app_name": "smolvlm2-captioner",
+      "endpoint_url": "http://127.0.0.1:5563/",
+      "image": "ghcr.io/clamsproject/app-smolvlm2-captioner:latest",
+      "container_name": "clams_smolvlm2_captioner",
+      "method": "POST",
+      "request_path": "/",
+      "status_path": "/",
+      "enabled": true,
+      "notes": "Shares the SmolVLM2 endpoint until the dedicated scene-summary/Qwen3.5-VL service is packaged."
+    },
+    {
+      "tool_id": "vlm_ocr_kie",
+      "app_name": "qwen-ocr",
+      "endpoint_url": "http://127.0.0.1:5564/",
+      "image": "localhost/app-qwen-ocr:test",
+      "container_name": "clams_qwen_ocr",
+      "method": "POST",
+      "request_path": "/",
+      "status_path": "/",
+      "enabled": true,
+      "notes": "Local Aristotle image. Use service/default params or config for slate/lower-third KIE prompts."
+    },
+    {
+      "tool_id": "credits_ocr",
+      "app_name": "qwen-ocr",
+      "endpoint_url": "http://127.0.0.1:5564/",
+      "image": "localhost/app-qwen-ocr:test",
+      "container_name": "clams_qwen_ocr",
+      "method": "POST",
+      "request_path": "/",
+      "status_path": "/",
+      "enabled": true,
+      "notes": "Shares the Qwen OCR endpoint with credits-specific prompts/labels."
+    },
+    {
+      "tool_id": "pyscenedetect",
+      "app_name": "pyscenedetect-wrapper",
+      "endpoint_url": "http://127.0.0.1:5565/",
+      "image": "ghcr.io/clamsproject/app-pyscenedetect-wrapper:v3",
+      "container_name": "clams_pyscenedetect_wrapper",
+      "method": "POST",
+      "request_path": "/",
+      "status_path": "/",
+      "enabled": true,
+      "notes": "Aristotle has this image. Not yet exposed as a manual palette tool, but useful for future scene/shot setup."
+    },
+    {
+      "tool_id": "spacy",
+      "app_name": "spacy-wrapper",
+      "endpoint_url": "http://127.0.0.1:5566/",
+      "image": "ghcr.io/clamsproject/app-spacy-wrapper:v2.1",
+      "container_name": "clams_spacy_wrapper",
+      "method": "POST",
+      "request_path": "/",
+      "status_path": "/",
+      "enabled": true,
+      "notes": "Aristotle has this image. Not yet exposed as a manual palette tool."
+    },
+    {
+      "tool_id": "transnet",
+      "app_name": "transnet-wrapper",
+      "endpoint_url": "http://127.0.0.1:5555/",
+      "image": "localhost/app-transnet-wrapper:local",
+      "container_name": "clams_transnet_wrapper",
+      "method": "POST",
+      "request_path": "/",
+      "status_path": "/",
+      "enabled": true,
+      "notes": "Aristotle has this image. Existing notes also mention clamspod on port 5555; set request_path to /annotate if launched that way."
+    }
+  ]
+}

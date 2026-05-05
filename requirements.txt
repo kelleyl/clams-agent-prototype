@@ -14,6 +14,10 @@ langchain-community
 langchain
 langgraph
 langsmith
+haystack-ai
+ollama-haystack
+chainlit
+openai<2
 transformers
 torch
 accelerate
