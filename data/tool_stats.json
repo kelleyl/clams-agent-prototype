@@ -1,0 +1,1676 @@
+{
+  "aggregate": {
+    "n_questions": 2480,
+    "overall_correct": 0.648,
+    "n_runs": 4,
+    "per_tool": {
+      "get_transcript": {
+        "call_freq_per_question": 3.917,
+        "questions_using_tool": 2027,
+        "frac_questions_using": 0.817,
+        "correctness_when_called": 0.669,
+        "modality_recall": 0.853,
+        "n_modality_relevant_qs": 2345
+      },
+      "get_text_on_screen": {
+        "call_freq_per_question": 0.411,
+        "questions_using_tool": 389,
+        "frac_questions_using": 0.157,
+        "correctness_when_called": 0.692,
+        "modality_recall": 0.409,
+        "n_modality_relevant_qs": 560
+      },
+      "get_visual_description": {
+        "call_freq_per_question": 1.217,
+        "questions_using_tool": 903,
+        "frac_questions_using": 0.364,
+        "correctness_when_called": 0.623,
+        "modality_recall": 0.441,
+        "n_modality_relevant_qs": 1908
+      },
+      "get_speakers": {
+        "call_freq_per_question": 0.222,
+        "questions_using_tool": 274,
+        "frac_questions_using": 0.11,
+        "correctness_when_called": 0.715,
+        "modality_recall": null,
+        "n_modality_relevant_qs": 0
+      },
+      "get_video_info": {
+        "call_freq_per_question": 1.044,
+        "questions_using_tool": 2464,
+        "frac_questions_using": 0.994,
+        "correctness_when_called": 0.652,
+        "modality_recall": null,
+        "n_modality_relevant_qs": 0
+      }
+    }
+  },
+  "coverage_summary": {
+    "get_transcript": {
+      "n_videos_with_layer": 105,
+      "frac_videos_with_layer": 0.972
+    },
+    "get_text_on_screen": {
+      "n_videos_with_layer": 88,
+      "frac_videos_with_layer": 0.815
+    },
+    "get_visual_description": {
+      "n_videos_with_layer": 107,
+      "frac_videos_with_layer": 0.991
+    },
+    "get_speakers": {
+      "n_videos_with_layer": 98,
+      "frac_videos_with_layer": 0.907
+    },
+    "get_video_info": {
+      "n_videos_with_layer": 0,
+      "frac_videos_with_layer": 0.0
+    }
+  },
+  "per_video_coverage": {
+    "1960s_Hockey_Fight_-_Detroit_Red_Wings_vs._New_York_Rangers_-_WKBD-TV_Excerpts_11_13_1966": {
+      "get_transcript": [
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [],
+      "get_video_info": []
+    },
+    "ABC_Afterschool_Special_-_My_Mom_s_Having_a_Baby_Complete_Broadcast_2_16_1977": {
+      "get_transcript": [],
+      "get_text_on_screen": [],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [],
+      "get_video_info": []
+    },
+    "ABC_Afterschool_Specials_-_Run_Don_t_Walk_-_WLS_Channel_7_Complete_Broadcast_3_5_1981": {
+      "get_transcript": [
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [],
+      "get_video_info": []
+    },
+    "ABC_Afterschool_Specials_-_Stoned_-_WLS_Channel_7_Complete_Broadcast_11_12_1980": {
+      "get_transcript": [
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [],
+      "get_video_info": []
+    },
+    "ABC_Afterschool_Specials_-_Where_Do_Teenagers_Come_From_Complete_Broadcast_3_5_1980": {
+      "get_transcript": [
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [],
+      "get_video_info": []
+    },
+    "ABC_Evening_News_Complete_Broadcast_3_31_1978": {
+      "get_transcript": [],
+      "get_text_on_screen": [],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [],
+      "get_video_info": []
+    },
+    "ABC_Network_-_ABC_World_News_Tonight_-_The_80_Vote_-_The_Southern_Primaries_Promo_1980": {
+      "get_transcript": [
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [],
+      "get_video_info": []
+    },
+    "ABC_Network_-_ABC_World_News_Tonight_First_18_Minutes_3_5_1980": {
+      "get_transcript": [
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [],
+      "get_video_info": []
+    },
+    "ABC_Network_-_Barbary_Coast_-_Funny_Money_-_WCVB_Channel_5_Complete_Broadcast_9_8_1975": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "ABC_Network_-_Future_Cop_-_The_Kansas_City_Kid_-_WCVB-TV_Complete_Broadcast_4_30_1977": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "ABC_Network_-_General_Hospital_Last_14_Minutes_11_20_1979": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "ABC_Network_-_Let_s_Make_a_Deal_-_WLS_Channel_7_Pre-Show_Break_Opening_Moments_2_5_1976": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "ABC_News_Nightline_-_Bitter_Cold_-_WLS_Channel_7_1st_16_Minutes_1_11_1982": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "ABC_News_Special_Report_-_The_President_at_the_United_Nations_-_WLS-TV_1985": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "ABC_News_Weekend_Report_-_WLS_Channel_7_Complete_Broadcast_2_18_1979": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "ABC_News_Weekend_Report_-_WLS_Channel_7_Complete_Broadcast_3_9_1980": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "A_CBS_Family_Presentation_Bumper_1973": {
+      "get_transcript": [
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [],
+      "get_video_info": []
+    },
+    "Alexander_s_Star_by_Ideal_-_Don_t_Pick_It_Up_Commercial_1982": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-114-881jx2h7": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-120-80ht7h8d": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-15-028pc2t52t": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-15-0v89g5gc4w": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-15-1c1td9n55n": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-15-2f7jq0tn9b": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-15-4746q1sk73": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-151-222r49gv1k": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-189-8279cwzq": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-225-009w0w1j": {
+      "get_transcript": [],
+      "get_text_on_screen": [],
+      "get_visual_description": [],
+      "get_speakers": [],
+      "get_video_info": []
+    },
+    "cpb-aacip-302a0ce217c": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-4f036fc316b": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-154dn40c26": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-1v5bc3tf81": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-251fj2b03t": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-3b5w669q04": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-3f4kk94w29": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-3x83j39n00": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-4746q1t25k": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-4b2x34n67h": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-4f1mg7gc44": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-4t6f18sz37": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-4t6f18t00t": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-4t6f18t15n": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-4t6f18t178": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-5q4rj49c6q": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-5x2599zp0m": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-6h4cn6zj6q": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-6h4cn6zk04": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-6w96689725": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-7659c6sk7z": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-7659c6sk9k": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-9882j68s35": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-bn9x05xz7r": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-bz6154fc44": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-cf9j38m509": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-dj58c9rs7q": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-dv1cj8881m": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-f47gq6rq94": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-fj29883b24": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-h707w67w4s": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-jm23b5x19r": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-jw86h4dh3c": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-kk94747k0n": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-m61bk17f5g": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-n29p26qt59": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-nk3610wp6s": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-ns0ks6jx8k": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-pc2t43js98": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-pr7mp4wf25": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-r785h7cp0z": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-v11vd6pz5w": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-vm42r3pt6h": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-ws8hd7pn8f": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-z892805z01": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-zk55d8pd1h": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-507-zw18k75z4h": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-516-5x2599zx9b": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-516-6m3319sz98": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-516-kd1qf8kh53": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-516-n00zp3wz82": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-526-125q815n1x": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-526-183416tz0c": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-526-2f7jq0ts56": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-526-2z12n50h89": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-526-7s7hq3sz9x": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-526-7w6736n449": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-526-8s4jm24g9m": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-526-bz6154ft6b": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-526-cj87h1fq6v": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-526-d50ft8fn3n": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-526-f47gq6s533": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-526-fx73t9fc4v": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-526-gt5fb4xq7g": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-526-mk6542kh8x": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-526-s17sn02b08": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-526-sb3ws8js8p": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-526-sj19k47399": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-526-sn00z72802": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-526-tb0xp6w99g": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-526-v69862cp2j": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-526-w66930q61q": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-526-x34mk66j2p": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-526-x921c1vv2j": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-55f35238947": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-61992d38519": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-6e9ccb7f4f8": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-75-30prrg9s": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-75-72p5j4xx": {
+      "get_transcript": [
+        "asr"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    },
+    "cpb-aacip-75-87brvgkp": {
+      "get_transcript": [
+        "asr",
+        "asr_whisper"
+      ],
+      "get_text_on_screen": [
+        "caption_qwen3vl-8b_text_focus"
+      ],
+      "get_visual_description": [
+        "caption_qwen3vl-8b_general_scene"
+      ],
+      "get_speakers": [
+        "speakers"
+      ],
+      "get_video_info": []
+    }
+  }
+}
