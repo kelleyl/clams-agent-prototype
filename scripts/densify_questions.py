@@ -105,11 +105,19 @@ def densify(setting, anchor, topic, ctx, question, answer, url, model, api_key, 
     sysm = ("You rewrite a benchmark question to be self-contained, without changing what it "
             "asks and without revealing the answer.")
     user = (f"Setting: {setting}.\n"
-            f"Who and what this broadcast is about: {anchor or '(unknown)'}\n"
-            f"Segment topic: {topic}.\n"
-            f"Transcript excerpt (context only):\n{ctx or '(none)'}\n\n"
+            f"Who and what this broadcast is about (BACKGROUND ONLY - the broadcast covers "
+            f"several unrelated stories): {anchor or '(unknown)'}\n"
+            f"Segment label (UNRELIABLE - news-summary segments mix stories and labels can be "
+            f"misaligned): {topic}.\n"
+            f"Transcript excerpt (the fact being asked about is stated in here):\n"
+            f"{ctx or '(none)'}\n\n"
             f"Original question: {question}\n"
             f"The answer (do NOT include or hint at it): {answer}\n\n"
+            "CRITICAL: identify the event/story from the TRANSCRIPT SENTENCES surrounding the "
+            "asked fact. If the segment label or broadcast topics name a different story than "
+            "those sentences, IGNORE them - attaching the wrong story makes the question "
+            "factually misleading. If you cannot tell which story the fact belongs to, add no "
+            "story framing at all (name only the people/roles).\n"
             "Rewrite the question so a reader who has NOT seen the video understands exactly what "
             "is being asked. Crucially, name the SUBJECT explicitly: replace generic references "
             "like 'the president', 'his speech', 'this segment', 'the speaker' with the specific "
@@ -180,8 +188,12 @@ def main():
         if DEIXIS.search(q):
             vague_before += 1
         ev = r.get("evidence", {})
-        ctx = asr_text(doc, ev["start_ms"], ev["end_ms"]) if ev.get("start_ms") is not None else ""
-        ctx = (ctx + "\n" + retrieve_context(doc, f"{q} {topic_of(r)}", k=5)).strip()[:1800]
+        # answer-bearing passage FIRST (retrieved by question+answer tokens), the
+        # window head second: the model must see the sentences that state the fact,
+        # or it will frame the question with whichever story the window opens on
+        focus = retrieve_context(doc, f"{q} {a}", k=5)
+        head = asr_text(doc, ev["start_ms"], ev["end_ms"]) if ev.get("start_ms") is not None else ""
+        ctx = (focus + "\n" + head).strip()[:1800]
         new = densify(setting, anchor, topic_of(r), ctx, q, a, args.dp_url, args.dp_model, args.api_key)
         if new and not str(new).startswith("__ERR__") and ATTRIB.search(new):
             # one retry with the offending clause called out explicitly

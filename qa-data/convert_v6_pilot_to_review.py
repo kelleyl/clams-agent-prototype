@@ -29,7 +29,19 @@ def items(layer):
     return layer.get("items", []) if isinstance(layer, dict) else layer
 
 
-def asr_excerpt(doc, start_ms, end_ms, max_chars=600):
+_STOP = set("the a an of to in on for and or but is are was were be been it this that with as at "
+             "by from who what why how which when where".split())
+
+
+def _toks(s):
+    import re
+    s = re.sub(r"[^a-z0-9 ]", " ", (s or "").lower())
+    return set(w for w in s.split() if len(w) > 2 and w not in _STOP)
+
+
+def asr_excerpt(doc, start_ms, end_ms, query="", max_chars=600):
+    """The most query-relevant ASR turns of the window (plus neighbors), NOT the
+    window head: reviewers must see the passage that states the answer."""
     parts = []
     for k in doc.get("layers", {}):
         if not k.lower().startswith("asr"):
@@ -45,6 +57,18 @@ def asr_excerpt(doc, start_ms, end_ms, max_chars=600):
                 if t:
                     parts.append((s, t))
     parts.sort()
+    if not parts:
+        return ""
+    q = _toks(query)
+    if q:
+        ranked = sorted(range(len(parts)), key=lambda i: -len(q & _toks(parts[i][1])))
+        picked = set()
+        for i in ranked[:3]:
+            picked.update({i - 1, i, i + 1})
+        ordered = [parts[i][1] for i in sorted(p for p in picked if 0 <= p < len(parts))]
+        out = " ".join(ordered)[:max_chars]
+        if out:
+            return out
     return " ".join(t for _, t in parts)[:max_chars]
 
 
@@ -117,7 +141,7 @@ def main():
                 start, end = ev.get("start_ms"), ev.get("end_ms")
                 spans = []
                 if start is not None and doc:
-                    txt = asr_excerpt(doc, start, end or start)
+                    txt = asr_excerpt(doc, start, end or start, query=f"{q} {a}")
                     if txt:
                         spans.append({"modality": "asr", "text": txt})
                 rt = r.get("roundtrip") or {}
