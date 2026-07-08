@@ -1,7 +1,25 @@
 # V6 Dataset Plan
 
-Status: drafted 2026-06-29. Supersedes the v5.x line. Companion to
+Status: drafted 2026-06-29; updated 2026-07-08 with the July 1 experiment outcomes and the
+full-run scope decisions. Supersedes the v5.x line. Companion to
 `qa-data/QUESTION_TYPE_SPEC.md` (the three-axis question design).
+
+## Full-run scope decisions (2026-07-08)
+
+1. **Evidence mode: slice only.** The full run generates from raw ASR windows (arm A). The
+   DP-description mode (arm B1) is a documented experiment, not the production path: with a
+   semantic round-trip its effective verifiability (~68%) merely matches slice (~69%), and it
+   carries a genuine ~27% unverifiable tail (see "Generator and evidence-mode experiments"
+   below). Revisit only if the exploration type needs cross-segment prose evidence.
+2. **Exploration/retrieval type: full build before the run** (program-level and corpus-level),
+   from salience maps + entity grounding + ASR, with deterministic candidate sets, per-item
+   LLM verification, and a set-F1 round-trip analog. Blind panel is inapplicable by
+   construction for set answers over an obscure corpus (`robust_by_construction`).
+3. **Pilot-before-scale honored (rule F):** the 120 pilot questions are human-rated in a
+   free-text fast_review flow (port 8782) and the full run launches only after that passes.
+4. Already settled 2026-06-30: free text only (no MC distractors); generator gemma3:27b-it-qat,
+   verifier/judge llama3.3 (decoupled families); blind panel is graded metadata, not a hard gate.
+   Full-run panel is the 7 Ollama members (gemma-4-26b/vLLM dropped as a dependency).
 
 ## Why v6, not v5.3
 
@@ -32,9 +50,44 @@ Generate questions FROM what matters in a video, then curate FOR difficulty and 
   why/how skew; types = subject, interpretive (why/how/comparison), factual, cataloging,
   two-hop grounding-document (era + uniqueness + necessity gates). Validated: why/how share
   46.7% on the pilot vs 6.5% v5.2 baseline; 15/15 LLM questions parsed.
-- **TODO this iteration:** the exploration/retrieval type ("which segments discuss X",
-  "find interviews with scientists on climate"), the highest-value type and the one that
-  exercises the agent's tool-chaining. Needs cross-segment retrieval over salience + grounding.
+- **In progress (full build, decided 2026-07-08):** the exploration/retrieval type ("which
+  segments discuss X", "find interviews with scientists on climate"), the highest-value type
+  and the one that exercises the agent's tool-chaining. Design: a corpus catalog aggregated
+  from salience maps + grounding (`scripts/build_corpus_catalog.py`), question generation at
+  program and corpus scope (`scripts/generate_qa_exploration.py`), deterministic candidate
+  sets, per-item LLM verification against transcripts, 2-10 gold items per question,
+  near-miss sampling for completeness, and a different-family set-F1 (>=0.8) round-trip.
+  Answers are `format: "retrieval_set"` lists of {video_id, title, start_ms, end_ms};
+  scoring is set F1.
+
+## Generator and evidence-mode experiments (2026-07-01, aristotle)
+
+Two experiments held the pipeline fixed and varied one component; both are folded in here
+because they fixed the full-run configuration.
+
+**Generator comparison** (6 pilot videos, gen + densify + 4-model blind panel + round-trip):
+
+| generator  | n   | robust% | rt_pass% | ans_words | why/how% | vague% |
+|------------|-----|---------|----------|-----------|----------|--------|
+| gemma3-27b | 120 | 75%     | 73%      | 3         | 25%      | 8%     |
+| gemma4-26b | 119 | 68%     | 86%      | 3         | 25%      | 13%    |
+| qwen3-30b  | 15  | 0%      | 0%       | 9         | 47%      | 33%    |
+
+Gemma 3 and Gemma 4 are near-interchangeable; the generator is not the bottleneck. Qwen3-30b
+failed as a generator (thinking model: 15/~120 parsed under a 400-token cap, verbose answers,
+0% gate survival) - thinking models need `enable_thinking=false` or a ~2048 budget to be
+usable. **Decision: gemma3:27b stays the v6 generator.**
+
+**DP-description as generation evidence** (arm B1 vs slice arm A, same gates): B1 was more
+robust on the blind panel (86/104 vs 81/105, zero trivial) and less vague, but round-trip
+collapsed 69% -> 42%. Disentangling with a description-source round-trip showed ~30 points of
+that gap is retrieval-vocabulary mismatch (recoverable with semantic retrieval; effective
+verifiability ~68%) and ~27% is a genuinely unverifiable tail (degenerate densify answers,
+prose artifacts). Net: description mode is viable but not better for local questions;
+**slice mode is the full-run evidence path** (decision 1 above). The build also produced
+`scripts/build_video_description.py` (scaffold + chunked DP prose, max_words=300 per chunk to
+prevent silent summarization; whole-hour index serializes to ~5-6k tokens) - kept for the
+cross-segment/multi-hop question direction (arm B2, untested).
 
 ## B. Curation / QC gates (to build)
 
