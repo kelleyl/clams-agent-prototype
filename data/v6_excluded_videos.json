@@ -1,0 +1,119 @@
+{
+ "note": "v6 full-run exclusions, explicit per plan C.5 (no silent loss). Two classes: (a) promos/bumpers/stubs (thin ASR or <90s) - permanently out of scope; (b) real content missing a chapters layer - excluded from THIS run, flagged for chapter re-processing as follow-up.",
+ "generated_by": "catalog scan 2026-07-08",
+ "excluded": [
+  {
+   "video_id": "1960s_Hockey_Fight_-_Detroit_Red_Wings_vs._New_York_Rangers_-_WKBD-TV_Excerpts_11_13_1966",
+   "reasons": [
+    "no_chapters_layer"
+   ],
+   "duration_ms": 450017,
+   "asr_chars": 12174,
+   "n_segments": 0
+  },
+  {
+   "video_id": "ABC_Afterschool_Special_-_My_Mom_s_Having_a_Baby_Complete_Broadcast_2_16_1977",
+   "reasons": [
+    "no_chapters_layer"
+   ],
+   "duration_ms": 3251018,
+   "asr_chars": 28403,
+   "n_segments": 0
+  },
+  {
+   "video_id": "ABC_Afterschool_Specials_-_Run_Don_t_Walk_-_WLS_Channel_7_Complete_Broadcast_3_5_1981",
+   "reasons": [
+    "no_chapters_layer"
+   ],
+   "duration_ms": 3502002,
+   "asr_chars": 46204,
+   "n_segments": 0
+  },
+  {
+   "video_id": "ABC_Afterschool_Specials_-_Stoned_-_WLS_Channel_7_Complete_Broadcast_11_12_1980",
+   "reasons": [
+    "no_chapters_layer"
+   ],
+   "duration_ms": 3431031,
+   "asr_chars": 41397,
+   "n_segments": 0
+  },
+  {
+   "video_id": "ABC_Afterschool_Specials_-_Where_Do_Teenagers_Come_From_Complete_Broadcast_3_5_1980",
+   "reasons": [
+    "no_chapters_layer"
+   ],
+   "duration_ms": 3614014,
+   "asr_chars": 73457,
+   "n_segments": 0
+  },
+  {
+   "video_id": "ABC_Evening_News_Complete_Broadcast_3_31_1978",
+   "reasons": [
+    "no_chapters_layer"
+   ],
+   "duration_ms": 1727027,
+   "asr_chars": 26809,
+   "n_segments": 0
+  },
+  {
+   "video_id": "ABC_Network_-_ABC_World_News_Tonight_-_The_80_Vote_-_The_Southern_Primaries_Promo_1980",
+   "reasons": [
+    "thin_asr(653chars)",
+    "under_90s",
+    "no_chapters_layer"
+   ],
+   "duration_ms": 17017,
+   "asr_chars": 653,
+   "n_segments": 0
+  },
+  {
+   "video_id": "ABC_Network_-_ABC_World_News_Tonight_First_18_Minutes_3_5_1980",
+   "reasons": [
+    "no_chapters_layer"
+   ],
+   "duration_ms": 1076009,
+   "asr_chars": 33586,
+   "n_segments": 0
+  },
+  {
+   "video_id": "A_CBS_Family_Presentation_Bumper_1973",
+   "reasons": [
+    "thin_asr(17chars)",
+    "under_90s",
+    "no_chapters_layer"
+   ],
+   "duration_ms": 5005,
+   "asr_chars": 17,
+   "n_segments": 0
+  },
+  {
+   "video_id": "Alexander_s_Star_by_Ideal_-_Don_t_Pick_It_Up_Commercial_1982",
+   "reasons": [
+    "thin_asr(830chars)",
+    "under_90s"
+   ],
+   "duration_ms": 30030,
+   "asr_chars": 830,
+   "n_segments": 2
+  },
+  {
+   "video_id": "cpb-aacip-225-009w0w1j",
+   "reasons": [
+    "no_chapters_layer"
+   ],
+   "duration_ms": 3491758,
+   "asr_chars": 55266,
+   "n_segments": 0
+  },
+  {
+   "video_id": "cpb-aacip-507-bn9x05xz7r",
+   "reasons": [
+    "no_chapters_layer"
+   ],
+   "duration_ms": 3527027,
+   "asr_chars": 155427,
+   "n_segments": 0
+  }
+ ]
+}

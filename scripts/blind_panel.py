@@ -85,6 +85,12 @@ def main():
         correct = 0
         n = 0
         for r in rows:
+            # resume: skip rows this model already voted on
+            existing = r["qa"].get("blind_panel", {})
+            if m["name"] in existing:
+                n += 1
+                correct += 1 if existing[m["name"]] else 0
+                continue
             q, gold = r["qa"]["question"], r["qa"]["answer"]
             ba = ask_blind(q, m["url"], m["name"], args.api_key)
             ok = (not ba.startswith("__ERR__")) and "don't know" not in ba.lower() and match(ba, gold)
@@ -92,6 +98,9 @@ def main():
             n += 1
             correct += 1 if ok else 0
         per_model[m["name"]] = (correct, n)
+        # persist after each model so an interrupted panel resumes cleanly
+        for vid, data in videos:
+            json.dump(data, open(QA_DIR / f"{vid}.json", "w"), indent=2)
         print(f"  {m['name']:20s} ({m['family']}/{m['size']}B): blind {correct}/{n} = {correct/max(n,1):.0%}",
               flush=True)
 

@@ -157,6 +157,8 @@ def main():
         q, a = qa.get("question"), qa.get("answer")
         if not q or qa.get("error"):
             continue
+        if qa.get("densified"):     # resume: already rewritten (not idempotent)
+            continue
         if DEIXIS.search(q):
             vague_before += 1
         ev = r.get("evidence", {})

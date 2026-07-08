@@ -422,6 +422,8 @@ def main():
     ap.add_argument("--limit-questions", type=int, default=30, help="corpus-level cap")
     ap.add_argument("--max-targets", type=int, default=3, help="program-level per video")
     ap.add_argument("--dry-run", action="store_true", help="no LLM: targets + candidates only")
+    ap.add_argument("--skip-done", action="store_true",
+                    help="program scope: skip videos whose output file exists (resume)")
     ap.add_argument("--gen-url", default="http://localhost:11434/v1")
     ap.add_argument("--gen-model", default="gemma3:27b-it-qat")
     ap.add_argument("--verify-url", default="http://localhost:11434/v1")
@@ -447,6 +449,8 @@ def main():
         for vid in vids:
             idxp = IDX_DIR / f"{vid}.json"
             if not idxp.exists():
+                continue
+            if args.skip_done and (OUT_DIR / f"{vid}.json").exists():
                 continue
             doc = json.load(open(idxp))
             cv = catalog["videos"][vid]

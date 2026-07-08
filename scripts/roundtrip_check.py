@@ -148,6 +148,13 @@ def main():
         ev = r.get("evidence", {})
         if not (q and a) or qa.get("error"):
             continue
+        # resume: a row with a completed verdict under this key is done
+        prior = r.get(args.rt_key)
+        if isinstance(prior, dict) and "consistent" in prior:
+            checked += 1
+            kept += 1 if prior["consistent"] else 0
+            rej += 0 if prior["consistent"] else 1
+            continue
         if ev.get("start_ms") is None:          # two-hop etc.: no transcript span
             r[args.rt_key] = {"skipped": "no_span"}
             skipped += 1

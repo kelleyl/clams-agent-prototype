@@ -339,6 +339,8 @@ def main():
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--max-per-cell", type=int, default=4)
     ap.add_argument("--dry-run", action="store_true", help="no LLM; build targets+prompts+gates")
+    ap.add_argument("--skip-done", action="store_true",
+                    help="skip videos whose output file already has generated rows (resume)")
     ap.add_argument("--evidence-mode", choices=["slice", "description"], default="slice",
                     help="slice=raw ASR window (baseline A); description=DP prose window (arm B1)")
     ap.add_argument("--vllm-url", default=os.environ.get("VLLM_URL", "http://localhost:8200/v1"))
@@ -377,6 +379,15 @@ def main():
 
     for sp in sal_files:
         vid = sp.stem
+        if args.skip_done:
+            outp = OUT_DIR / f"{vid}.json"
+            if outp.exists():
+                try:
+                    if json.load(open(outp)).get("rows"):
+                        print(f"{vid}: done, skipping", flush=True)
+                        continue
+                except Exception:
+                    pass
         sal = json.load(open(sp))
         idxp = IDX_DIR / f"{vid}.json"
         grdp = GRD_DIR / f"{vid}.json"
