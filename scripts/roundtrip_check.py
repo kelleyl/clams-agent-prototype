@@ -117,6 +117,8 @@ def reanswer(question, ctx, url, model, api_key, timeout=90):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--video", required=True)
+    ap.add_argument("--qa-dir", default=str(QA_DIR),
+                    help="sidecar dir (default data/qa_needdown)")
     ap.add_argument("--rt-url", default="http://localhost:11434/v1")
     ap.add_argument("--rt-model", default="qwen3:30b")
     ap.add_argument("--judge-model", default="llama3.3:latest",
@@ -130,7 +132,8 @@ def main():
     args = ap.parse_args()
     judge_cfg = {"url": args.rt_url, "model": args.judge_model, "api_key": args.api_key}
 
-    data = json.load(open(QA_DIR / f"{args.video}.json"))
+    qa_dir = Path(args.qa_dir)
+    data = json.load(open(qa_dir / f"{args.video}.json"))
     doc = json.load(open(IDX_DIR / f"{args.video}.json"))
     desc = None
     if args.evidence_source == "description":
@@ -179,7 +182,7 @@ def main():
             print(f"  REJECT [{r['cell']}/{r['w_role']}] Q: {q[:70]}")
             print(f"          proposed: {str(a)[:50]} | re-answer: {fresh[:50]}")
 
-    json.dump(data, open(QA_DIR / f"{args.video}.json", "w"), indent=2)
+    json.dump(data, open(qa_dir / f"{args.video}.json", "w"), indent=2)
     print(f"\nvideo: {args.video} | round-trip model: {args.rt_model}")
     print(f"checked: {checked} | consistent(keep): {kept} | inconsistent(reject): {rej} "
           f"| skipped(no span): {skipped} | errors: {err}")

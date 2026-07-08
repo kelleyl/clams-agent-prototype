@@ -49,6 +49,13 @@ def subject_anchor(sal):
     return ". ".join(parts)
 DEIXIS = re.compile(r"\b(this segment|the segment|the report|the broadcast|the clip|the video|"
                     r"the speaker|referenced|the passage|the footage|the discussion)\b", re.I)
+# trailing program-attribution tic ("..., according to the discussion on PBS
+# NewsHour?"): adds no identifying information the event description should not
+# already carry, pads every question with the same formula, and hands the blind
+# panel a program/era hint
+ATTRIB = re.compile(r"\b(according to|as (?:mentioned|discussed|stated|described|reported)\b)"
+                    r"[^,.?]*\b(broadcast|program|episode|newshour|news hour|segment|report|"
+                    r"discussion|transcript|video)\b", re.I)
 
 
 def items(layer):
@@ -110,7 +117,10 @@ def densify(setting, anchor, topic, ctx, question, answer, url, model, api_key, 
             "transcript above (e.g. 'the president' -> 'George W. Bush', 'his speech' -> 'his 2001 "
             "inaugural address'). Add identifying context, but do NOT reveal or hint at the answer, "
             "and do NOT change what is being asked. Do NOT begin the question with 'Based on' or "
-            "'According to the transcript'. Keep it natural and a single sentence. "
+            "'According to the transcript'. Do NOT append attribution clauses such as 'according "
+            "to the discussion on PBS NewsHour', 'as mentioned in the broadcast', or 'as discussed "
+            "in the program' - identify the event itself (people, occasion, place, date), not the "
+            "program that covered it. Keep it natural and a single sentence. "
             "Return JSON: {\"question\": \"...\"}.")
     try:
         r = requests.post(f"{url.rstrip('/')}/chat/completions",
@@ -135,13 +145,19 @@ def densify(setting, anchor, topic, ctx, question, answer, url, model, api_key, 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--video", required=True)
+    ap.add_argument("--qa-dir", default=str(QA_DIR),
+                    help="sidecar dir (default data/qa_needdown)")
+    ap.add_argument("--redo", action="store_true",
+                    help="re-densify from question_raw even if already densified; "
+                         "clears the round-trip verdict of rewritten rows")
     ap.add_argument("--dp-url", default="http://localhost:11434/v1")
     ap.add_argument("--dp-model", default="gemma3:27b-it-qat")
     ap.add_argument("--api-key", default="EMPTY")
     ap.add_argument("--verbose", action="store_true")
     args = ap.parse_args()
 
-    data = json.load(open(QA_DIR / f"{args.video}.json"))
+    qa_dir = Path(args.qa_dir)
+    data = json.load(open(qa_dir / f"{args.video}.json"))
     doc = json.load(open(IDX_DIR / f"{args.video}.json"))
     prov = json.load(open(PROV)) if PROV.exists() else {}
     sal_path = SAL_DIR / f"{args.video}.json"
@@ -151,37 +167,52 @@ def main():
     print(f"setting: {setting}")
     print(f"anchor: {anchor[:160]}")
 
-    n = vague_before = vague_after = err = 0
+    n = vague_before = vague_after = err = tic = 0
     for r in data.get("rows", []):
         qa = r.get("qa", {})
         q, a = qa.get("question"), qa.get("answer")
         if not q or qa.get("error"):
             continue
-        if qa.get("densified"):     # resume: already rewritten (not idempotent)
-            continue
+        if qa.get("densified"):
+            if not args.redo:   # resume: already rewritten (not idempotent)
+                continue
+            q = qa.get("question_raw") or q     # restart from the raw question
         if DEIXIS.search(q):
             vague_before += 1
         ev = r.get("evidence", {})
         ctx = asr_text(doc, ev["start_ms"], ev["end_ms"]) if ev.get("start_ms") is not None else ""
         ctx = (ctx + "\n" + retrieve_context(doc, f"{q} {topic_of(r)}", k=5)).strip()[:1800]
         new = densify(setting, anchor, topic_of(r), ctx, q, a, args.dp_url, args.dp_model, args.api_key)
+        if new and not str(new).startswith("__ERR__") and ATTRIB.search(new):
+            # one retry with the offending clause called out explicitly
+            retry = densify(setting, anchor, topic_of(r),
+                            ctx + "\n\nIMPORTANT: your previous rewrite appended a program-"
+                            "attribution clause; identify the event itself instead.",
+                            q, a, args.dp_url, args.dp_model, args.api_key)
+            if retry and not str(retry).startswith("__ERR__") and not ATTRIB.search(retry):
+                new = retry
         if not new or str(new).startswith("__ERR__"):
             err += 1
             continue
         qa["question_raw"] = q
         qa["question"] = new
         qa["densified"] = True
+        if args.redo:
+            r.pop("roundtrip", None)    # verdict was for the old phrasing
         n += 1
         if DEIXIS.search(new):
             vague_after += 1
             qa["self_contained_flag"] = "residual_deixis"
+        if ATTRIB.search(new):
+            tic += 1
+            qa["self_contained_flag"] = "attribution_tic"
         if args.verbose and n <= 8:
             print(f"\n  BEFORE: {q[:95]}")
             print(f"  AFTER : {new[:130]}")
 
-    json.dump(data, open(QA_DIR / f"{args.video}.json", "w"), indent=2)
+    json.dump(data, open(qa_dir / f"{args.video}.json", "w"), indent=2)
     print(f"\ndensified: {n} | vague(before): {vague_before} -> vague(after): {vague_after} "
-          f"| errors: {err}")
+          f"| attribution-tic(after retry): {tic} | errors: {err}")
 
 
 if __name__ == "__main__":
