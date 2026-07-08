@@ -50,15 +50,38 @@ Generate questions FROM what matters in a video, then curate FOR difficulty and 
   why/how skew; types = subject, interpretive (why/how/comparison), factual, cataloging,
   two-hop grounding-document (era + uniqueness + necessity gates). Validated: why/how share
   46.7% on the pilot vs 6.5% v5.2 baseline; 15/15 LLM questions parsed.
-- **In progress (full build, decided 2026-07-08):** the exploration/retrieval type ("which
-  segments discuss X", "find interviews with scientists on climate"), the highest-value type
-  and the one that exercises the agent's tool-chaining. Design: a corpus catalog aggregated
-  from salience maps + grounding (`scripts/build_corpus_catalog.py`), question generation at
-  program and corpus scope (`scripts/generate_qa_exploration.py`), deterministic candidate
-  sets, per-item LLM verification against transcripts, 2-10 gold items per question,
-  near-miss sampling for completeness, and a different-family set-F1 (>=0.8) round-trip.
-  Answers are `format: "retrieval_set"` lists of {video_id, title, start_ms, end_ms};
-  scoring is set F1.
+- **Built (2026-07-08):** the exploration/retrieval type ("which segments discuss X",
+  "find interviews with scientists on climate"), the highest-value type and the one that
+  exercises the agent's tool-chaining. A corpus catalog aggregated from salience maps +
+  grounding (`scripts/build_corpus_catalog.py`) feeds `scripts/generate_qa_exploration.py`.
+  Answers are `format: "retrieval_set"` lists of {video_id, seg_id, start_ms, end_ms};
+  scoring is set F1. Gates as validated on the pilot:
+  - *program scope*: recurring-entity/theme targets with a saturation cap (a topic present
+    in >50% of segments - the broadcast's central figure - has fuzzy boundaries and makes a
+    bad retrieval question); EXHAUSTIVE per-segment verification over the whole video (pools
+    are chapter-sized, <= ~11 items, so gold is complete by construction); set round-trip
+    by a different family over topic-focused excerpts, F1 >= 0.8.
+  - *corpus scope*: occupations must be corroborated by the entity's description head
+    (Wikidata occupation lists are noisy: Maya Angelou lists "politician"); speech
+    membership is verified by the INDEX (named participant, 30s+ diarized speech) because
+    roundtable guests are introduced once and never re-named in ASR; an identity-
+    plausibility gate catches wrong-namesake grounding (observed: NewsHour civil-rights
+    figure Roger Wilkins grounded to the Australian economist Roger Wilkins); grounding-hole
+    sampling over occupation-free distractor videos kills over-broad occupations (writer,
+    columnist); duplicate-answer-set dedupe collapses co-occurring occupations of the same
+    people (political adviser / political analyst).
+
+### Chapter title coherence (found 2026-07-08, affects all v6 types)
+
+On some videos the chapters layer's TITLES are misaligned with their SPANS (e.g.
+cpb-aacip-507-5x2599zp0m: the span titled "Acid Rain in the Western United States" contains
+the Deng Xiaoping discussion). `build_corpus_catalog.py` now computes a per-segment and
+per-video `title_coherence` score (fraction of title content tokens present in the span's
+own ASR): **30/108 videos score < 0.5**. Consequences applied: exploration never shows
+chapter titles to verifiers and answer items carry time spans (titles are metadata);
+theme proposals are gated on coherence >= 0.5. Caution for consumers: need-down why/how
+prompts reference segment titles, so questions from low-coherence videos inherit this risk -
+the score is in the catalog for post-hoc filtering, and re-chaptering is the upstream fix.
 
 ## Generator and evidence-mode experiments (2026-07-01, aristotle)
 

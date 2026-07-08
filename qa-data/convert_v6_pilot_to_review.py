@@ -48,9 +48,47 @@ def asr_excerpt(doc, start_ms, end_ms, max_chars=600):
     return " ".join(t for _, t in parts)[:max_chars]
 
 
+def exploration_rows(exp_dir, out):
+    """Append kept exploration questions; the answer set renders as one
+    string per line for the fast_review free-text stage 2."""
+    n = 0
+    for sp in sorted(Path(exp_dir).glob("*.json")):
+        data = json.load(open(sp))
+        vid = data.get("video_id") or sp.stem
+        for i, r in enumerate(data.get("rows", [])):
+            if not r.get("keep"):
+                continue
+            qa = r.get("qa", {})
+            gold = qa.get("answer_set") or []
+            lines = []
+            for g in gold:
+                t = f"{g['start_ms'] // 60000}m-{(g.get('end_ms') or 0) // 60000}m"
+                who = f" ({g['person']})" if g.get("person") else ""
+                lines.append(f"[{g['video_id'][:36]} {t}]{who} {g.get('title') or ''}")
+            row = {
+                "id": f"v6x-{(vid or 'corpus').split('-')[-1][:12]}-{i:03d}",
+                "video_id": r.get("video_id") or "(corpus-level)",
+                "question": qa.get("question"),
+                "answer": " ;; ".join(lines),
+                "format": "freetext",
+                "task_family": f"{r.get('cell')} / retrieval",
+                "verification": {"rationale": qa.get("rationale", ""), "support_spans": []},
+                "v6": {"cell": r.get("cell"), "w_role": r.get("w_role"),
+                       "element": r.get("element"), "blind_score": None,
+                       "blind_panel": None, "densified": False,
+                       "roundtrip_consistent": (r.get("set_roundtrip") or {}).get("pass"),
+                       "exploration": True},
+            }
+            out.write(json.dumps(row) + "\n")
+            n += 1
+    return n
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--input-dir", default="data/gen_compare/A-slice")
+    ap.add_argument("--exploration-dir", default="",
+                    help="also append kept rows from this qa_exploration dir")
     ap.add_argument("--index-dir", default="data/video_indexes")
     ap.add_argument("--output", default="qa-data/raw/v6/pilot_review.jsonl")
     args = ap.parse_args()
@@ -114,7 +152,13 @@ def main():
                 out.write(json.dumps(row) + "\n")
                 n_rows += 1
 
-    print(f"wrote {n_rows} rows -> {out_path} (excluded {n_skipped} stale video(s))")
+    n_exp = 0
+    if args.exploration_dir:
+        with open(out_path, "a") as out:
+            n_exp = exploration_rows(args.exploration_dir, out)
+
+    print(f"wrote {n_rows} need-down + {n_exp} exploration rows -> {out_path} "
+          f"(excluded {n_skipped} stale video(s))")
 
 
 if __name__ == "__main__":
