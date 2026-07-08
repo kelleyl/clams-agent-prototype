@@ -1,0 +1,186 @@
+#!/usr/bin/env python3
+"""Dense-paraphrasing self-containment pass (v6).
+
+Rewrites each generated question so it is SELF-CONTAINED: a reader who has not
+seen the video understands exactly what is being asked. Resolves vague
+references ("this segment", "the report", "the speaker", "the demonstrations
+referenced") into explicit names, program, event, and people, drawn from the
+provenance setting + segment topic + transcript. Adds SETTING, not the ANSWER
+(the answer must still require the video).
+
+This is dense paraphrasing (Tu et al.) applied to the question rather than the
+evidence. Runs on aristotle; use the SAME model as the generator to avoid
+model-swap overhead.
+
+Example:
+  python scripts/densify_questions.py --video cpb-aacip-507-3x83j39n00 \
+      --dp-url http://localhost:11434/v1 --dp-model gemma3:27b-it-qat
+"""
+import argparse
+import json
+import os
+import re
+import sys
+from pathlib import Path
+
+os.chdir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, ".")
+import requests
+from utils.ctx_retrieval import retrieve_context
+
+QA_DIR = Path("data/qa_needdown")
+IDX_DIR = Path("data/video_indexes")
+SAL_DIR = Path("data/salience_maps")
+PROV = Path("data/v5_1_video_provenance.json")
+
+
+def subject_anchor(sal):
+    """A video-level who/what anchor so the rewrite can resolve generic
+    references ('the president', 'his speech') to named people and events."""
+    people = [p["name"] for p in sal.get("main_participants", [])
+              if not p["name"].upper().startswith("SPEAKER_")][:6]
+    topics = [s["title"] for s in sal.get("salient_segments", [])
+              if s.get("title")][:5]
+    parts = []
+    if people:
+        parts.append("Key people: " + ", ".join(people))
+    if topics:
+        parts.append("Topics/segments: " + "; ".join(topics))
+    return ". ".join(parts)
+DEIXIS = re.compile(r"\b(this segment|the segment|the report|the broadcast|the clip|the video|"
+                    r"the speaker|referenced|the passage|the footage|the discussion)\b", re.I)
+
+
+def items(layer):
+    if layer is None:
+        return []
+    return layer.get("items", []) if isinstance(layer, dict) else layer
+
+
+def asr_text(doc, start_ms, end_ms, max_chars=1200):
+    parts = []
+    for k in doc.get("layers", {}):
+        if not k.lower().startswith("asr"):
+            continue
+        for it in items(doc["layers"][k]):
+            if not isinstance(it, dict):
+                continue
+            s, e = it.get("start_ms"), it.get("end_ms")
+            if s is None:
+                continue
+            if s < end_ms and (e or s) > start_ms:
+                t = (it.get("text") or "").strip()
+                if t:
+                    parts.append((s, t))
+    parts.sort()
+    return " ".join(t for _, t in parts)[:max_chars]
+
+
+def setting_for(prov, vid):
+    e = prov.get(vid, {}) if isinstance(prov, dict) else {}
+    src = e.get("source") or e.get("collection") or "an archival public-broadcasting program"
+    genre = (e.get("primary_genre") or "").replace("_", " ")
+    era = e.get("era_estimate") or ""
+    parts = [src]
+    if genre:
+        parts.append(f"a {genre}")
+    if era:
+        parts.append(f"({era})")
+    return ", ".join(parts)
+
+
+def topic_of(t):
+    el = t.get("element", "")
+    return el.split(":", 1)[1] if ":" in el else el
+
+
+def densify(setting, anchor, topic, ctx, question, answer, url, model, api_key, timeout=90):
+    sysm = ("You rewrite a benchmark question to be self-contained, without changing what it "
+            "asks and without revealing the answer.")
+    user = (f"Setting: {setting}.\n"
+            f"Who and what this broadcast is about: {anchor or '(unknown)'}\n"
+            f"Segment topic: {topic}.\n"
+            f"Transcript excerpt (context only):\n{ctx or '(none)'}\n\n"
+            f"Original question: {question}\n"
+            f"The answer (do NOT include or hint at it): {answer}\n\n"
+            "Rewrite the question so a reader who has NOT seen the video understands exactly what "
+            "is being asked. Crucially, name the SUBJECT explicitly: replace generic references "
+            "like 'the president', 'his speech', 'this segment', 'the speaker' with the specific "
+            "named person and the specific named event/occasion, using the who/what anchor and "
+            "transcript above (e.g. 'the president' -> 'George W. Bush', 'his speech' -> 'his 2001 "
+            "inaugural address'). Add identifying context, but do NOT reveal or hint at the answer, "
+            "and do NOT change what is being asked. Do NOT begin the question with 'Based on' or "
+            "'According to the transcript'. Keep it natural and a single sentence. "
+            "Return JSON: {\"question\": \"...\"}.")
+    try:
+        r = requests.post(f"{url.rstrip('/')}/chat/completions",
+                          headers={"Authorization": f"Bearer {api_key}",
+                                   "Content-Type": "application/json"},
+                          json={"model": model, "temperature": 0.3, "max_tokens": 200,
+                                "messages": [{"role": "system", "content": sysm},
+                                             {"role": "user", "content": user}]},
+                          timeout=timeout)
+        r.raise_for_status()
+        txt = r.json()["choices"][0]["message"]["content"]
+        if "</think>" in txt:
+            txt = txt.split("</think>")[-1]
+        m = re.search(r"\{.*\}", txt, re.S)
+        if m:
+            return json.loads(m.group(0)).get("question")
+    except Exception as ex:
+        return f"__ERR__:{ex}"
+    return None
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--video", required=True)
+    ap.add_argument("--dp-url", default="http://localhost:11434/v1")
+    ap.add_argument("--dp-model", default="gemma3:27b-it-qat")
+    ap.add_argument("--api-key", default="EMPTY")
+    ap.add_argument("--verbose", action="store_true")
+    args = ap.parse_args()
+
+    data = json.load(open(QA_DIR / f"{args.video}.json"))
+    doc = json.load(open(IDX_DIR / f"{args.video}.json"))
+    prov = json.load(open(PROV)) if PROV.exists() else {}
+    sal_path = SAL_DIR / f"{args.video}.json"
+    sal = json.load(open(sal_path)) if sal_path.exists() else {}
+    setting = setting_for(prov, args.video)
+    anchor = subject_anchor(sal)
+    print(f"setting: {setting}")
+    print(f"anchor: {anchor[:160]}")
+
+    n = vague_before = vague_after = err = 0
+    for r in data.get("rows", []):
+        qa = r.get("qa", {})
+        q, a = qa.get("question"), qa.get("answer")
+        if not q or qa.get("error"):
+            continue
+        if DEIXIS.search(q):
+            vague_before += 1
+        ev = r.get("evidence", {})
+        ctx = asr_text(doc, ev["start_ms"], ev["end_ms"]) if ev.get("start_ms") is not None else ""
+        ctx = (ctx + "\n" + retrieve_context(doc, f"{q} {topic_of(r)}", k=5)).strip()[:1800]
+        new = densify(setting, anchor, topic_of(r), ctx, q, a, args.dp_url, args.dp_model, args.api_key)
+        if not new or str(new).startswith("__ERR__"):
+            err += 1
+            continue
+        qa["question_raw"] = q
+        qa["question"] = new
+        qa["densified"] = True
+        n += 1
+        if DEIXIS.search(new):
+            vague_after += 1
+            qa["self_contained_flag"] = "residual_deixis"
+        if args.verbose and n <= 8:
+            print(f"\n  BEFORE: {q[:95]}")
+            print(f"  AFTER : {new[:130]}")
+
+    json.dump(data, open(QA_DIR / f"{args.video}.json", "w"), indent=2)
+    print(f"\ndensified: {n} | vague(before): {vague_before} -> vague(after): {vague_after} "
+          f"| errors: {err}")
+
+
+if __name__ == "__main__":
+    main()
