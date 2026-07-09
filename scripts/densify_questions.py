@@ -48,7 +48,10 @@ def subject_anchor(sal):
         parts.append("Topics/segments: " + "; ".join(topics))
     return ". ".join(parts)
 DEIXIS = re.compile(r"\b(this segment|the segment|the report|the broadcast|the clip|the video|"
-                    r"the speaker|referenced|the passage|the footage|the discussion)\b", re.I)
+                    r"the speaker|referenced|the passage|the footage|the discussion|"
+                    r"th(?:is|e) (?:news )?summary|this broadcast|this program|this episode|"
+                    r"the program|the interview\b|the interviewer|the anchor\b|the guest\b)",
+                    re.I)
 # trailing program-attribution tic ("..., according to the discussion on PBS
 # NewsHour?"): adds no identifying information the event description should not
 # already carry, pads every question with the same formula, and hands the blind
@@ -128,10 +131,14 @@ def densify(setting, anchor, topic, ctx, question, answer, url, model, api_key,
             "story framing at all (name only the people/roles). "
             "Never use relative time words (today, yesterday, tonight, this week) - resolve "
             "them to the broadcast date or an absolute description of the event.\n"
-            "If a reader who has NOT seen the video would already understand exactly what is "
-            "being asked (subjects named, no vague references, no unresolved relative time), "
-            "return the original question UNCHANGED. Otherwise rewrite it MINIMALLY so such a "
-            "reader understands it. Crucially, name the SUBJECT explicitly: replace generic references "
+            "A question is self-contained ONLY if ALL of these hold: (a) it contains no "
+            "deictic reference (no 'this news summary', 'this segment', 'the broadcast', "
+            "'the speaker', 'the program', 'the interview'); (b) every person/organization is "
+            "named, not described generically ('the president', 'the senator'); (c) no "
+            "unresolved relative time ('today', 'yesterday'). "
+            "If the original already satisfies ALL three, return it UNCHANGED. Otherwise "
+            "rewrite it MINIMALLY: fix ONLY the failing parts and keep the original's natural "
+            "wording everywhere else. Name the SUBJECT explicitly: replace generic references "
             "like 'the president', 'his speech', 'this segment', 'the speaker' with the specific "
             "named person and the specific named event/occasion, using the who/what anchor and "
             "transcript above (e.g. 'the president' -> 'George W. Bush', 'his speech' -> 'his 2001 "
@@ -213,16 +220,21 @@ def main():
         ctx = (focus + "\n" + head).strip()[:1800]
         new = densify(setting, anchor, topic_of(r), ctx, q, a, args.dp_url, args.dp_model,
                       args.api_key, bdate=bdate)
-        if new and not str(new).startswith("__ERR__") and (ATTRIB.search(new) or RELTIME.search(new)):
+        if new and not str(new).startswith("__ERR__") and (
+                ATTRIB.search(new) or RELTIME.search(new) or DEIXIS.search(new)):
             # one retry with the offending pattern called out explicitly
+            m = DEIXIS.search(new)
             gripe = ("appended a program-attribution clause; identify the event itself instead"
                      if ATTRIB.search(new) else
+                     f"kept the vague reference '{m.group(0)}' - replace it with the specific "
+                     "program name, date, or named people" if m else
                      "used a relative time word; resolve it to the broadcast date")
             retry = densify(setting, anchor, topic_of(r),
                             ctx + f"\n\nIMPORTANT: your previous rewrite {gripe}.",
                             q, a, args.dp_url, args.dp_model, args.api_key, bdate=bdate)
             if (retry and not str(retry).startswith("__ERR__")
-                    and not ATTRIB.search(retry) and not RELTIME.search(retry)):
+                    and not ATTRIB.search(retry) and not RELTIME.search(retry)
+                    and not DEIXIS.search(retry)):
                 new = retry
         if not new or str(new).startswith("__ERR__"):
             err += 1
