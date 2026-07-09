@@ -39,9 +39,13 @@ def _toks(s):
     return set(w for w in s.split() if len(w) > 2 and w not in _STOP)
 
 
-def asr_excerpt(doc, start_ms, end_ms, query="", max_chars=600):
-    """The most query-relevant ASR turns of the window (plus neighbors), NOT the
-    window head: reviewers must see the passage that states the answer."""
+def asr_excerpt(doc, start_ms, end_ms, query="", answer="", max_chars=900):
+    """The most query-relevant ASR turns of the window, assembled in RANK order
+    under a character budget (each turn capped, so a long top turn cannot push
+    the answer-bearing turn past the cut), then displayed in time order with
+    ellipses between non-adjacent turns. Returns (text, anchor_ms) where
+    anchor_ms is the start of the best answer-bearing turn (for frame anchoring).
+    """
     parts = []
     for k in doc.get("layers", {}):
         if not k.lower().startswith("asr"):
@@ -58,18 +62,44 @@ def asr_excerpt(doc, start_ms, end_ms, query="", max_chars=600):
                     parts.append((s, t))
     parts.sort()
     if not parts:
-        return ""
+        return "", None
     q = _toks(query)
-    if q:
-        ranked = sorted(range(len(parts)), key=lambda i: -len(q & _toks(parts[i][1])))
-        picked = set()
-        for i in ranked[:3]:
-            picked.update({i - 1, i, i + 1})
-        ordered = [parts[i][1] for i in sorted(p for p in picked if 0 <= p < len(parts))]
-        out = " ".join(ordered)[:max_chars]
-        if out:
-            return out
-    return " ".join(t for _, t in parts)[:max_chars]
+    if not q:
+        return " ".join(t for _, t in parts)[:max_chars], None
+
+    per_turn = 300
+    scores = [len(q & _toks(t)) for _, t in parts]
+    ranked = sorted(range(len(parts)), key=lambda i: -scores[i])
+
+    # frame anchor: highest-ranked turn that carries an answer token, else rank 0
+    a_toks = _toks(answer)
+    anchor_ms = None
+    for i in ranked[:6]:
+        if scores[i] == 0:
+            break
+        if a_toks and (a_toks & _toks(parts[i][1])):
+            anchor_ms = parts[i][0]
+            break
+    if anchor_ms is None and scores[ranked[0]] > 0:
+        anchor_ms = parts[ranked[0]][0]
+
+    selected, budget = set(), max_chars
+    for i in ranked[:4]:
+        if scores[i] == 0 or budget <= 0:
+            break
+        for j in (i, i - 1, i + 1):        # core first, then neighbors
+            if 0 <= j < len(parts) and j not in selected:
+                t = parts[j][1][:per_turn]
+                if len(t) <= budget or (j == i and not selected):
+                    selected.add(j)
+                    budget -= len(t)
+    pieces, prev = [], None
+    for j in sorted(selected):
+        if prev is not None and j > prev + 1:
+            pieces.append("[...]")
+        pieces.append(parts[j][1][:per_turn])
+        prev = j
+    return " ".join(pieces), anchor_ms
 
 
 def exploration_rows(exp_dir, out):
@@ -140,8 +170,10 @@ def main():
                 ev = r.get("evidence", {}) or {}
                 start, end = ev.get("start_ms"), ev.get("end_ms")
                 spans = []
+                anchor_ms = None
                 if start is not None and doc:
-                    txt = asr_excerpt(doc, start, end or start, query=f"{q} {a}")
+                    txt, anchor_ms = asr_excerpt(doc, start, end or start,
+                                                 query=f"{q} {a}", answer=a)
                     if txt:
                         spans.append({"modality": "asr", "text": txt})
                 rt = r.get("roundtrip") or {}
@@ -155,6 +187,7 @@ def main():
                     "task_family": f"{r.get('cell', '')} / {r.get('w_role', '')}",
                     "window_start_ms": start,
                     "window_end_ms": end,
+                    "support_anchor_ms": anchor_ms,
                     "verification": {
                         "rationale": qa.get("rationale", ""),
                         "support_spans": spans,
