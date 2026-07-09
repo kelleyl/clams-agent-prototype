@@ -32,7 +32,7 @@ echo "=== v6 full run: $N in-scope videos | git $(git rev-parse --short HEAD 2>/
 echo "=== STAGE 1: need-down generate + densify ($GEN) $(date +%H:%M:%S) ==="
 for V in $VIDS; do
   $PY scripts/generate_qa_needdown.py --all --only-video "$V" --skip-done \
-      --vllm-url $URL --model "$GEN" 2>&1 | tail -1
+      --two-hop-cap 0 --vllm-url $URL --model "$GEN" 2>&1 | tail -1
   $PY scripts/densify_questions.py --video "$V" --dp-url $URL --dp-model "$GEN" 2>&1 | tail -1
   echo "[stage1] done: $V $(date +%H:%M:%S)"
 done

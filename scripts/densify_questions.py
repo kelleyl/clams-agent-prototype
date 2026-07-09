@@ -55,7 +55,11 @@ DEIXIS = re.compile(r"\b(this segment|the segment|the report|the broadcast|the c
 # panel a program/era hint
 ATTRIB = re.compile(r"\b(according to|as (?:mentioned|discussed|stated|described|reported)\b)"
                     r"[^,.?]*\b(broadcast|program|episode|newshour|news hour|segment|report|"
-                    r"discussion|transcript|video)\b", re.I)
+                    r"reports|discussion|transcript|video|coverage)\b", re.I)
+# unresolved relative time ("news reports from today"): meaningless without the
+# broadcast date; densify must resolve these to the date or drop them
+RELTIME = re.compile(r"\b(today|yesterday|tonight|this (?:week|morning|evening)|"
+                     r"earlier today)\b", re.I)
 
 
 def items(layer):
@@ -101,10 +105,12 @@ def topic_of(t):
     return el.split(":", 1)[1] if ":" in el else el
 
 
-def densify(setting, anchor, topic, ctx, question, answer, url, model, api_key, timeout=90):
+def densify(setting, anchor, topic, ctx, question, answer, url, model, api_key,
+            timeout=90, bdate=""):
     sysm = ("You rewrite a benchmark question to be self-contained, without changing what it "
             "asks and without revealing the answer.")
     user = (f"Setting: {setting}.\n"
+            f"Broadcast date: {bdate or 'unknown'}.\n"
             f"Who and what this broadcast is about (BACKGROUND ONLY - the broadcast covers "
             f"several unrelated stories): {anchor or '(unknown)'}\n"
             f"Segment label (UNRELIABLE - news-summary segments mix stories and labels can be "
@@ -117,7 +123,9 @@ def densify(setting, anchor, topic, ctx, question, answer, url, model, api_key, 
             "asked fact. If the segment label or broadcast topics name a different story than "
             "those sentences, IGNORE them - attaching the wrong story makes the question "
             "factually misleading. If you cannot tell which story the fact belongs to, add no "
-            "story framing at all (name only the people/roles).\n"
+            "story framing at all (name only the people/roles). "
+            "Never use relative time words (today, yesterday, tonight, this week) - resolve "
+            "them to the broadcast date or an absolute description of the event.\n"
             "Rewrite the question so a reader who has NOT seen the video understands exactly what "
             "is being asked. Crucially, name the SUBJECT explicitly: replace generic references "
             "like 'the president', 'his speech', 'this segment', 'the speaker' with the specific "
@@ -175,11 +183,16 @@ def main():
     print(f"setting: {setting}")
     print(f"anchor: {anchor[:160]}")
 
+    bdate = doc.get("broadcast_date") or ""
     n = vague_before = vague_after = err = tic = 0
     for r in data.get("rows", []):
         qa = r.get("qa", {})
         q, a = qa.get("question"), qa.get("answer")
         if not q or qa.get("error"):
+            continue
+        if (r.get("element") or "").startswith("two_hop:"):
+            # never rewrite two-hop questions: densify re-inserts the entity
+            # name the necessity design deliberately hides
             continue
         if qa.get("densified"):
             if not args.redo:   # resume: already rewritten (not idempotent)
@@ -194,14 +207,18 @@ def main():
         focus = retrieve_context(doc, f"{q} {a}", k=5)
         head = asr_text(doc, ev["start_ms"], ev["end_ms"]) if ev.get("start_ms") is not None else ""
         ctx = (focus + "\n" + head).strip()[:1800]
-        new = densify(setting, anchor, topic_of(r), ctx, q, a, args.dp_url, args.dp_model, args.api_key)
-        if new and not str(new).startswith("__ERR__") and ATTRIB.search(new):
-            # one retry with the offending clause called out explicitly
+        new = densify(setting, anchor, topic_of(r), ctx, q, a, args.dp_url, args.dp_model,
+                      args.api_key, bdate=bdate)
+        if new and not str(new).startswith("__ERR__") and (ATTRIB.search(new) or RELTIME.search(new)):
+            # one retry with the offending pattern called out explicitly
+            gripe = ("appended a program-attribution clause; identify the event itself instead"
+                     if ATTRIB.search(new) else
+                     "used a relative time word; resolve it to the broadcast date")
             retry = densify(setting, anchor, topic_of(r),
-                            ctx + "\n\nIMPORTANT: your previous rewrite appended a program-"
-                            "attribution clause; identify the event itself instead.",
-                            q, a, args.dp_url, args.dp_model, args.api_key)
-            if retry and not str(retry).startswith("__ERR__") and not ATTRIB.search(retry):
+                            ctx + f"\n\nIMPORTANT: your previous rewrite {gripe}.",
+                            q, a, args.dp_url, args.dp_model, args.api_key, bdate=bdate)
+            if (retry and not str(retry).startswith("__ERR__")
+                    and not ATTRIB.search(retry) and not RELTIME.search(retry)):
                 new = retry
         if not new or str(new).startswith("__ERR__"):
             err += 1
@@ -218,6 +235,9 @@ def main():
         if ATTRIB.search(new):
             tic += 1
             qa["self_contained_flag"] = "attribution_tic"
+        elif RELTIME.search(new):
+            tic += 1
+            qa["self_contained_flag"] = "relative_time"
         if args.verbose and n <= 8:
             print(f"\n  BEFORE: {q[:95]}")
             print(f"  AFTER : {new[:130]}")

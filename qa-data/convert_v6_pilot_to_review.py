@@ -61,6 +61,14 @@ def asr_excerpt(doc, start_ms, end_ms, query="", answer="", max_chars=900):
                 if t:
                     parts.append((s, t))
     parts.sort()
+    # the index carries multiple ASR layers (asr, asr_vibevoice): drop repeats
+    seen_txt, deduped = set(), []
+    for s, t in parts:
+        key = t[:80].lower()
+        if key not in seen_txt:
+            seen_txt.add(key)
+            deduped.append((s, t))
+    parts = deduped
     if not parts:
         return "", None
     q = _toks(query)
@@ -118,7 +126,10 @@ def exploration_rows(exp_dir, out):
             for g in gold:
                 t = f"{g['start_ms'] // 60000}m-{(g.get('end_ms') or 0) // 60000}m"
                 who = f" ({g['person']})" if g.get("person") else ""
-                lines.append(f"[{g['video_id'][:36]} {t}]{who} {g.get('title') or ''}")
+                # chapter titles are unreliable on ~30/108 videos; show content
+                snip = (g.get("excerpt") or g.get("snippet") or "")[:90]
+                lines.append(f"[{g['video_id'][:36]} {t}]{who} {g.get('title') or ''}"
+                             + (f" << {snip}" if snip else ""))
             row = {
                 "id": f"v6x-{(vid or 'corpus').split('-')[-1][:12]}-{i:03d}",
                 "video_id": r.get("video_id") or "(corpus-level)",
@@ -152,7 +163,7 @@ def main():
     out_path = Path(args.output)
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
-    n_rows = n_skipped = 0
+    n_rows = n_skipped = n_policy_skipped = 0
     with open(out_path, "w") as out:
         for sp in sorted(in_dir.glob("*.json")):
             vid = sp.stem
@@ -162,11 +173,25 @@ def main():
             data = json.load(open(sp))
             idxp = idx_dir / f"{vid}.json"
             doc = json.load(open(idxp)) if idxp.exists() else {}
+            kept_qa = []
             for i, r in enumerate(data.get("rows", [])):
                 qa = r.get("qa", {})
                 q, a = qa.get("question"), qa.get("answer")
                 if not q or not a or qa.get("error"):
                     continue
+                # excluded from the benchmark by policy -> not worth rating time
+                if (r.get("element") or "").startswith("two_hop:"):
+                    n_policy_skipped += 1
+                    continue
+                qt = _toks(q)
+                dup = any((len(qt & _toks(pq)) / max(1, len(qt)) >= 0.45
+                           and str(a).lower().strip() == pa)
+                          or len(qt & _toks(pq)) / max(1, len(qt)) >= 0.7
+                          for pq, pa in kept_qa)
+                if dup:
+                    n_policy_skipped += 1
+                    continue
+                kept_qa.append((q, str(a).lower().strip()))
                 ev = r.get("evidence", {}) or {}
                 start, end = ev.get("start_ms"), ev.get("end_ms")
                 spans = []
@@ -215,7 +240,8 @@ def main():
             n_exp = exploration_rows(args.exploration_dir, out)
 
     print(f"wrote {n_rows} need-down + {n_exp} exploration rows -> {out_path} "
-          f"(excluded {n_skipped} stale video(s))")
+          f"(excluded {n_skipped} stale video(s), {n_policy_skipped} policy-dropped rows: "
+          f"two-hop + near-dups)")
 
 
 if __name__ == "__main__":

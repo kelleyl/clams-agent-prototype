@@ -5,10 +5,16 @@ Reads data/qa_needdown/ (need-down free-text questions with gate state) and
 data/qa_exploration/ (retrieval_set questions), applies the keep policy, and
 writes qa-data/benchmark/v6/benchmark_combined.jsonl.
 
-Keep policy (graded-gate philosophy from V6_DATASET_PLAN.md):
-  need-down   : round-trip pass (or skipped/no-span for two-hop), blind stratum
-                != trivial. Robust/leaky-* strata are KEPT and recorded - they
-                are stratification metadata, not deletions.
+Keep policy (graded-gate philosophy from V6_DATASET_PLAN.md, tightened after
+the 2026-07-08 pilot smell test):
+  need-down   : requires a VERIFIED evidence span - round-trip pass, not
+                skipped. No-span rows (two-hop, cataloging) bypass the gate and
+                the smell test showed they are exactly where hallucinated and
+                unverifiable answers hide; they stay in raw data only. Blind
+                stratum != trivial (robust/leaky-* are stratification metadata,
+                not deletions). Near-duplicates of an earlier kept question
+                (same normalized answer + >=0.45 question-token overlap, or
+                >=0.7 question overlap) are dropped.
   exploration : row["keep"] as computed by generate_qa_exploration.py
                 (bounds + set round-trip / hole sampling + identity gates).
 
@@ -22,6 +28,28 @@ from pathlib import Path
 
 QA_DIR = Path("data/qa_needdown")
 EXP_DIR = Path("data/qa_exploration")
+
+
+import re
+
+
+def _toks(s):
+    s = re.sub(r"[^a-z0-9 ]", " ", (s or "").lower())
+    return set(w for w in s.split() if len(w) > 2)
+
+
+def _norm(s):
+    return re.sub(r"[^a-z0-9]", "", (s or "").lower())
+
+
+def is_near_dup(q, a, kept_by_video):
+    """Same salient fact re-asked across cells (Augusta golf x3 on the pilot)."""
+    qt = _toks(q)
+    for pq, pa in kept_by_video:
+        ov = len(qt & _toks(pq)) / max(1, len(qt))
+        if (_norm(a) == _norm(pa) and ov >= 0.45) or ov >= 0.7:
+            return True
+    return False
 
 
 def stratum(bs):
@@ -53,6 +81,7 @@ def main():
             continue
         d = json.load(open(f))
         vid = d.get("video_id", f.stem)
+        kept_by_video = []
         for i, r in enumerate(d.get("rows", [])):
             qa = r.get("qa", {})
             q, a = qa.get("question"), qa.get("answer")
@@ -61,13 +90,19 @@ def main():
                 continue
             st = stratum(qa.get("blind_score"))
             rtv = r.get("roundtrip") or {}
-            rt_ok = rtv.get("consistent") is True or bool(rtv.get("skipped"))
-            if not rt_ok:
+            if rtv.get("skipped"):
+                stats["needdown_drop_no_span"] += 1
+                continue
+            if rtv.get("consistent") is not True:
                 stats["needdown_drop_roundtrip"] += 1
                 continue
             if st == "trivial":
                 stats["needdown_drop_trivial"] += 1
                 continue
+            if is_near_dup(q, str(a), kept_by_video):
+                stats["needdown_drop_near_dup"] += 1
+                continue
+            kept_by_video.append((q, str(a)))
             ev = r.get("evidence", {}) or {}
             spans = ([{"start_ms": ev["start_ms"], "end_ms": ev.get("end_ms")}]
                      if ev.get("start_ms") is not None else [])

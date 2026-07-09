@@ -148,7 +148,7 @@ def choose_two_hop_fact(wd):
 
 
 # ---------- target construction (need-down, why/how skew) ----------
-def build_targets(sal, grounding, doc, max_per_cell):
+def build_targets(sal, grounding, doc, max_per_cell, two_hop_cap=3):
     year = broadcast_year(doc)
     parts = sal.get("main_participants", [])
     named = [p for p in parts if p.get("kind") in ("speaker", "both")
@@ -189,10 +189,12 @@ def build_targets(sal, grounding, doc, max_per_cell):
     # two-hop grounding-document (external knowledge) -- SMALL slice only.
     # Structurally leakage-prone: if the person is identifiable, world knowledge
     # supplies the external fact, so the necessity gate filters most of these.
-    # Cap to a few rather than one per grounded entity.
+    # Pilot smell test (2026-07-08): ALL two-hop rows were flagged (hallucinated
+    # or contradictory external facts, empty support, densify re-inserting the
+    # hidden names) -> the full v6.0 run sets --two-hop-cap 0.
     two_hop_added = 0
     for e in [x for x in grounding.get("entities", []) if x.get("grounded")]:
-        if two_hop_added >= 3:
+        if two_hop_added >= two_hop_cap:
             break
         wd = e.get("wikidata") or ""
         if not era_ok(wd, year):
@@ -338,6 +340,8 @@ def main():
     ap.add_argument("--only-video", default="")
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--max-per-cell", type=int, default=4)
+    ap.add_argument("--two-hop-cap", type=int, default=3,
+                    help="max two-hop questions per video (0 disables the type)")
     ap.add_argument("--dry-run", action="store_true", help="no LLM; build targets+prompts+gates")
     ap.add_argument("--skip-done", action="store_true",
                     help="skip videos whose output file already has generated rows (resume)")
@@ -403,7 +407,8 @@ def main():
                 continue
             desc = json.load(open(dp))
 
-        targets = build_targets(sal, grounding, doc, args.max_per_cell)
+        targets = build_targets(sal, grounding, doc, args.max_per_cell,
+                                two_hop_cap=args.two_hop_cap)
         n_targets += len(targets)
         out_rows = []
         prior_qs = []
