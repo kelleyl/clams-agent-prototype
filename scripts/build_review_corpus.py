@@ -174,16 +174,44 @@ def main():
                     continue
                 qa = r["qa"]
                 gold = qa.get("answer_set") or []
+                # per-item catalog evidence: identity + speaking time +
+                # verification method, so a reviewer can actually judge the set
+                cat = json.load(open("data/corpus_catalog.json")) \
+                    if Path("data/corpus_catalog.json").exists() else {"videos": {}}
+
+                def pinfo(gv, person):
+                    for p in (cat["videos"].get(gv) or {}).get("participants", []):
+                        g2 = p.get("grounded") or {}
+                        if (g2.get("canonical") or p["name"]) == person or p["name"] == person:
+                            return g2.get("description") or "(ungrounded)", p.get("speaking_ms", 0)
+                    return "(not in catalog)", 0
+
+                lines = []
+                for g in gold:
+                    if g.get("person"):
+                        desc, spk = pinfo(g.get("video_id"), g["person"])
+                        lines.append(f"- {g['person']}: {desc} | speaks {spk // 1000}s in "
+                                     f"{g['video_id'][:34]} | verified: {g.get('verified', '?')}")
+                    else:
+                        lines.append(f"- [{g['video_id'][:34]} {g['start_ms'] // 60000}m] "
+                                     f"{g.get('title') or ''} :: "
+                                     f"{(g.get('excerpt') or g.get('snippet') or '')[:160]}")
+                comp = r.get("completeness") or {}
+                srt = r.get("set_roundtrip") or {}
+                if comp:
+                    lines.append("completeness: " + json.dumps(
+                        {k: v for k, v in comp.items() if k != "near_miss_checked"}))
+                if srt.get("f1") is not None:
+                    lines.append(f"set round-trip F1: {srt['f1']}")
                 out.write(json.dumps({
                     "id": rid, "family": "exploration", "video_id": vid,
                     "question": qa.get("question"),
                     "answer": " ;; ".join(
                         f"[{g['video_id'][:30]} {g['start_ms'] // 60000}m] "
-                        f"{(g.get('person') or g.get('title') or '')} :: "
-                        f"{(g.get('excerpt') or g.get('snippet') or '')[:80]}"
+                        f"{(g.get('person') or g.get('title') or '')}"
                         for g in gold),
                     "rationale": qa.get("rationale", ""),
-                    "evidence_excerpt": "(retrieval set above is the answer)",
+                    "evidence_excerpt": "\n".join(lines),
                 }) + "\n")
                 n += 1
     print(f"wrote {n} review rows -> {args.out} (preview has {len(preview_ids)})")
