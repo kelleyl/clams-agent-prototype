@@ -12,7 +12,7 @@ Usage:
     python eval/score_predictions.py \
         --predictions eval/results/predictions.jsonl \
         --benchmark qa-data/benchmark/benchmark.jsonl \
-        --judge-model qwen3:8b
+        --judge-model qwen3.5:9b
 
     # Score MC-only predictions
     python eval/score_predictions.py \
@@ -45,6 +45,51 @@ def score_exact_match(predicted, expected):
     if len(pred) > 1:
         pred = pred[0]
     return pred == exp
+
+
+def score_retrieval_set(predicted, expected, iou_thresh=0.3):
+    """Set F1 for retrieval_set questions. A predicted segment matches a gold
+    segment if same video_id and temporal IoU >= iou_thresh (or same seg_id).
+    Accepts predicted as list of dicts, or a string of 'video_id start-end' /
+    seg_id mentions (best-effort parse for free-form model output)."""
+    def as_segs(x):
+        if isinstance(x, list):
+            return [s for s in x if isinstance(s, dict)]
+        segs = []
+        import re as _re
+        for m in _re.finditer(r"([\w.\-]*cpb[\w.\-]+|[A-Za-z0-9_\-]{6,})[^\d]{0,12}(\d+)m",
+                              str(x)):
+            segs.append({"video_id": m.group(1), "start_ms": int(m.group(2)) * 60000,
+                         "end_ms": (int(m.group(2)) + 1) * 60000})
+        return segs
+
+    def iou(a, b):
+        s1, e1 = a.get("start_ms") or 0, a.get("end_ms") or 0
+        s2, e2 = b.get("start_ms") or 0, b.get("end_ms") or 0
+        inter = max(0, min(e1, e2) - max(s1, s2))
+        union = max(e1, e2) - min(s1, s2)
+        return inter / union if union > 0 else 0.0
+
+    P, G = as_segs(predicted), as_segs(expected)
+    if not G:
+        return 0.0, 0.0, 0.0
+    if not P:
+        return 0.0, 0.0, 0.0
+    matched_g = set()
+    tp = 0
+    for p in P:
+        for gi, g in enumerate(G):
+            if gi in matched_g:
+                continue
+            same_vid = (p.get("video_id") or "")[:20] == (g.get("video_id") or "")[:20]
+            if same_vid and (p.get("seg_id") == g.get("seg_id") or iou(p, g) >= iou_thresh):
+                matched_g.add(gi)
+                tp += 1
+                break
+    prec = tp / len(P)
+    rec = tp / len(G)
+    f1 = 2 * prec * rec / (prec + rec) if (prec + rec) else 0.0
+    return f1, prec, rec
 
 
 def score_keyword_overlap(predicted, expected):
@@ -170,7 +215,7 @@ def main():
                         default="auto",
                         help="Scoring mode (auto uses benchmark format field)")
     parser.add_argument("--judge-url", type=str, default=OLLAMA_URL)
-    parser.add_argument("--judge-model", type=str, default="qwen3:8b")
+    parser.add_argument("--judge-model", type=str, default="qwen3.5:9b")
     parser.add_argument("--output", type=Path, default=None)
     args = parser.parse_args()
 
@@ -223,9 +268,14 @@ def main():
             if fmt == "multiple_choice":
                 mode = "mc-exact"
                 expected = bench_q.get("mc_correct", pred.get("expected_answer", ""))
-            elif fmt == "free_text":
+            elif fmt == "retrieval_set":
+                mode = "retrieval-set"
+                expected = bench_q.get("answer", pred.get("expected_answer", []))
+            elif fmt in ("free_text", "freetext"):
                 mode = "llm-judge"
-                expected = bench_q.get("reference_answer", pred.get("expected_answer", ""))
+                expected = bench_q.get("reference_answer",
+                                       bench_q.get("answer",
+                                                   pred.get("expected_answer", "")))
             else:
                 # Fallback: guess from prediction content
                 if predicted.strip().upper() in ("A", "B", "C", "D"):
@@ -267,6 +317,15 @@ def main():
                     ft_dims_all[dim].append(val)
                 by_type[reasoning_type]["ft"].append(avg_score)
                 by_video[video_id]["ft"].append(avg_score)
+
+        elif mode == "retrieval-set":
+            f1, prec, rec = score_retrieval_set(predicted, expected)
+            pred["score"] = f1
+            pred["score_dims"] = {"precision": prec, "recall": rec}
+            pred["score_format"] = "retrieval_set"
+            ft_scores.append(f1)
+            by_type[reasoning_type]["ft"].append(f1)
+            by_video[video_id]["ft"].append(f1)
 
         elif mode == "keyword":
             f1 = score_keyword_overlap(predicted, expected)
