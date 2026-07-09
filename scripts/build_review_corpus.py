@@ -32,7 +32,7 @@ def _toks(s):
     return set(w for w in s.split() if len(w) > 2 and w not in _STOP)
 
 
-def asr_excerpt(doc, start_ms, end_ms, query, max_chars=700):
+def asr_excerpt(doc, start_ms, end_ms, query, answer="", max_chars=700):
     parts, seen = [], set()
     for k in doc.get("layers", {}):
         if not k.lower().startswith("asr"):
@@ -44,21 +44,45 @@ def asr_excerpt(doc, start_ms, end_ms, query, max_chars=700):
             s, e = it["start_ms"], it.get("end_ms") or it["start_ms"]
             if s < end_ms and e > start_ms:
                 t = (it.get("text") or "").strip()
-                if t and t[:80].lower() not in seen:
-                    seen.add(t[:80].lower())
+                # dedupe near-identical turns from parallel ASR layers
+                key = re.sub(r"[^a-z0-9]", "", t.lower())[:60]
+                if t and key not in seen:
+                    seen.add(key)
                     parts.append((s, t))
     parts.sort()
     if not parts:
         return ""
     q = _toks(query)
     ranked = sorted(range(len(parts)), key=lambda i: -len(q & _toks(parts[i][1])))
-    picked = set()
+    # GUARANTEE the answer-bearing turn survives: put it FIRST with reserved
+    # budget (marked with its timestamp), then fill with question-ranked
+    # context in time order. Time-ordered assembly under a char cap let intro
+    # turns crowd the answer turn out.
+    pieces = []
+    used = set()
+    a = _toks(answer)
+    if a:
+        a_ranked = sorted(range(len(parts)),
+                          key=lambda i: -len(a & _toks(parts[i][1])))
+        i = a_ranked[0]
+        if a & _toks(parts[i][1]):
+            pieces.append(f"[answer context @{parts[i][0] // 60000}m] "
+                          + parts[i][1][:330])
+            used.add(i)
+    budget = max_chars - sum(len(p) for p in pieces)
+    ctx = []
     for i in ranked[:3]:
-        picked.update({i - 1, i, i + 1})
-    out = []
-    for j in sorted(p for p in picked if 0 <= p < len(parts)):
-        out.append(parts[j][1][:280])
-    return " [...] ".join(out)[:max_chars]
+        for j in (i, i - 1, i + 1):
+            if 0 <= j < len(parts) and j not in used:
+                t = parts[j][1][:220]
+                if len(t) <= budget:
+                    ctx.append((parts[j][0], t))
+                    used.add(j)
+                    budget -= len(t)
+    ctx.sort()
+    if ctx:
+        pieces.append(" [...] ".join(t for _, t in ctx))
+    return "\n".join(pieces)[:max_chars + 80]
 
 
 def main():
@@ -94,7 +118,8 @@ def main():
                 if ev.get("start_ms") is not None:
                     excerpt = asr_excerpt(doc_of(vid), ev["start_ms"],
                                           ev.get("end_ms") or ev["start_ms"],
-                                          f"{qa['question']} {qa['answer']}")
+                                          f"{qa['question']} {qa['answer']}",
+                                          answer=str(qa["answer"]))
                 out.write(json.dumps({
                     "id": rid, "family": "speech", "video_id": vid,
                     "cell": r.get("cell"), "w_role": r.get("w_role"),
