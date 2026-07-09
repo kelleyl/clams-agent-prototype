@@ -1,0 +1,61 @@
+{
+  "video_id": "cpb-aacip-507-3x83j39n00",
+  "n": 1,
+  "rows": [
+    {
+      "video_id": "cpb-aacip-507-3x83j39n00",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:White House",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Which segments of this PBS NewsHour broadcast focus on the White House, either through direct discussion, appearances by White House officials, or as a central topic?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-3x83j39n00:ch_9",
+            "video_id": "cpb-aacip-507-3x83j39n00",
+            "seg_id": "ch_9",
+            "title": "Protest Coverage Begins",
+            "start_ms": 2950000,
+            "end_ms": 3589760,
+            "snippet": "Mark. It came back, I thought, to the early George W. Bush. I can recall in this broadcast our discussing George W. Bush",
+            "excerpt": "Park Police approved protest sites for 13 locations near the Capitol, the White House, and along the parade route."
+          },
+          {
+            "item_id": "cpb-aacip-507-3x83j39n00:ch_3",
+            "video_id": "cpb-aacip-507-3x83j39n00",
+            "seg_id": "ch_3",
+            "title": "Vice President Gore and President Bush",
+            "start_ms": 1636000,
+            "end_ms": 1774000,
+            "snippet": "His pictures, of course, need no description. There you saw Vice President Gore, the man who wanted to be president, sha",
+            "excerpt": "The uh Bushes and the Cheneys will then go back inside for a lunch with the leaders of Congress and then eventually go back to the White House where they will observe the inaugural parade.",
+            "speaker": "Jim"
+          }
+        ],
+        "format": "retrieval_set"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 0.667,
+        "ids": [
+          "cpb-aacip-507-3x83j39n00:ch_1",
+          "cpb-aacip-507-3x83j39n00:ch_2",
+          "cpb-aacip-507-3x83j39n00:ch_3",
+          "cpb-aacip-507-3x83j39n00:ch_9"
+        ],
+        "pass": false
+      },
+      "completeness": {
+        "near_miss_checked": 10,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": false
+    }
+  ]
+}

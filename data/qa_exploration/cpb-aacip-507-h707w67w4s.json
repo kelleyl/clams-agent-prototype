@@ -1,0 +1,60 @@
+{
+  "video_id": "cpb-aacip-507-h707w67w4s",
+  "n": 1,
+  "rows": [
+    {
+      "video_id": "cpb-aacip-507-h707w67w4s",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:Paul Bremer",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Identify the segments within this PBS NewsHour broadcast that discuss Paul Bremer as a subject, speaker, or participant?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-h707w67w4s:ch_2",
+            "video_id": "cpb-aacip-507-h707w67w4s",
+            "seg_id": "ch_2",
+            "title": "California Anti-Smoking Ads",
+            "start_ms": 1308000,
+            "end_ms": 2615000,
+            "snippet": "Today, less than three weeks after the blackout, I think we are making good progress in putting together the extraordina",
+            "excerpt": "In other words, we say, okay, uh, you keep calling him Jerry Bremer, and I keep calling him Paul Bremer."
+          },
+          {
+            "item_id": "cpb-aacip-507-h707w67w4s:ch_1",
+            "video_id": "cpb-aacip-507-h707w67w4s",
+            "seg_id": "ch_1",
+            "title": "US-China Trade Dispute",
+            "start_ms": 434000,
+            "end_ms": 1308000,
+            "snippet": "Some Democrats at the hearing charged Republicans were using the blackout to push through a broad energy bill. The Repub",
+            "excerpt": "Uh, certainly the United States will continue to play a dominant role, uh, a dominant political role through the work of Ambassador Bremer and his coalition colleagues, and a dominant role because of the size of, uh, the U.S.",
+            "speaker": "Jim Lehrer"
+          }
+        ],
+        "format": "retrieval_set",
+        "question_pre_rolefix": "Identify the segments within this PBS NewsHour broadcast that feature Paul Bremer as a subject, speaker, or participant."
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 1.0,
+        "ids": [
+          "cpb-aacip-507-h707w67w4s:ch_1",
+          "cpb-aacip-507-h707w67w4s:ch_2"
+        ],
+        "pass": true
+      },
+      "completeness": {
+        "near_miss_checked": 6,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": true
+    }
+  ]
+}

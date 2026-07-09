@@ -1,0 +1,96 @@
+{
+  "video_id": "cpb-aacip-507-1v5bc3tf81",
+  "n": 1,
+  "rows": [
+    {
+      "video_id": "cpb-aacip-507-1v5bc3tf81",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:Khmer Rouge",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Which segments of this PBS NewsHour broadcast focus on the Khmer Rouge, either through direct discussion, interviews, or as a primary topic?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-1v5bc3tf81:ch_1",
+            "video_id": "cpb-aacip-507-1v5bc3tf81",
+            "seg_id": "ch_1",
+            "title": "Bribery Investigation of Salt Lake City's Selection as the Site for the 2002 Winter Olympics",
+            "start_ms": 434000,
+            "end_ms": 919000,
+            "snippet": "I don't think so. And I think that's one of the key issues here as we look at this whole thing. I've covered the game si",
+            "excerpt": "Author and New York Times correspondent Henry Cam covered the Khmer Rouge and Cambodia for many years.",
+            "speaker": "Jim Lehrer"
+          },
+          {
+            "item_id": "cpb-aacip-507-1v5bc3tf81:ch_8",
+            "video_id": "cpb-aacip-507-1v5bc3tf81",
+            "seg_id": "ch_8",
+            "title": "Cambodia's Decline and Current Situation",
+            "start_ms": 2920000,
+            "end_ms": 3191000,
+            "snippet": "They are signs that are of significance to the 0 .1 % of the Cambodians who share in power. They are of no significance ",
+            "excerpt": "The last known group of Khmer Rouge guerrillas recently surrendered.",
+            "speaker": "Henry Camp"
+          },
+          {
+            "item_id": "cpb-aacip-507-1v5bc3tf81:ch_9",
+            "video_id": "cpb-aacip-507-1v5bc3tf81",
+            "seg_id": "ch_9",
+            "title": "UN Intervention in Cambodia",
+            "start_ms": 3191000,
+            "end_ms": 3395000,
+            "snippet": "It is less than a suggestion, Terry. I feel that the Cambodian elite, the Cambodian political elite, which is greatly di",
+            "excerpt": "The Khmer Rouge were the first ones to resent and to refuse to give up the power.",
+            "speaker": "Henry Camp"
+          },
+          {
+            "item_id": "cpb-aacip-507-1v5bc3tf81:ch_7",
+            "video_id": "cpb-aacip-507-1v5bc3tf81",
+            "seg_id": "ch_7",
+            "title": "Commercial Break",
+            "start_ms": 2840000,
+            "end_ms": 2920000,
+            "snippet": "When I first went there, Cambodia was an, I suppose it's a cliche to say, an island of peace in war -torn Indochina. It ",
+            "excerpt": "More than a million citizens of that Southeast Asian nation died during the reign of the Khmer Rouge government in the late 1970s.",
+            "speaker": "Henry Camp"
+          },
+          {
+            "item_id": "cpb-aacip-507-1v5bc3tf81:ch_6",
+            "video_id": "cpb-aacip-507-1v5bc3tf81",
+            "seg_id": "ch_6",
+            "title": "Future of Boeing and the Aerospace Industry",
+            "start_ms": 2784000,
+            "end_ms": 2840000,
+            "snippet": "After nearly 30 years of war and turmoil, Cambodia today is a crippled nation. An American journalist who has charted th",
+            "excerpt": "More than a million citizens of that Southeast Asian nation died during the reign of the Khmer Rouge government in the late 1970s.",
+            "speaker": "Terry Gross"
+          }
+        ],
+        "format": "retrieval_set"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 1.0,
+        "ids": [
+          "cpb-aacip-507-1v5bc3tf81:ch_1",
+          "cpb-aacip-507-1v5bc3tf81:ch_6",
+          "cpb-aacip-507-1v5bc3tf81:ch_7",
+          "cpb-aacip-507-1v5bc3tf81:ch_8",
+          "cpb-aacip-507-1v5bc3tf81:ch_9"
+        ],
+        "pass": true
+      },
+      "completeness": {
+        "near_miss_checked": 10,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": true
+    }
+  ]
+}

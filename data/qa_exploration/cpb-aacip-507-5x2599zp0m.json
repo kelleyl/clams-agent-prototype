@@ -1,0 +1,112 @@
+{
+  "video_id": "cpb-aacip-507-5x2599zp0m",
+  "n": 2,
+  "rows": [
+    {
+      "video_id": "cpb-aacip-507-5x2599zp0m",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:Deng Xiaoping",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Which segments of this PBS NewsHour broadcast focus on Deng Xiaoping?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-5x2599zp0m:ch_3",
+            "video_id": "cpb-aacip-507-5x2599zp0m",
+            "seg_id": "ch_3",
+            "title": "Acid Rain in the Western United States",
+            "start_ms": 1348000,
+            "end_ms": 2311000,
+            "snippet": "I'm a little bit more skeptical than Mike Oxenberg is. We've discussed this, he and I, over dinner in Peking more than o",
+            "excerpt": "Uh Deng Xiaoping of course leading the reformers."
+          },
+          {
+            "item_id": "cpb-aacip-507-5x2599zp0m:ch_2",
+            "video_id": "cpb-aacip-507-5x2599zp0m",
+            "seg_id": "ch_2",
+            "title": "Soviet Union Reaction to China",
+            "start_ms": 757000,
+            "end_ms": 1348000,
+            "snippet": "Next, we turn to the events in China, the ouster of that country's Communist Party leader, and whether that signals the ",
+            "excerpt": "[Music] Next we turn to the events in China, the ouster of that country's Communist Party leader, and whether that signals the end of the economic and political reforms put into place by Deng Xiaoping."
+          }
+        ],
+        "format": "retrieval_set"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 0.8,
+        "ids": [
+          "cpb-aacip-507-5x2599zp0m:ch_2",
+          "cpb-aacip-507-5x2599zp0m:ch_3",
+          "cpb-aacip-507-5x2599zp0m:ch_4"
+        ],
+        "pass": true
+      },
+      "completeness": {
+        "near_miss_checked": 7,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": true
+    },
+    {
+      "video_id": "cpb-aacip-507-5x2599zp0m",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:United States Department of State",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Which segments of this PBS NewsHour broadcast discuss the United States Department of State, either as a topic of discussion, through a speaker representing the department, or otherwise prominently?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-5x2599zp0m:ch_2",
+            "video_id": "cpb-aacip-507-5x2599zp0m",
+            "seg_id": "ch_2",
+            "title": "Soviet Union Reaction to China",
+            "start_ms": 757000,
+            "end_ms": 1348000,
+            "snippet": "Next, we turn to the events in China, the ouster of that country's Communist Party leader, and whether that signals the ",
+            "excerpt": "Now, the knowledge of the specifics, the detail, the scope, the intent of the President's decision was understood by the Secretary of State and Defense, and they expressed again their opposition to it."
+          },
+          {
+            "item_id": "cpb-aacip-507-5x2599zp0m:ch_1",
+            "video_id": "cpb-aacip-507-5x2599zp0m",
+            "seg_id": "ch_1",
+            "title": "China's Communist Party Head Resigns",
+            "start_ms": 434000,
+            "end_ms": 757000,
+            "snippet": "And I tried. I'm concerned about the testimony of Secretary Schultz before the House Committee that he says I learned no",
+            "excerpt": "Kampelman was promoted to State Department counselor to keep things even."
+          }
+        ],
+        "format": "retrieval_set",
+        "question_pre_rolefix": "Which segments of this PBS NewsHour broadcast feature the United States Department of State, either as a topic of discussion, through a speaker representing the department, or otherwise prominently?"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 1.0,
+        "ids": [
+          "cpb-aacip-507-5x2599zp0m:ch_1",
+          "cpb-aacip-507-5x2599zp0m:ch_2"
+        ],
+        "pass": true
+      },
+      "completeness": {
+        "near_miss_checked": 7,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": true
+    }
+  ]
+}

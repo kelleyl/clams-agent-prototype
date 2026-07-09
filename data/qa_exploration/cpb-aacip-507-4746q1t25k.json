@@ -1,0 +1,176 @@
+{
+  "video_id": "cpb-aacip-507-4746q1t25k",
+  "n": 3,
+  "rows": [
+    {
+      "video_id": "cpb-aacip-507-4746q1t25k",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:John Ashcroft",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Which segments of this PBS NewsHour broadcast discuss John Ashcroft?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-4746q1t25k:ch_3",
+            "video_id": "cpb-aacip-507-4746q1t25k",
+            "seg_id": "ch_3",
+            "title": "Palestinian Right of Return",
+            "start_ms": 1032000,
+            "end_ms": 2053000,
+            "snippet": "Senator Reed, you wanted to say? Ray, I think that we have to realize that these people haven't yet been confirmed by th",
+            "excerpt": "And again, whether you're talking about Don Rumsfeld or you're talking about Paul O'Neill or John Ashcroft, several of these people, these are outstanding people who are enormously well qualified But Senator Nichols, when you look at their backgrounds, when you look at the ideological strands of the party that they rep"
+          },
+          {
+            "item_id": "cpb-aacip-507-4746q1t25k:ch_4",
+            "video_id": "cpb-aacip-507-4746q1t25k",
+            "seg_id": "ch_4",
+            "title": "Middle East Peace Negotiations",
+            "start_ms": 2053000,
+            "end_ms": 2654000,
+            "snippet": "So Kate Michaelman, are you gearing up for a big fight on that? Absolutely. The future of a woman's right to choose, the",
+            "excerpt": "Elaine just said something that, uh, I really love about John Ashcroft and that makes him almost unique here in Washington, and that is he is a guy who fights for what he believes in."
+          }
+        ],
+        "format": "retrieval_set",
+        "question_pre_rolefix": "Which segments of this PBS NewsHour broadcast feature John Ashcroft as a speaker or main subject?"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 1.0,
+        "ids": [
+          "cpb-aacip-507-4746q1t25k:ch_3",
+          "cpb-aacip-507-4746q1t25k:ch_4"
+        ],
+        "pass": true
+      },
+      "completeness": {
+        "near_miss_checked": 7,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": true
+    },
+    {
+      "video_id": "cpb-aacip-507-4746q1t25k",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:Linda Chavez",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Which segments of this PBS NewsHour broadcast discuss Linda Chavez?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-4746q1t25k:ch_1",
+            "video_id": "cpb-aacip-507-4746q1t25k",
+            "seg_id": "ch_1",
+            "title": "The Bush Cabinet",
+            "start_ms": 434000,
+            "end_ms": 604000,
+            "snippet": "If I am confirmed as Secretary of Labor, I intend to keep faith with the men and the women who still work at jobs like t",
+            "excerpt": "Linda Chavez, the president-elect's pick for labor secretary, is the second Hispanic selected for a cabinet post."
+          },
+          {
+            "item_id": "cpb-aacip-507-4746q1t25k:ch_7",
+            "video_id": "cpb-aacip-507-4746q1t25k",
+            "seg_id": "ch_7",
+            "title": "News Hour Introduction",
+            "start_ms": 3735000,
+            "end_ms": 3846240,
+            "snippet": "Good evening, I'm Gwen Eiffel. Jim Lehrer is off today. On the news hour tonight, Ray Suarez introduces us to three new ",
+            "excerpt": "He also picked former Reagan administration official Linda Chavez for labor secretary, and outgoing Michigan Senator Spencer Abraham as energy secretary."
+          }
+        ],
+        "format": "retrieval_set",
+        "question_pre_rolefix": "Which segments of this PBS NewsHour broadcast feature Linda Chavez, either as a speaker or as a main subject?"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 0.8,
+        "ids": [
+          "cpb-aacip-507-4746q1t25k:ch_1",
+          "cpb-aacip-507-4746q1t25k:ch_3",
+          "cpb-aacip-507-4746q1t25k:ch_7"
+        ],
+        "pass": true
+      },
+      "completeness": {
+        "near_miss_checked": 7,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": true
+    },
+    {
+      "video_id": "cpb-aacip-507-4746q1t25k",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:United States Department of Justice",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Which segments of this PBS NewsHour broadcast discuss discussion of, or reporting on, the United States Department of Justice?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-4746q1t25k:ch_3",
+            "video_id": "cpb-aacip-507-4746q1t25k",
+            "seg_id": "ch_3",
+            "title": "Palestinian Right of Return",
+            "start_ms": 1032000,
+            "end_ms": 2053000,
+            "snippet": "Senator Reed, you wanted to say? Ray, I think that we have to realize that these people haven't yet been confirmed by th",
+            "excerpt": "I want to remind you all there's a man who became the Attorney General of the state of Missouri, was elected as the governor of the state of Missouri, and a United States Senator as in the state of Missouri."
+          },
+          {
+            "item_id": "cpb-aacip-507-4746q1t25k:ch_4",
+            "video_id": "cpb-aacip-507-4746q1t25k",
+            "seg_id": "ch_4",
+            "title": "Middle East Peace Negotiations",
+            "start_ms": 2053000,
+            "end_ms": 2654000,
+            "snippet": "So Kate Michaelman, are you gearing up for a big fight on that? Absolutely. The future of a woman's right to choose, the",
+            "excerpt": "I did not raise the issue of the federal judicial appointments, but, you know, that is a frightening thing when you look at the whole question of the Attorney General of the United States and the Department of Justice is the gatekeeper to the federal bench."
+          },
+          {
+            "item_id": "cpb-aacip-507-4746q1t25k:ch_7",
+            "video_id": "cpb-aacip-507-4746q1t25k",
+            "seg_id": "ch_7",
+            "title": "News Hour Introduction",
+            "start_ms": 3735000,
+            "end_ms": 3846240,
+            "snippet": "Good evening, I'm Gwen Eiffel. Jim Lehrer is off today. On the news hour tonight, Ray Suarez introduces us to three new ",
+            "excerpt": "He tapped a Democrat, Commerce Secretary Norman Mineta, to head the transportation department."
+          }
+        ],
+        "format": "retrieval_set",
+        "question_pre_rolefix": "Which segments of this PBS NewsHour broadcast feature discussion of, or reporting on, the United States Department of Justice?"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 0.8,
+        "ids": [
+          "cpb-aacip-507-4746q1t25k:ch_3",
+          "cpb-aacip-507-4746q1t25k:ch_4"
+        ],
+        "pass": true
+      },
+      "completeness": {
+        "near_miss_checked": 7,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": true
+    }
+  ]
+}

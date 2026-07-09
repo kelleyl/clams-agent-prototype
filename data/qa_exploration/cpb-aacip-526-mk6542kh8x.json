@@ -1,0 +1,125 @@
+{
+  "video_id": "cpb-aacip-526-mk6542kh8x",
+  "n": 2,
+  "rows": [
+    {
+      "video_id": "cpb-aacip-526-mk6542kh8x",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:Chicago Symphony Orchestra",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Which segments of this NJN broadcast discuss the Chicago Symphony Orchestra?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-526-mk6542kh8x:ch_6",
+            "video_id": "cpb-aacip-526-mk6542kh8x",
+            "seg_id": "ch_6",
+            "title": "Working with Young Musicians",
+            "start_ms": 1691000,
+            "end_ms": 3470160,
+            "snippet": "Orchestra musicians, orchestral managers, and boards of orchestras all over the country and in Europe are all the time c",
+            "excerpt": "Ending months of speculation, the Chicago Symphony Orchestra's board of trustees has named Daniel Baron Boehn to succeed musical director Sir George Schulte when Schulte steps down in September 1991."
+          },
+          {
+            "item_id": "cpb-aacip-526-mk6542kh8x:ch_3",
+            "video_id": "cpb-aacip-526-mk6542kh8x",
+            "seg_id": "ch_3",
+            "title": "Schulte's Career and Legacy",
+            "start_ms": 790000,
+            "end_ms": 1054000,
+            "snippet": "The children, once they came, I became a different person because when you have a child in your palm of your hand and sa",
+            "excerpt": "Because again, the orchestra, they're new in Europe, but they didn't know the Chicago Symphony qualities."
+          },
+          {
+            "item_id": "cpb-aacip-526-mk6542kh8x:ch_2",
+            "video_id": "cpb-aacip-526-mk6542kh8x",
+            "seg_id": "ch_2",
+            "title": "Sir George Schulte's Last Season",
+            "start_ms": 591000,
+            "end_ms": 790000,
+            "snippet": "Not here. Maestro Schulte gets a sound that is a big sound. And he had an orchestra here that could produce that. It was",
+            "excerpt": "Finally, in 1969, with Carlo Maria Giolini as his principal guest conductor, George Schulte became music director of the Chicago Symphony Orchestra."
+          }
+        ],
+        "format": "retrieval_set",
+        "question_pre_rolefix": "Which segments of this NJN broadcast feature the Chicago Symphony Orchestra?"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 0.667,
+        "ids": [
+          "cpb-aacip-526-mk6542kh8x:ch_1",
+          "cpb-aacip-526-mk6542kh8x:ch_2",
+          "cpb-aacip-526-mk6542kh8x:ch_3",
+          "cpb-aacip-526-mk6542kh8x:ch_4",
+          "cpb-aacip-526-mk6542kh8x:ch_5",
+          "cpb-aacip-526-mk6542kh8x:ch_6"
+        ],
+        "pass": false
+      },
+      "completeness": {
+        "near_miss_checked": 6,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": false
+    },
+    {
+      "video_id": "cpb-aacip-526-mk6542kh8x",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:theme:Leadership transitions at the Chicago Symphony Orchestra (CSO)",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Which segments of this NJN broadcast discuss Leadership transitions at the Chicago Symphony Orchestra (CSO)?",
+        "rationale": "theme-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-526-mk6542kh8x:ch_6",
+            "video_id": "cpb-aacip-526-mk6542kh8x",
+            "seg_id": "ch_6",
+            "title": "Working with Young Musicians",
+            "start_ms": 1691000,
+            "end_ms": 3470160,
+            "snippet": "Orchestra musicians, orchestral managers, and boards of orchestras all over the country and in Europe are all the time c",
+            "excerpt": "Ending months of speculation, the Chicago Symphony Orchestra's board of trustees has named Daniel Baron Boehn to succeed musical director Sir George Schulte when Schulte steps down in September 1991."
+          },
+          {
+            "item_id": "cpb-aacip-526-mk6542kh8x:ch_2",
+            "video_id": "cpb-aacip-526-mk6542kh8x",
+            "seg_id": "ch_2",
+            "title": "Sir George Schulte's Last Season",
+            "start_ms": 591000,
+            "end_ms": 790000,
+            "snippet": "Not here. Maestro Schulte gets a sound that is a big sound. And he had an orchestra here that could produce that. It was",
+            "excerpt": "Finally, in 1969, with Carlo Maria Giolini as his principal guest conductor, George Schulte became music director of the Chicago Symphony Orchestra."
+          }
+        ],
+        "format": "retrieval_set"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 1.0,
+        "ids": [
+          "cpb-aacip-526-mk6542kh8x:ch_2",
+          "cpb-aacip-526-mk6542kh8x:ch_6"
+        ],
+        "pass": true
+      },
+      "completeness": {
+        "near_miss_checked": 6,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": true
+    }
+  ]
+}

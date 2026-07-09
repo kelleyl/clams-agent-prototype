@@ -1,0 +1,123 @@
+{
+  "video_id": "cpb-aacip-507-zk55d8pd1h",
+  "n": 2,
+  "rows": [
+    {
+      "video_id": "cpb-aacip-507-zk55d8pd1h",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:Daniel Ortega",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Which segments of this PBS NewsHour broadcast focus on Daniel Ortega, either through direct appearances, commentary, or as a primary subject of discussion?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-zk55d8pd1h:ch_3",
+            "video_id": "cpb-aacip-507-zk55d8pd1h",
+            "seg_id": "ch_3",
+            "title": "No-Fault Malpractice Insurance System Proposal",
+            "start_ms": 1500000,
+            "end_ms": 2479000,
+            "snippet": "Because the Sandinista friend, the French Sandinista, never sought out to create a one-party state. And there were elect",
+            "excerpt": "What is the political future of Daniel Ortega?"
+          },
+          {
+            "item_id": "cpb-aacip-507-zk55d8pd1h:ch_1",
+            "video_id": "cpb-aacip-507-zk55d8pd1h",
+            "seg_id": "ch_1",
+            "title": "Exxon Indictment and Environmental Laws",
+            "start_ms": 263000,
+            "end_ms": 812000,
+            "snippet": "Well, the people had two options before them, or at least perceived that. The friend, which was saying that everything w",
+            "excerpt": "Now it's on to President Daniel Ortega of Nicaragua, criminal charges against Exxon and a new medical malpractice report."
+          },
+          {
+            "item_id": "cpb-aacip-507-zk55d8pd1h:ch_0",
+            "video_id": "cpb-aacip-507-zk55d8pd1h",
+            "seg_id": "ch_0",
+            "title": "Nicaragua's Sandinista Government Declares Unilateral Ceasefire",
+            "start_ms": 0,
+            "end_ms": 263000,
+            "snippet": "Funding for the news hour has been provided by AT \u2047 T. AT \u2047 T connects the world. From equipment to networking, from com",
+            "excerpt": "[Unintelligible Speech] [Music] I'm Jim Lehrer, a newsmaker interview with the defeated president of Nicaragua, Daniel Ortega, the criminal indictment against the Exxon Corporation, and medical malpractice."
+          }
+        ],
+        "format": "retrieval_set"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 0.857,
+        "ids": [
+          "cpb-aacip-507-zk55d8pd1h:ch_0",
+          "cpb-aacip-507-zk55d8pd1h:ch_1",
+          "cpb-aacip-507-zk55d8pd1h:ch_3",
+          "cpb-aacip-507-zk55d8pd1h:ch_6"
+        ],
+        "pass": true
+      },
+      "completeness": {
+        "near_miss_checked": 7,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": true
+    },
+    {
+      "video_id": "cpb-aacip-507-zk55d8pd1h",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:Kwame Holman",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Which segments of this PBS NewsHour broadcast discuss Kwame Holman?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-zk55d8pd1h:ch_1",
+            "video_id": "cpb-aacip-507-zk55d8pd1h",
+            "seg_id": "ch_1",
+            "title": "Exxon Indictment and Environmental Laws",
+            "start_ms": 263000,
+            "end_ms": 812000,
+            "snippet": "Well, the people had two options before them, or at least perceived that. The friend, which was saying that everything w",
+            "excerpt": "Earlier today, correspondent Kwame Holman talked to President Ortega in Managua."
+          },
+          {
+            "item_id": "cpb-aacip-507-zk55d8pd1h:ch_0",
+            "video_id": "cpb-aacip-507-zk55d8pd1h",
+            "seg_id": "ch_0",
+            "title": "Nicaragua's Sandinista Government Declares Unilateral Ceasefire",
+            "start_ms": 0,
+            "end_ms": 263000,
+            "snippet": "Funding for the news hour has been provided by AT \u2047 T. AT \u2047 T connects the world. From equipment to networking, from com",
+            "excerpt": "After the news summary, Kwame Holman interviews the defeated president of Nicaragua, Daniel Ortega."
+          }
+        ],
+        "format": "retrieval_set",
+        "question_pre_rolefix": "Which segments of this PBS NewsHour broadcast feature Kwame Holman?"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 1.0,
+        "ids": [
+          "cpb-aacip-507-zk55d8pd1h:ch_0",
+          "cpb-aacip-507-zk55d8pd1h:ch_1"
+        ],
+        "pass": true
+      },
+      "completeness": {
+        "near_miss_checked": 7,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": true
+    }
+  ]
+}

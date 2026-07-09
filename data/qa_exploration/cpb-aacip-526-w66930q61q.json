@@ -1,0 +1,61 @@
+{
+  "video_id": "cpb-aacip-526-w66930q61q",
+  "n": 1,
+  "rows": [
+    {
+      "video_id": "cpb-aacip-526-w66930q61q",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:Hubert Humphrey",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Which segments of this NJN broadcast discuss Hubert Humphrey?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-526-w66930q61q:ch_3",
+            "video_id": "cpb-aacip-526-w66930q61q",
+            "seg_id": "ch_3",
+            "title": "Post-1968 Election Analysis",
+            "start_ms": 1214000,
+            "end_ms": 1853000,
+            "snippet": "By the end of April, there was no clear-cut leader. Both McGovern and Humphrey had gained momentum, but Wallace still lo",
+            "excerpt": "The Democratic field was full of hopefuls, including Senators Hubert Humphrey, Henry Scoop Jackson, Ed Muskie, and George McGovern.",
+            "speaker": "George Wallace"
+          },
+          {
+            "item_id": "cpb-aacip-526-w66930q61q:ch_4",
+            "video_id": "cpb-aacip-526-w66930q61q",
+            "seg_id": "ch_4",
+            "title": "Humphrey-Wallace Negotiations",
+            "start_ms": 1853000,
+            "end_ms": 2204000,
+            "snippet": "The pies are scattered among the blacks and the white. In Governor Wallace's first eight years, he made over 1,500 appoi",
+            "excerpt": "And in fact, I asked Hubert Humphrey himself in a private conversation in December of 1972 at the LBJ Library in Dallas, Texas, in Austin, Texas, uh, whether he had done this.",
+            "speaker": "George Wallace"
+          }
+        ],
+        "format": "retrieval_set",
+        "question_pre_rolefix": "Which segments of this NJN broadcast feature Hubert Humphrey, either as a speaker or main subject?"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 1.0,
+        "ids": [
+          "cpb-aacip-526-w66930q61q:ch_3",
+          "cpb-aacip-526-w66930q61q:ch_4"
+        ],
+        "pass": true
+      },
+      "completeness": {
+        "near_miss_checked": 6,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": true
+    }
+  ]
+}

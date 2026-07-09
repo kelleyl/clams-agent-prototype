@@ -1,0 +1,128 @@
+{
+  "video_id": "cpb-aacip-507-f47gq6rq94",
+  "n": 2,
+  "rows": [
+    {
+      "video_id": "cpb-aacip-507-f47gq6rq94",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:Jim Lehrer",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Which segments of this PBS NewsHour broadcast feature Jim Lehrer, either as a speaker or as a main subject?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-f47gq6rq94:ch_1",
+            "video_id": "cpb-aacip-507-f47gq6rq94",
+            "seg_id": "ch_1",
+            "title": "Miguel Estrada Judicial Nomination",
+            "start_ms": 434000,
+            "end_ms": 944000,
+            "snippet": "Blix has ordered Iraq to destroy some advanced missiles by Saturday. He said today it might take some time for Iraq to c",
+            "excerpt": "Yesterday, the Army's top general said several hundred thousand troops may be needed to occupy Iraq after a war.",
+            "speaker": "Jim Lehrer"
+          },
+          {
+            "item_id": "cpb-aacip-507-f47gq6rq94:ch_8",
+            "video_id": "cpb-aacip-507-f47gq6rq94",
+            "seg_id": "ch_8",
+            "title": "Summary of the News",
+            "start_ms": 3780000,
+            "end_ms": 3849760,
+            "snippet": "Good evening, I'm Jim Lehrer. On the news hour tonight, a summary of the news: the judicial nomination of Miguel Estrada",
+            "excerpt": "Major funding for the news hour with Jim Lehrer has been provided by."
+          }
+        ],
+        "format": "retrieval_set"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 0.8,
+        "ids": [
+          "cpb-aacip-507-f47gq6rq94:ch_1",
+          "cpb-aacip-507-f47gq6rq94:ch_7",
+          "cpb-aacip-507-f47gq6rq94:ch_8"
+        ],
+        "pass": true
+      },
+      "completeness": {
+        "near_miss_checked": 7,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": true
+    },
+    {
+      "video_id": "cpb-aacip-507-f47gq6rq94",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:Joe Lieberman",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Which segments of this PBS NewsHour broadcast discuss Joe Lieberman?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-f47gq6rq94:ch_4",
+            "video_id": "cpb-aacip-507-f47gq6rq94",
+            "seg_id": "ch_4",
+            "title": "Democratic Presidential Candidates",
+            "start_ms": 2820000,
+            "end_ms": 3256000,
+            "snippet": "Well, the first thing I would say that I would have done differently is that for the last two years, I would not have co",
+            "excerpt": "Tonight we talk with Senator Joseph Lieberman of Connecticut.",
+            "speaker": "Senator Joseph Lieberman"
+          },
+          {
+            "item_id": "cpb-aacip-507-f47gq6rq94:ch_5",
+            "video_id": "cpb-aacip-507-f47gq6rq94",
+            "seg_id": "ch_5",
+            "title": "Post-War Plans for Iraq",
+            "start_ms": 3256000,
+            "end_ms": 3444000,
+            "snippet": "Well, generally speaking, I mean, the central influence in my public service and political career was President John F. ",
+            "excerpt": "Today you gave a speech in which you were also critical of the administration's plans for post-war Iraq, which these have been leaking out in the recent days, um involve us military, um sort of a military occupation and then a US civilian administrator.",
+            "speaker": "Senator Joseph Lieberman"
+          },
+          {
+            "item_id": "cpb-aacip-507-f47gq6rq94:ch_8",
+            "video_id": "cpb-aacip-507-f47gq6rq94",
+            "seg_id": "ch_8",
+            "title": "Summary of the News",
+            "start_ms": 3780000,
+            "end_ms": 3849760,
+            "snippet": "Good evening, I'm Jim Lehrer. On the news hour tonight, a summary of the news: the judicial nomination of Miguel Estrada",
+            "excerpt": "plans for the humanitarian fallout from such a war, and our third Democratic presidential candidate conversation on Iraq with Senator Joe Lieberman."
+          }
+        ],
+        "format": "retrieval_set",
+        "question_pre_rolefix": "Which segments of this PBS NewsHour broadcast feature Joe Lieberman, either as a speaker or as a primary subject?"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 0.75,
+        "ids": [
+          "cpb-aacip-507-f47gq6rq94:ch_1",
+          "cpb-aacip-507-f47gq6rq94:ch_2",
+          "cpb-aacip-507-f47gq6rq94:ch_4",
+          "cpb-aacip-507-f47gq6rq94:ch_5",
+          "cpb-aacip-507-f47gq6rq94:ch_8"
+        ],
+        "pass": false
+      },
+      "completeness": {
+        "near_miss_checked": 7,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": false
+    }
+  ]
+}

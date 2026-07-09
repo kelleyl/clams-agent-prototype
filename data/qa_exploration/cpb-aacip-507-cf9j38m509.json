@@ -1,0 +1,59 @@
+{
+  "video_id": "cpb-aacip-507-cf9j38m509",
+  "n": 1,
+  "rows": [
+    {
+      "video_id": "cpb-aacip-507-cf9j38m509",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:Kent Conrad",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Which segments of this PBS NewsHour broadcast discuss Kent Conrad?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-cf9j38m509:ch_1",
+            "video_id": "cpb-aacip-507-cf9j38m509",
+            "seg_id": "ch_1",
+            "title": "Super Bowl Analysis",
+            "start_ms": 434000,
+            "end_ms": 2544000,
+            "snippet": "MR. Yes, yeah. There are priorities here that I think are badly misplaced. For example, I would not cut the COPS program",
+            "excerpt": "Senator Judd Gregg of New Hampshire is the chairman of the Senate Budget Committee, and Senator Kent Conrad of North Dakota is the committee's ranking Democrat."
+          },
+          {
+            "item_id": "cpb-aacip-507-cf9j38m509:ch_5",
+            "video_id": "cpb-aacip-507-cf9j38m509",
+            "seg_id": "ch_5",
+            "title": "Closing Credits",
+            "start_ms": 3579000,
+            "end_ms": 3845200,
+            "snippet": "Thank you. Thank you. Thank you. Thank you. Thank you.",
+            "excerpt": "On the NewsHour tonight, the news of this day, then the president's new budget proposal with differing reactions from Senators Judd Gregg and Kent Conrad."
+          }
+        ],
+        "format": "retrieval_set",
+        "question_pre_rolefix": "Which segments of this PBS NewsHour broadcast feature Kent Conrad, either as a speaker or as a main subject?"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 1.0,
+        "ids": [
+          "cpb-aacip-507-cf9j38m509:ch_1",
+          "cpb-aacip-507-cf9j38m509:ch_5"
+        ],
+        "pass": true
+      },
+      "completeness": {
+        "near_miss_checked": 5,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": true
+    }
+  ]
+}

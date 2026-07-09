@@ -1,0 +1,59 @@
+{
+  "video_id": "ABC_Network_-_Future_Cop_-_The_Kansas_City_Kid_-_WCVB-TV_Complete_Broadcast_4_30_1977",
+  "n": 1,
+  "rows": [
+    {
+      "video_id": "ABC_Network_-_Future_Cop_-_The_Kansas_City_Kid_-_WCVB-TV_Complete_Broadcast_4_30_1977",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:Nancy Drew",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Which segments of the April 30, 1977 FuzzyMemories TV broadcast from Chicago discuss Nancy Drew, or discuss her?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "ABC_Network_-_Future_Cop_-_The_Kansas_City_Kid_-_WCVB-TV_Complete_Broadcast_4_30_1977:ch_1",
+            "video_id": "ABC_Network_-_Future_Cop_-_The_Kansas_City_Kid_-_WCVB-TV_Complete_Broadcast_4_30_1977",
+            "seg_id": "ch_1",
+            "title": "Poker Game Begins",
+            "start_ms": 434000,
+            "end_ms": 2611000,
+            "snippet": "He knows what? Look. Tom Geary lost the fun money playing poker, right? Yeah. Well, if he lost it, why can't we win it b",
+            "excerpt": "Sunday, Nancy Drew takes a pleasure cruise on a ghost ship."
+          },
+          {
+            "item_id": "ABC_Network_-_Future_Cop_-_The_Kansas_City_Kid_-_WCVB-TV_Complete_Broadcast_4_30_1977:ch_6",
+            "video_id": "ABC_Network_-_Future_Cop_-_The_Kansas_City_Kid_-_WCVB-TV_Complete_Broadcast_4_30_1977",
+            "seg_id": "ch_6",
+            "title": "Ford Pickup Test Drive",
+            "start_ms": 3421000,
+            "end_ms": 3545000,
+            "snippet": "A relaxing cruise turns into a perilous voyage for Nancy Drew when she tries to prevent the murder of a famous mystery w",
+            "excerpt": "[Music] A relaxing cruise turns into a perilous voyage for Nancy Drew when she tries to prevent the murder of a famous mystery writer, followed by Airport, the Sunday movie."
+          }
+        ],
+        "format": "retrieval_set",
+        "question_pre_rolefix": "Which segments of the April 30, 1977 FuzzyMemories TV broadcast from Chicago feature Nancy Drew, or discuss her?"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 1.0,
+        "ids": [
+          "ABC_Network_-_Future_Cop_-_The_Kansas_City_Kid_-_WCVB-TV_Complete_Broadcast_4_30_1977:ch_1",
+          "ABC_Network_-_Future_Cop_-_The_Kansas_City_Kid_-_WCVB-TV_Complete_Broadcast_4_30_1977:ch_6"
+        ],
+        "pass": true
+      },
+      "completeness": {
+        "near_miss_checked": 8,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": true
+    }
+  ]
+}

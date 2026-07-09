@@ -1,0 +1,59 @@
+{
+  "video_id": "cpb-aacip-507-3b5w669q04",
+  "n": 1,
+  "rows": [
+    {
+      "video_id": "cpb-aacip-507-3b5w669q04",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:Pacific Life",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Which segments of this PBS NewsHour broadcast discuss Pacific Life, either as a topic of discussion, through a speaker, or as a central subject?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-3b5w669q04:ch_5",
+            "video_id": "cpb-aacip-507-3b5w669q04",
+            "seg_id": "ch_5",
+            "title": "Major Developments of the Day",
+            "start_ms": 3300000,
+            "end_ms": 3850320,
+            "snippet": "Again, the major developments of this day, miles of the U.S. Gulf Coast lay devastated in the wake of Hurricane Katrina.",
+            "excerpt": "At Pacific Life, we understand the importance of building a legacy that will stand the test of time."
+          },
+          {
+            "item_id": "cpb-aacip-507-3b5w669q04:ch_0",
+            "video_id": "cpb-aacip-507-3b5w669q04",
+            "seg_id": "ch_0",
+            "title": "Hurricane Katrina",
+            "start_ms": 0,
+            "end_ms": 415000,
+            "snippet": "30 people died in a Biloxi apartment building, blown away by a storm surge estimated at 22 feet. Access to the area is d",
+            "excerpt": "At Pacific Life, we understand the importance of building a legacy that will stand the test of time."
+          }
+        ],
+        "format": "retrieval_set",
+        "question_pre_rolefix": "Which segments of this PBS NewsHour broadcast feature Pacific Life, either as a topic of discussion, through a speaker, or as a central subject?"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 1.0,
+        "ids": [
+          "cpb-aacip-507-3b5w669q04:ch_0",
+          "cpb-aacip-507-3b5w669q04:ch_5"
+        ],
+        "pass": true
+      },
+      "completeness": {
+        "near_miss_checked": 6,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": true
+    }
+  ]
+}

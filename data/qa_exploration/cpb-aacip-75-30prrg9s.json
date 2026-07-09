@@ -1,0 +1,72 @@
+{
+  "video_id": "cpb-aacip-75-30prrg9s",
+  "n": 1,
+  "rows": [
+    {
+      "video_id": "cpb-aacip-75-30prrg9s",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:Willem de Kooning",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Which segments within this AAPB cpb-aacip-75 broadcast discuss Willem de Kooning, discuss him as a primary topic, or include his contributions?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-75-30prrg9s:ch_3",
+            "video_id": "cpb-aacip-75-30prrg9s",
+            "seg_id": "ch_3",
+            "title": "Order in Art",
+            "start_ms": 789000,
+            "end_ms": 1118000,
+            "snippet": "And I might say that the same thing you will find in this sculpture, Hagar, of Lipschitz. Lipschitz, after making his cu",
+            "excerpt": "Perhaps another painter who came from Europe, de Kooning, is no longer a visitor.",
+            "speaker": "Willen Sandberg"
+          },
+          {
+            "item_id": "cpb-aacip-75-30prrg9s:ch_8",
+            "video_id": "cpb-aacip-75-30prrg9s",
+            "seg_id": "ch_8",
+            "title": "The Invisible in Art",
+            "start_ms": 2315000,
+            "end_ms": 2615000,
+            "snippet": "Dubuffet, Dubuffet's work, and especially his earlier work, and the Cobra Group, the international group that started in",
+            "excerpt": "Uh among the American artists, I think of the De Kooning woman group."
+          },
+          {
+            "item_id": "cpb-aacip-75-30prrg9s:ch_4",
+            "video_id": "cpb-aacip-75-30prrg9s",
+            "seg_id": "ch_4",
+            "title": "Dubuffet's Influence",
+            "start_ms": 1118000,
+            "end_ms": 1412000,
+            "snippet": "This Appell is peculiarly valuable to illustrate this disruption. In this sculpture, which is called Two Torsos, we see ",
+            "excerpt": "Um Barnett Newman who was of the same generation as Pollock and de Kooning, by the very subtlest edging here, the the overlapping which is very small, there is a perception of space, but no actual representation of it.",
+            "speaker": "Jules Langsner"
+          }
+        ],
+        "format": "retrieval_set",
+        "question_pre_rolefix": "Which segments within this AAPB cpb-aacip-75 broadcast discuss Willem de Kooning, feature him as a primary topic, or include his contributions?"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 1.0,
+        "ids": [
+          "cpb-aacip-75-30prrg9s:ch_3",
+          "cpb-aacip-75-30prrg9s:ch_4",
+          "cpb-aacip-75-30prrg9s:ch_8"
+        ],
+        "pass": true
+      },
+      "completeness": {
+        "near_miss_checked": 9,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": true
+    }
+  ]
+}

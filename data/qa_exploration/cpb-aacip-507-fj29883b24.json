@@ -1,0 +1,112 @@
+{
+  "video_id": "cpb-aacip-507-fj29883b24",
+  "n": 2,
+  "rows": [
+    {
+      "video_id": "cpb-aacip-507-fj29883b24",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:David Brooks (commentator)",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Which segments of this PBS NewsHour broadcast feature David Brooks as a commentator or main subject?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-fj29883b24:ch_4",
+            "video_id": "cpb-aacip-507-fj29883b24",
+            "seg_id": "ch_4",
+            "title": "Super Tuesday and Kerry's Position",
+            "start_ms": 1801000,
+            "end_ms": 3503760,
+            "snippet": "Yeah. But it does make you a little gun shy considering what you said earlier about Howard Dean, because we would have e",
+            "excerpt": "There is a great and good nation whose freedom and security must be defended and dear friends that work by me and you and people all across america will never never end thank you god bless you and god bless the united states of america and shields and brooks indicated columnist mark shields and new york times columnist"
+          },
+          {
+            "item_id": "cpb-aacip-507-fj29883b24:ch_0",
+            "video_id": "cpb-aacip-507-fj29883b24",
+            "seg_id": "ch_0",
+            "title": "Democratic Voting Results",
+            "start_ms": 0,
+            "end_ms": 434000,
+            "snippet": "The Democratic presidential frontrunner John Kerry is now the projected or expected winner in five of the seven states t",
+            "excerpt": "Choice day for Democrats in seven states, a candidates roundup, and the analysis of Mark Shields and David Brooks."
+          }
+        ],
+        "format": "retrieval_set"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 0.667,
+        "ids": [
+          "cpb-aacip-507-fj29883b24:ch_0",
+          "cpb-aacip-507-fj29883b24:ch_1",
+          "cpb-aacip-507-fj29883b24:ch_3",
+          "cpb-aacip-507-fj29883b24:ch_4"
+        ],
+        "pass": false
+      },
+      "completeness": {
+        "near_miss_checked": 5,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": false
+    },
+    {
+      "video_id": "cpb-aacip-507-fj29883b24",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:Jim Lehrer",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Which segments of this PBS NewsHour broadcast feature Jim Lehrer prominently, either as a speaker, subject, or in a significant on-screen role?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-fj29883b24:ch_4",
+            "video_id": "cpb-aacip-507-fj29883b24",
+            "seg_id": "ch_4",
+            "title": "Super Tuesday and Kerry's Position",
+            "start_ms": 1801000,
+            "end_ms": 3503760,
+            "snippet": "Yeah. But it does make you a little gun shy considering what you said earlier about Howard Dean, because we would have e",
+            "excerpt": "[Music] Major funding for The NewsHour with Jim Lehrer has been provided by the SBC companies."
+          },
+          {
+            "item_id": "cpb-aacip-507-fj29883b24:ch_0",
+            "video_id": "cpb-aacip-507-fj29883b24",
+            "seg_id": "ch_0",
+            "title": "Democratic Voting Results",
+            "start_ms": 0,
+            "end_ms": 434000,
+            "snippet": "The Democratic presidential frontrunner John Kerry is now the projected or expected winner in five of the seven states t",
+            "excerpt": "The NewsHour with Jim Lehrer has been provided by For the news hour with Jim Lara has been provided by..."
+          }
+        ],
+        "format": "retrieval_set"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 1.0,
+        "ids": [
+          "cpb-aacip-507-fj29883b24:ch_0",
+          "cpb-aacip-507-fj29883b24:ch_4"
+        ],
+        "pass": true
+      },
+      "completeness": {
+        "near_miss_checked": 5,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": true
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+{
+  "video_id": "cpb-aacip-507-vm42r3pt6h",
+  "n": 2,
+  "rows": [
+    {
+      "video_id": "cpb-aacip-507-vm42r3pt6h",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:William Kennedy Smith",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Identify the segments of this PBS NewsHour broadcast focusing on William Kennedy Smith?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-vm42r3pt6h:ch_3",
+            "video_id": "cpb-aacip-507-vm42r3pt6h",
+            "seg_id": "ch_3",
+            "title": "Complaints about credit reports",
+            "start_ms": 930000,
+            "end_ms": 2599000,
+            "snippet": "As the events of the past three days have demonstrated, nowhere is the progression of events more confusing, the pace of",
+            "excerpt": "I I I have to say I I hear what you're saying and I sympathize with it, but and maybe Ann Lewis will agree with me on this, but the most striking thing to me about the William Kennedy Smith trial is that all the myths about the horrid, horrible, uh, persecution of the alleged victim when she's on the witness stand and "
+          },
+          {
+            "item_id": "cpb-aacip-507-vm42r3pt6h:ch_2",
+            "video_id": "cpb-aacip-507-vm42r3pt6h",
+            "seg_id": "ch_2",
+            "title": "William Bennett on the Soviet Union (continued)",
+            "start_ms": 680000,
+            "end_ms": 930000,
+            "snippet": "That's it for the news summary just ahead in the news hour. Fallout from the William Kennedy Smith rape trial and a docu",
+            "excerpt": "Just ahead on the NewsHour, fallout from the William Kennedy Smith rape trial."
+          }
+        ],
+        "format": "retrieval_set",
+        "question_pre_rolefix": "Identify the segments of this PBS NewsHour broadcast focusing on William Kennedy Smith."
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 1.0,
+        "ids": [
+          "cpb-aacip-507-vm42r3pt6h:ch_2",
+          "cpb-aacip-507-vm42r3pt6h:ch_3"
+        ],
+        "pass": true
+      },
+      "completeness": {
+        "near_miss_checked": 5,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": true
+    },
+    {
+      "video_id": "cpb-aacip-507-vm42r3pt6h",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:Judy Woodruff",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Which segments of this PBS NewsHour broadcast discuss Judy Woodruff?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-vm42r3pt6h:ch_4",
+            "video_id": "cpb-aacip-507-vm42r3pt6h",
+            "seg_id": "ch_4",
+            "title": "TRW settles lawsuit with 19 states and FTC",
+            "start_ms": 2599000,
+            "end_ms": 3187000,
+            "snippet": "In June, the controversy reached Capitol Hill. In hearings before a House Subcommittee on Consumer Affairs, witnesses re",
+            "excerpt": "Finally tonight, a story about credit bureaus.",
+            "speaker": "Jim Lehrer"
+          },
+          {
+            "item_id": "cpb-aacip-507-vm42r3pt6h:ch_5",
+            "video_id": "cpb-aacip-507-vm42r3pt6h",
+            "seg_id": "ch_5",
+            "title": "Closing segment",
+            "start_ms": 3187000,
+            "end_ms": 3285360,
+            "snippet": "Funding for the McNeil Lair News Hour has been provided by PepsiCo. PepsiCo. Part of helping the world live and communic",
+            "excerpt": "Again, the major stories of this Tuesday."
+          }
+        ],
+        "format": "retrieval_set",
+        "question_pre_rolefix": "Which segments of this PBS NewsHour broadcast feature Judy Woodruff, either as a speaker or main subject?"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 0.0,
+        "ids": [
+          "cpb-aacip-507-vm42r3pt6h:ch_1"
+        ],
+        "pass": false
+      },
+      "completeness": {
+        "near_miss_checked": 5,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": false
+    }
+  ]
+}

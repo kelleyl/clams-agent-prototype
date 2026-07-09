@@ -1,0 +1,112 @@
+{
+  "video_id": "cpb-aacip-507-v11vd6pz5w",
+  "n": 2,
+  "rows": [
+    {
+      "video_id": "cpb-aacip-507-v11vd6pz5w",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:Major League Baseball",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Which segments of this PBS NewsHour broadcast discuss Major League Baseball?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-v11vd6pz5w:ch_3",
+            "video_id": "cpb-aacip-507-v11vd6pz5w",
+            "seg_id": "ch_3",
+            "title": "Baseball's steroid scandal",
+            "start_ms": 2202000,
+            "end_ms": 3372000,
+            "snippet": "Again, the major developments of the day, U.S.-led forces struck back against armed resistance by Shiite militias in Ira",
+            "excerpt": "He's covered Major League Baseball for years."
+          },
+          {
+            "item_id": "cpb-aacip-507-v11vd6pz5w:ch_5",
+            "video_id": "cpb-aacip-507-v11vd6pz5w",
+            "seg_id": "ch_5",
+            "title": "Summary of the news and preview of upcoming segments",
+            "start_ms": 3671000,
+            "end_ms": 3836000,
+            "snippet": "U.S.-led forces struck back on several fronts against the armed resistance in Iraq today. In Baghdad, U.S. Apache helico",
+            "excerpt": "We close with some thoughts about how the steroid scandal is touching the new Major League Baseball season."
+          }
+        ],
+        "format": "retrieval_set"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 0.8,
+        "ids": [
+          "cpb-aacip-507-v11vd6pz5w:ch_1",
+          "cpb-aacip-507-v11vd6pz5w:ch_3",
+          "cpb-aacip-507-v11vd6pz5w:ch_5"
+        ],
+        "pass": true
+      },
+      "completeness": {
+        "near_miss_checked": 5,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": true
+    },
+    {
+      "video_id": "cpb-aacip-507-v11vd6pz5w",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:United States Senate Committee on Foreign Relations",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Which segments of this PBS NewsHour broadcast focus on or discuss the United States Senate Committee on Foreign Relations?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-v11vd6pz5w:ch_2",
+            "video_id": "cpb-aacip-507-v11vd6pz5w",
+            "seg_id": "ch_2",
+            "title": "President Bush on the June 30th transfer of power in Iraq",
+            "start_ms": 1110000,
+            "end_ms": 2202000,
+            "snippet": "The answer is there's some truth to that. The President, for whatever reason, picking June 30th, has raised expectations",
+            "excerpt": "And now, part three of our Iraq violence focus with the two leaders of the Senate Foreign Relations Committee, the chairman, Richard Lugar, Republican of Indiana, and the ranking Democrat, Joe Biden of Delaware."
+          },
+          {
+            "item_id": "cpb-aacip-507-v11vd6pz5w:ch_5",
+            "video_id": "cpb-aacip-507-v11vd6pz5w",
+            "seg_id": "ch_5",
+            "title": "Summary of the news and preview of upcoming segments",
+            "start_ms": 3671000,
+            "end_ms": 3836000,
+            "snippet": "U.S.-led forces struck back on several fronts against the armed resistance in Iraq today. In Baghdad, U.S. Apache helico",
+            "excerpt": "A report from Iraq by Jeffrey Gettleman of the New York Times, analysis of the Shiite group and its leader that triggered some of the weekend attacks, and reaction from Senate Foreign Relations Committee leaders, Senators Lugar and Bice."
+          }
+        ],
+        "format": "retrieval_set",
+        "question_pre_rolefix": "Which segments of this PBS NewsHour broadcast focus on or feature the United States Senate Committee on Foreign Relations?"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 1.0,
+        "ids": [
+          "cpb-aacip-507-v11vd6pz5w:ch_2",
+          "cpb-aacip-507-v11vd6pz5w:ch_5"
+        ],
+        "pass": true
+      },
+      "completeness": {
+        "near_miss_checked": 5,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": true
+    }
+  ]
+}

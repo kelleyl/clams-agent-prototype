@@ -1,0 +1,58 @@
+{
+  "video_id": "cpb-aacip-507-ns0ks6jx8k",
+  "n": 1,
+  "rows": [
+    {
+      "video_id": "cpb-aacip-507-ns0ks6jx8k",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:Trent Lott",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Which segments of this PBS NewsHour broadcast feature Trent Lott as a speaker or main subject?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-ns0ks6jx8k:ch_2",
+            "video_id": "cpb-aacip-507-ns0ks6jx8k",
+            "seg_id": "ch_2",
+            "title": "Middle East Peace Process",
+            "start_ms": 886000,
+            "end_ms": 1496000,
+            "snippet": "Chairman, can Senator Luger respond to this? No, I will not. Does Shiny have a right to be able to? The committee will b",
+            "excerpt": "He knows this creates problems for Trent Lott."
+          },
+          {
+            "item_id": "cpb-aacip-507-ns0ks6jx8k:ch_3",
+            "video_id": "cpb-aacip-507-ns0ks6jx8k",
+            "seg_id": "ch_3",
+            "title": "Bounty Hunters and Regulation",
+            "start_ms": 1496000,
+            "end_ms": 2044000,
+            "snippet": "I think it's over, Jim. And I'd say one thing. Senator Bob Kerry, Democrat from Nebraska, is chairman of the Senate Camp",
+            "excerpt": "Well, Erskine Bowles, the chief of staff of the White House, went to Jesse Helms with that offer, or I guess Trent Lott, with that suggestion, When the Congress goes out, when it recesses and then Weld can serve for a year."
+          }
+        ],
+        "format": "retrieval_set"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 1.0,
+        "ids": [
+          "cpb-aacip-507-ns0ks6jx8k:ch_2",
+          "cpb-aacip-507-ns0ks6jx8k:ch_3"
+        ],
+        "pass": true
+      },
+      "completeness": {
+        "near_miss_checked": 5,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": true
+    }
+  ]
+}

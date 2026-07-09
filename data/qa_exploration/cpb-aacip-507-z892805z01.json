@@ -1,0 +1,142 @@
+{
+  "video_id": "cpb-aacip-507-z892805z01",
+  "n": 2,
+  "rows": [
+    {
+      "video_id": "cpb-aacip-507-z892805z01",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:David Brooks (commentator)",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Which segments of this PBS NewsHour broadcast discuss David Brooks as a commentator or main subject?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-z892805z01:ch_5",
+            "video_id": "cpb-aacip-507-z892805z01",
+            "seg_id": "ch_5",
+            "title": "New York Times Coverage of Tiger Force",
+            "start_ms": 2370000,
+            "end_ms": 3080000,
+            "snippet": "Well, I think, Jim, the great irony of this week has been that what George Bush's greatest weakness was the economy. May",
+            "excerpt": "uh now that she will she's going to testify on Thursday morning and uh it should it's fireworks when you look ahead to Thursday morning David you see oh my goodness this is going to be a major event in terms of what is said and done by her and the commission."
+          },
+          {
+            "item_id": "cpb-aacip-507-z892805z01:ch_4",
+            "video_id": "cpb-aacip-507-z892805z01",
+            "seg_id": "ch_4",
+            "title": "Pentagon Review of Vietnam War Crimes",
+            "start_ms": 1860000,
+            "end_ms": 2370000,
+            "snippet": "Well, I think in tough, I mean, it's tough for all of us to see those images. First of all, I wouldn't generalize from F",
+            "excerpt": "[Music] And to the analysis of Shields and Brooks indicated columnist Mark Shields, New York Times columnist David Brooks.",
+            "speaker": "Bernard Traynor"
+          },
+          {
+            "item_id": "cpb-aacip-507-z892805z01:ch_0",
+            "video_id": "cpb-aacip-507-z892805z01",
+            "seg_id": "ch_0",
+            "title": "News Hour Intro",
+            "start_ms": 0,
+            "end_ms": 434000,
+            "snippet": "The Tycho trial ended today in a mistrial. A New York State judge declared it so after 11 days of jury deliberations. He",
+            "excerpt": "The analysis of Mark Shields and David Brooks, and a media unit report on a Vietnam War story that didn't go anywhere.",
+            "speaker": "Jim Lehrer"
+          },
+          {
+            "item_id": "cpb-aacip-507-z892805z01:ch_7",
+            "video_id": "cpb-aacip-507-z892805z01",
+            "seg_id": "ch_7",
+            "title": "News Hour Summary",
+            "start_ms": 3425000,
+            "end_ms": 3838720,
+            "snippet": "U.S. employers added 308,000 new jobs last month, the fastest rate in four years. The Labor Department's monthly unemplo",
+            "excerpt": "The analysis of Mark Shields and David Brooks, and a media unit report on a Vietnam War story that didn't go anywhere."
+          }
+        ],
+        "format": "retrieval_set",
+        "question_pre_rolefix": "Which segments of this PBS NewsHour broadcast feature David Brooks as a commentator or main subject?"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 0.8,
+        "ids": [
+          "cpb-aacip-507-z892805z01:ch_0",
+          "cpb-aacip-507-z892805z01:ch_1",
+          "cpb-aacip-507-z892805z01:ch_3",
+          "cpb-aacip-507-z892805z01:ch_4",
+          "cpb-aacip-507-z892805z01:ch_5",
+          "cpb-aacip-507-z892805z01:ch_7"
+        ],
+        "pass": true
+      },
+      "completeness": {
+        "near_miss_checked": 8,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": true
+    },
+    {
+      "video_id": "cpb-aacip-507-z892805z01",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:George W. Bush",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Which segments of this PBS NewsHour broadcast discuss George W. Bush, either through his appearance, direct speech, or as a primary topic of discussion?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-z892805z01:ch_5",
+            "video_id": "cpb-aacip-507-z892805z01",
+            "seg_id": "ch_5",
+            "title": "New York Times Coverage of Tiger Force",
+            "start_ms": 2370000,
+            "end_ms": 3080000,
+            "snippet": "Well, I think, Jim, the great irony of this week has been that what George Bush's greatest weakness was the economy. May",
+            "excerpt": "Well, I think the great irony of this of this week has been that what George Bush's greatest weakness was, the economy, maybe you can see signs if you're a Republican partisan that this could be neutralized and and go away."
+          },
+          {
+            "item_id": "cpb-aacip-507-z892805z01:ch_0",
+            "video_id": "cpb-aacip-507-z892805z01",
+            "seg_id": "ch_0",
+            "title": "News Hour Intro",
+            "start_ms": 0,
+            "end_ms": 434000,
+            "snippet": "The Tycho trial ended today in a mistrial. A New York State judge declared it so after 11 days of jury deliberations. He",
+            "excerpt": "President Bush welcomed today's economic news.",
+            "speaker": "Jim Lehrer"
+          }
+        ],
+        "format": "retrieval_set",
+        "question_pre_rolefix": "Which segments of this PBS NewsHour broadcast feature George W. Bush, either through his appearance, direct speech, or as a primary topic of discussion?"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 0.571,
+        "ids": [
+          "cpb-aacip-507-z892805z01:ch_0",
+          "cpb-aacip-507-z892805z01:ch_1",
+          "cpb-aacip-507-z892805z01:ch_3",
+          "cpb-aacip-507-z892805z01:ch_4",
+          "cpb-aacip-507-z892805z01:ch_5"
+        ],
+        "pass": false
+      },
+      "completeness": {
+        "near_miss_checked": 8,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": false
+    }
+  ]
+}

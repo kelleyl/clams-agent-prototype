@@ -1,0 +1,59 @@
+{
+  "video_id": "cpb-aacip-75-72p5j4xx",
+  "n": 1,
+  "rows": [
+    {
+      "video_id": "cpb-aacip-75-72p5j4xx",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:theme:Dada and Avant-Garde Art",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Within this broadcast, identify the segments discussing 'Dada and Avant-Garde Art'.",
+        "rationale": "theme-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-75-72p5j4xx:ch_3",
+            "video_id": "cpb-aacip-75-72p5j4xx",
+            "seg_id": "ch_3",
+            "title": "The Amory Show Opening",
+            "start_ms": 1839000,
+            "end_ms": 3132000,
+            "snippet": "Well, anti-art is another question again. I like the word to express vaguely the idea, but the word itself is wrong beca",
+            "excerpt": "It was the beginning of the interest, the American interest for It was the beginning of the interest, the American interest for modern art.",
+            "speaker": "Marcel Duchamp"
+          },
+          {
+            "item_id": "cpb-aacip-75-72p5j4xx:ch_1",
+            "video_id": "cpb-aacip-75-72p5j4xx",
+            "seg_id": "ch_1",
+            "title": "Duchamp's Artistic Influence",
+            "start_ms": 724000,
+            "end_ms": 1150000,
+            "snippet": "His philosophy on art is different from my philosophy on art. But because the philosophy was for him not just a few word",
+            "excerpt": "He he he created in 1930 or really the so-called readymades, which were an anti-art declaration at the time of Dada, 1915, 16, 17, 18."
+          }
+        ],
+        "format": "retrieval_set"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 0.5,
+        "ids": [
+          "cpb-aacip-75-72p5j4xx:ch_1",
+          "cpb-aacip-75-72p5j4xx:ch_4"
+        ],
+        "pass": false
+      },
+      "completeness": {
+        "near_miss_checked": 4,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": false
+    }
+  ]
+}

@@ -1,0 +1,167 @@
+{
+  "video_id": "cpb-aacip-507-bz6154fc44",
+  "n": 3,
+  "rows": [
+    {
+      "video_id": "cpb-aacip-507-bz6154fc44",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:United States Senate",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Which segments of this PBS NewsHour broadcast focus on the United States Senate?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-bz6154fc44:ch_3",
+            "video_id": "cpb-aacip-507-bz6154fc44",
+            "seg_id": "ch_3",
+            "title": "Wilderness Designation Bill",
+            "start_ms": 1384000,
+            "end_ms": 2545000,
+            "snippet": "Yeah, absolutely. I mean other Senate majority leaders obviously have tried to use the position in the past. Howard Bake",
+            "excerpt": "This was the week Senate Majority Leader Bob Dole took a commanding lead in the Republican delegate count and drove Steve Forbes out of the contest.",
+            "speaker": "Mark Shields"
+          },
+          {
+            "item_id": "cpb-aacip-507-bz6154fc44:ch_4",
+            "video_id": "cpb-aacip-507-bz6154fc44",
+            "seg_id": "ch_4",
+            "title": "Dispute Over Wilderness Designation",
+            "start_ms": 2545000,
+            "end_ms": 3264880,
+            "snippet": "Major funding for the news hour with Jim Lehrer has been provided by the Archer Daniels Midland Company, ADM, Supermarke",
+            "excerpt": "Next week, the Senate is expected to vote on legislation that would determine how much of Utah's land should be given the official designation of wilderness and preserved from development."
+          }
+        ],
+        "format": "retrieval_set"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 1.0,
+        "ids": [
+          "cpb-aacip-507-bz6154fc44:ch_3",
+          "cpb-aacip-507-bz6154fc44:ch_4"
+        ],
+        "pass": true
+      },
+      "completeness": {
+        "near_miss_checked": 4,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": true
+    },
+    {
+      "video_id": "cpb-aacip-507-bz6154fc44",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:Bill Clinton",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Identify the segments within this PBS NewsHour broadcast that discuss Bill Clinton?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-bz6154fc44:ch_3",
+            "video_id": "cpb-aacip-507-bz6154fc44",
+            "seg_id": "ch_3",
+            "title": "Wilderness Designation Bill",
+            "start_ms": 1384000,
+            "end_ms": 2545000,
+            "snippet": "Yeah, absolutely. I mean other Senate majority leaders obviously have tried to use the position in the past. Howard Bake",
+            "excerpt": "President Clinton was very critical of the cuts in environmental programs that Republicans are proposing in this budget bill that you're dealing with here now.",
+            "speaker": "Mark Shields"
+          },
+          {
+            "item_id": "cpb-aacip-507-bz6154fc44:ch_1",
+            "video_id": "cpb-aacip-507-bz6154fc44",
+            "seg_id": "ch_1",
+            "title": "Forbes Pulls Out of Presidential Race",
+            "start_ms": 434000,
+            "end_ms": 929000,
+            "snippet": "The big guns that ripped apart Sarajevo and other Bosnian towns are quiet, and thousands are trying to get their lives b",
+            "excerpt": "In the budget story, President Clinton signed a stopgap spending bill late today."
+          }
+        ],
+        "format": "retrieval_set",
+        "question_pre_rolefix": "Identify the segments within this PBS NewsHour broadcast that feature Bill Clinton as a speaker or main subject."
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 1.0,
+        "ids": [
+          "cpb-aacip-507-bz6154fc44:ch_1",
+          "cpb-aacip-507-bz6154fc44:ch_3"
+        ],
+        "pass": true
+      },
+      "completeness": {
+        "near_miss_checked": 4,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": true
+    },
+    {
+      "video_id": "cpb-aacip-507-bz6154fc44",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:Dunblane massacre",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Within this PBS NewsHour broadcast, identify the segments that discuss, mention, or discuss the Dunblane massacre?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-bz6154fc44:ch_3",
+            "video_id": "cpb-aacip-507-bz6154fc44",
+            "seg_id": "ch_3",
+            "title": "Wilderness Designation Bill",
+            "start_ms": 1384000,
+            "end_ms": 2545000,
+            "snippet": "Yeah, absolutely. I mean other Senate majority leaders obviously have tried to use the position in the past. Howard Bake",
+            "excerpt": "[Music] Meeting the head teacher and seeing the site of the massacre has clearly been a harrowing experience for Tony Blair.",
+            "speaker": "Mark Shields"
+          },
+          {
+            "item_id": "cpb-aacip-507-bz6154fc44:ch_2",
+            "video_id": "cpb-aacip-507-bz6154fc44",
+            "seg_id": "ch_2",
+            "title": "Gridlock in Congress",
+            "start_ms": 929000,
+            "end_ms": 1384000,
+            "snippet": "Well, I have, of course, worked with Mr. Holbrook during this whole period. I was his senior deputy and so shared all of",
+            "excerpt": "[Music] For those stations not taking a pledge break, the NewsHour continues now with a report from Dunblane, Scotland, where 16 school children and their teacher were murdered Wednesday."
+          }
+        ],
+        "format": "retrieval_set",
+        "question_pre_rolefix": "Within this PBS NewsHour broadcast, identify the segments that discuss, mention, or feature the Dunblane massacre."
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 1.0,
+        "ids": [
+          "cpb-aacip-507-bz6154fc44:ch_2",
+          "cpb-aacip-507-bz6154fc44:ch_3"
+        ],
+        "pass": true
+      },
+      "completeness": {
+        "near_miss_checked": 4,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": true
+    }
+  ]
+}

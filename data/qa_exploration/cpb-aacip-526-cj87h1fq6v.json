@@ -1,0 +1,59 @@
+{
+  "video_id": "cpb-aacip-526-cj87h1fq6v",
+  "n": 1,
+  "rows": [
+    {
+      "video_id": "cpb-aacip-526-cj87h1fq6v",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:Jesse Jackson",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Identify the segments within this NJN broadcast that discuss Jesse Jackson, either through his appearance, speech, or as a primary topic of discussion?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-526-cj87h1fq6v:ch_4",
+            "video_id": "cpb-aacip-526-cj87h1fq6v",
+            "seg_id": "ch_4",
+            "title": "Audience Questions",
+            "start_ms": 2249000,
+            "end_ms": 2834000,
+            "snippet": "Well, I think the morality of a candidate comes to question. You know, with the Gary Hart matter, shortly before he was ",
+            "excerpt": "A guest was quoted as saying that Jesse Jackson has escaped media scrutiny simply because he's black and that reporters are reluctant to dig up anything on his past for fear of being labeled as racist."
+          },
+          {
+            "item_id": "cpb-aacip-526-cj87h1fq6v:ch_5",
+            "video_id": "cpb-aacip-526-cj87h1fq6v",
+            "seg_id": "ch_5",
+            "title": "New York Primary Coverage",
+            "start_ms": 2834000,
+            "end_ms": 3298000,
+            "snippet": "I'm glad you brought that up. Did you say your name was Kay? Yes. I'm glad you brought that up, Kay. That was a misquote",
+            "excerpt": "And if you look at the kinds of coverage, the coverage that was given to him was focusing on, well, what's wrong with Push, but not as Jesse Jackson as a serious political contender."
+          }
+        ],
+        "format": "retrieval_set",
+        "question_pre_rolefix": "Identify the segments within this NJN broadcast that feature Jesse Jackson, either through his appearance, speech, or as a primary topic of discussion."
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 1.0,
+        "ids": [
+          "cpb-aacip-526-cj87h1fq6v:ch_4",
+          "cpb-aacip-526-cj87h1fq6v:ch_5"
+        ],
+        "pass": true
+      },
+      "completeness": {
+        "near_miss_checked": 6,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": true
+    }
+  ]
+}

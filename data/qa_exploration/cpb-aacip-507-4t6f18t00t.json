@@ -1,0 +1,113 @@
+{
+  "video_id": "cpb-aacip-507-4t6f18t00t",
+  "n": 2,
+  "rows": [
+    {
+      "video_id": "cpb-aacip-507-4t6f18t00t",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:John Lehman",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Identify the segments from this PBS NewsHour broadcast that feature John Lehman, either as a speaker or as a primary topic of discussion.",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-4t6f18t00t:ch_2",
+            "video_id": "cpb-aacip-507-4t6f18t00t",
+            "seg_id": "ch_2",
+            "title": "9-11 Commission Members Discuss President's Plan",
+            "start_ms": 2601000,
+            "end_ms": 3237000,
+            "snippet": "Well, I think the power, and thanks, by the way, for the promotion, I'm only a reserve captain. Don't know where that ca",
+            "excerpt": "And I'm joined by John Lehman, Secretary of Navy during the Reagan administration, and Jamie Gorelick, who served as Defense Department General Counsel and the Deputy Attorney General during the Clinton administration.",
+            "speaker": "John Lehman"
+          },
+          {
+            "item_id": "cpb-aacip-507-4t6f18t00t:ch_6",
+            "video_id": "cpb-aacip-507-4t6f18t00t",
+            "seg_id": "ch_6",
+            "title": "Final Segment",
+            "start_ms": 3721000,
+            "end_ms": 3819120,
+            "snippet": "Good evening, I'm Jim Lehrer. On the NewsHour tonight, the latest on the New York, New Jersey, and Washington terror ale",
+            "excerpt": "On the NewsHour tonight, the latest on the New York, New Jersey, and Washington terror alerts, and President Bush's proposals for anti-terrorism reforms, with White House official Francis Townsend, and 9/11 Commission members John Lehman and Jamie Gorelick, among others."
+          }
+        ],
+        "format": "retrieval_set"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 1.0,
+        "ids": [
+          "cpb-aacip-507-4t6f18t00t:ch_2",
+          "cpb-aacip-507-4t6f18t00t:ch_6"
+        ],
+        "pass": true
+      },
+      "completeness": {
+        "near_miss_checked": 5,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": true
+    },
+    {
+      "video_id": "cpb-aacip-507-4t6f18t00t",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:Francis Townsend",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Which segments of this PBS NewsHour broadcast discuss Francis Townsend?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-4t6f18t00t:ch_1",
+            "video_id": "cpb-aacip-507-4t6f18t00t",
+            "seg_id": "ch_1",
+            "title": "President Bush's Anti-Terrorism Reforms",
+            "start_ms": 434000,
+            "end_ms": 2601000,
+            "snippet": "Today I'm asking Congress to create the position of a National Intelligence Director. The person in that office will be ",
+            "excerpt": "As Francis Townsend said earlier in your program, it appears to have come from 2000 and 2001."
+          },
+          {
+            "item_id": "cpb-aacip-507-4t6f18t00t:ch_6",
+            "video_id": "cpb-aacip-507-4t6f18t00t",
+            "seg_id": "ch_6",
+            "title": "Final Segment",
+            "start_ms": 3721000,
+            "end_ms": 3819120,
+            "snippet": "Good evening, I'm Jim Lehrer. On the NewsHour tonight, the latest on the New York, New Jersey, and Washington terror ale",
+            "excerpt": "On the NewsHour tonight, the latest on the New York, New Jersey, and Washington terror alerts, and President Bush's proposals for anti-terrorism reforms, with White House official Francis Townsend, and 9/11 Commission members John Lehman and Jamie Gorelick, among others."
+          }
+        ],
+        "format": "retrieval_set",
+        "question_pre_rolefix": "Which segments of this PBS NewsHour broadcast feature Francis Townsend, either as a speaker or as the main subject of discussion?"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 0.8,
+        "ids": [
+          "cpb-aacip-507-4t6f18t00t:ch_1",
+          "cpb-aacip-507-4t6f18t00t:ch_2",
+          "cpb-aacip-507-4t6f18t00t:ch_6"
+        ],
+        "pass": true
+      },
+      "completeness": {
+        "near_miss_checked": 5,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": true
+    }
+  ]
+}

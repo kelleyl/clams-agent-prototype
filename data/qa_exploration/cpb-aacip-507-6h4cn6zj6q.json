@@ -1,0 +1,60 @@
+{
+  "video_id": "cpb-aacip-507-6h4cn6zj6q",
+  "n": 1,
+  "rows": [
+    {
+      "video_id": "cpb-aacip-507-6h4cn6zj6q",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:United States Senate Committee on Environment and Public Works",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Which segments of this PBS NewsHour broadcast focus on the United States Senate Committee on Environment and Public Works?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-6h4cn6zj6q:ch_3",
+            "video_id": "cpb-aacip-507-6h4cn6zj6q",
+            "seg_id": "ch_3",
+            "title": "Christine Todd Whitman Confirmation Hearing",
+            "start_ms": 2666000,
+            "end_ms": 3370000,
+            "snippet": "Well, I did. One thing, you see a lot more partisanship here in Washington. One of my themes that I've supported all alo",
+            "excerpt": "New Jersey Governor Christy Todd Whitman also got a warm welcome at her hearing before the Senate Environment and Public Works Committee.",
+            "speaker": "Richard Riley"
+          },
+          {
+            "item_id": "cpb-aacip-507-6h4cn6zj6q:ch_2",
+            "video_id": "cpb-aacip-507-6h4cn6zj6q",
+            "seg_id": "ch_2",
+            "title": "Paul O'Neill Confirmation Hearing",
+            "start_ms": 2480000,
+            "end_ms": 2666000,
+            "snippet": "It would be useful for me to say so there's no ambiguity about President-elect's view about tax policy and maybe as well",
+            "excerpt": "New Jersey Governor Christy Todd Whitman also got a warm welcome at her hearing before the Senate Environment and Public Works Committee.",
+            "speaker": "Paul O'Neill"
+          }
+        ],
+        "format": "retrieval_set"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 1.0,
+        "ids": [
+          "cpb-aacip-507-6h4cn6zj6q:ch_2",
+          "cpb-aacip-507-6h4cn6zj6q:ch_3"
+        ],
+        "pass": true
+      },
+      "completeness": {
+        "near_miss_checked": 5,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": true
+    }
+  ]
+}

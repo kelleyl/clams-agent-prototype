@@ -1,0 +1,499 @@
+{
+  "video_id": "_corpus",
+  "n": 6,
+  "rows": [
+    {
+      "video_id": null,
+      "cell": "Exploration/L4",
+      "w_role": "who",
+      "element": "explore:occupation:politician",
+      "evidence": {
+        "scope": "corpus"
+      },
+      "qa": {
+        "question": "Which broadcasts feature a politician speaking?",
+        "rationale": "occupation-based corpus retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-15-2f7jq0tn9b:ch_4",
+            "video_id": "cpb-aacip-15-2f7jq0tn9b",
+            "seg_id": "ch_4",
+            "title": "Why the Second Wave Succeeded",
+            "start_ms": 897000,
+            "end_ms": 1862080,
+            "snippet": "We had a meeting of the Student Central Committee in Nashville and agreed that it was critical that the Freedom Ride not",
+            "excerpt": "And we had been watching the progress of the Freedom Ride, had anticipated that at some point they might need help, and we were standing by in order to provide the help that we could.",
+            "people": "John Lewis, Interviewer",
+            "speaker": "John Lewis",
+            "person": "John Lewis",
+            "verified": "diarization"
+          },
+          {
+            "item_id": "cpb-aacip-507-6h4cn6zj6q:ch_2",
+            "video_id": "cpb-aacip-507-6h4cn6zj6q",
+            "seg_id": "ch_2",
+            "title": "Paul O'Neill Confirmation Hearing",
+            "start_ms": 2480000,
+            "end_ms": 2666000,
+            "snippet": "It would be useful for me to say so there's no ambiguity about President-elect's view about tax policy and maybe as well",
+            "excerpt": "In his opening statement, O'Neill said he's committed to strict fiscal discipline, including a balanced budget and a strong dollar.",
+            "people": "Richard Riley, Jim Lara, Paul H. O'Neill, Ray Suarez",
+            "speaker": "Paul O'Neill",
+            "person": "Paul H. O'Neill",
+            "verified": "diarization"
+          },
+          {
+            "item_id": "cpb-aacip-507-fj29883b24:ch_4",
+            "video_id": "cpb-aacip-507-fj29883b24",
+            "seg_id": "ch_4",
+            "title": "Super Tuesday and Kerry's Position",
+            "start_ms": 1801000,
+            "end_ms": 3503760,
+            "snippet": "Yeah. But it does make you a little gun shy considering what you said earlier about Howard Dean, because we would have e",
+            "excerpt": "It's been a big night for John Kerry and John Edwards.",
+            "people": "Mark Shields, Wesley Clark, Ted Gupp, Roy Godson, Jim Lehrer",
+            "person": "John Edwards",
+            "verified": "llm-unconfirmed"
+          },
+          {
+            "item_id": "cpb-aacip-526-d50ft8fn3n:ch_1",
+            "video_id": "cpb-aacip-526-d50ft8fn3n",
+            "seg_id": "ch_1",
+            "title": "Chesapeake Bay Pollution",
+            "start_ms": 434000,
+            "end_ms": 622000,
+            "snippet": "What's happened to the Chesapeake Bay is a complicated story, but the meaning is clear. Many of the people and industrie",
+            "excerpt": "But Maryland Senator Charles Mathias got the federal government involved in saving the bay by leading the effort to convince Congress to conduct a seven-year, $28 million study of the bay.",
+            "people": "Student, Pete Schweitzer, Charles Mathias, Tippi, Eric King",
+            "speaker": "Pete Schweitzer",
+            "person": "Charles Mathias",
+            "verified": "llm-unconfirmed"
+          }
+        ],
+        "format": "retrieval_set"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "skipped": "corpus-scope"
+      },
+      "completeness": {
+        "near_miss_checked": 8,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "scope": "grounded-participants-only"
+      },
+      "keep": true
+    },
+    {
+      "video_id": null,
+      "cell": "Exploration/L4",
+      "w_role": "who",
+      "element": "explore:occupation:writer",
+      "evidence": {
+        "scope": "corpus"
+      },
+      "qa": {
+        "question": "Which broadcasts feature a writer speaking?",
+        "rationale": "occupation-based corpus retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-3b5w669q04:ch_5",
+            "video_id": "cpb-aacip-507-3b5w669q04",
+            "seg_id": "ch_5",
+            "title": "Major Developments of the Day",
+            "start_ms": 3300000,
+            "end_ms": 3850320,
+            "snippet": "Again, the major developments of this day, miles of the U.S. Gulf Coast lay devastated in the wake of Hurricane Katrina.",
+            "excerpt": "Major funding for The NewsHour with Jim Lehrer has been provided by Proud parents Jake and Paula just sent their fourth son off to an Ivy League college.",
+            "people": "President McGuire, President Maguire, President Browski, Clarence Page, Jim Lehrer",
+            "person": "Jim Lehrer",
+            "verified": "llm-pass"
+          },
+          {
+            "item_id": "cpb-aacip-507-4b2x34n67h:ch_1",
+            "video_id": "cpb-aacip-507-4b2x34n67h",
+            "seg_id": "ch_1",
+            "title": "University of Michigan Affirmative Action Cases",
+            "start_ms": 434000,
+            "end_ms": 745000,
+            "snippet": "The Saudis announced a high commission will now monitor the country's charities, and new banking rules will make it easi",
+            "excerpt": "The Saudis announced a high commission will now monitor the country's charities and new banking rules will make it easier to trace donations.",
+            "people": "Voiceover, Roger Rosenblatt, Jim Lehrer, UN Government Spokesman",
+            "speaker": "Jim Lehrer",
+            "person": "Jim Lehrer",
+            "verified": "diarization"
+          },
+          {
+            "item_id": "cpb-aacip-507-dj58c9rs7q:ch_0",
+            "video_id": "cpb-aacip-507-dj58c9rs7q",
+            "seg_id": "ch_0",
+            "title": "Campaign Finance Law",
+            "start_ms": 0,
+            "end_ms": 434000,
+            "snippet": "McClellan said countries can still become eligible for reconstruction work if they give money or troops. And later in th",
+            "excerpt": "Then, the Supreme Court's thumbs up to the campaign finance law with Jan Crawford Greenberg, a campaign snapshot from the Democratic presidential debate last night in New Hampshire, I'm Jim Lehrer.",
+            "people": "Jim Lehrer, Robert Rubin, Paul Salman",
+            "speaker": "Jim Lehrer",
+            "person": "Jim Lehrer",
+            "verified": "diarization"
+          },
+          {
+            "item_id": "cpb-aacip-507-f47gq6rq94:ch_1",
+            "video_id": "cpb-aacip-507-f47gq6rq94",
+            "seg_id": "ch_1",
+            "title": "Miguel Estrada Judicial Nomination",
+            "start_ms": 434000,
+            "end_ms": 944000,
+            "snippet": "Blix has ordered Iraq to destroy some advanced missiles by Saturday. He said today it might take some time for Iraq to c",
+            "excerpt": "Yesterday, the Army's top general said several hundred thousand troops may be needed to occupy Iraq after a war.",
+            "people": "Jim Lehrer, Joe Lieberman, Andrew Natsios, Ken Bacon, Margaret Warner",
+            "speaker": "Jim Lehrer",
+            "person": "Jim Lehrer",
+            "verified": "diarization"
+          },
+          {
+            "item_id": "cpb-aacip-507-jm23b5x19r:ch_1",
+            "video_id": "cpb-aacip-507-jm23b5x19r",
+            "seg_id": "ch_1",
+            "title": "Guardsmen in Iraq",
+            "start_ms": 255000,
+            "end_ms": 1034000,
+            "snippet": "Hassoun is a Muslim born in Lebanon. He'd been missing since June 20th, and Iraqi militants claimed to be holding him at",
+            "excerpt": "Lay was released on bond of a half a million dollars pending trial.",
+            "people": "Jim Lehrer, Ray Suarez, Adam Liptak",
+            "speaker": "Jim Lehrer",
+            "person": "Jim Lehrer",
+            "verified": "diarization"
+          },
+          {
+            "item_id": "cpb-aacip-507-v11vd6pz5w:ch_1",
+            "video_id": "cpb-aacip-507-v11vd6pz5w",
+            "seg_id": "ch_1",
+            "title": "U.S.-led forces strike back against armed resistance in Iraq",
+            "start_ms": 434000,
+            "end_ms": 1110000,
+            "snippet": "The President said the U.S. would maintain a very strong military presence in Iraq after the handover. We'll have more o",
+            "excerpt": "take the risk toward freedom and democracy.",
+            "people": "Jim Lehrer, Buster Olney, Terrence Smith",
+            "speaker": "Jim Lehrer",
+            "person": "Jim Lehrer",
+            "verified": "diarization"
+          },
+          {
+            "item_id": "cpb-aacip-507-z892805z01:ch_0",
+            "video_id": "cpb-aacip-507-z892805z01",
+            "seg_id": "ch_0",
+            "title": "News Hour Intro",
+            "start_ms": 0,
+            "end_ms": 434000,
+            "snippet": "The Tycho trial ended today in a mistrial. A New York State judge declared it so after 11 days of jury deliberations. He",
+            "excerpt": "Major funding for the NewsHour with Jim Lehrer has been provided by See it start.",
+            "people": "Jim Lehrer, Bernard Traynor, Saleh M. Mohammed",
+            "speaker": "Jim Lehrer",
+            "person": "Jim Lehrer",
+            "verified": "diarization"
+          }
+        ],
+        "format": "retrieval_set"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "skipped": "corpus-scope"
+      },
+      "completeness": {
+        "near_miss_checked": 8,
+        "false_negatives": 1,
+        "completeness_risk": true,
+        "scope": "grounded-participants-only"
+      },
+      "keep": false
+    },
+    {
+      "video_id": null,
+      "cell": "Exploration/L4",
+      "w_role": "who",
+      "element": "explore:occupation:political pundit",
+      "evidence": {
+        "scope": "corpus"
+      },
+      "qa": {
+        "question": "Which broadcasts feature a political pundit speaking?",
+        "rationale": "occupation-based corpus retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-251fj2b03t:ch_1",
+            "video_id": "cpb-aacip-507-251fj2b03t",
+            "seg_id": "ch_1",
+            "title": "Barbara Bush Tribute",
+            "start_ms": 434000,
+            "end_ms": 4184000,
+            "snippet": "Thank you very, very much. Thank you, Lee. And thank you all for that warm welcome. Before I start, before I start, I ju",
+            "excerpt": "And of course, our coverage here on public television continues now with David Gergen and Mark Shields, and to our skybox panelists, Congresswoman It's a pleasure and once again, I remind our viewers that NBC will be back on the air in just a few moments.",
+            "people": "George H. W. Bush, Lynn Martin, George P. Bush, Hurchitson, David Gergen",
+            "speaker": "George H.W. Bush",
+            "person": "Mark Shields",
+            "verified": "llm-unconfirmed"
+          },
+          {
+            "item_id": "cpb-aacip-507-3x83j39n00:ch_4",
+            "video_id": "cpb-aacip-507-3x83j39n00",
+            "seg_id": "ch_4",
+            "title": "Mark Shields' Analysis of the Speech",
+            "start_ms": 1774000,
+            "end_ms": 1824000,
+            "snippet": "I thought it was about as good a speech as I've heard him deliver, Jim. I mean, he's not the commanding presence on the ",
+            "excerpt": "I thought it was about as good a speech as I've heard him deliver, Jim.",
+            "people": "George W. Bush, Jim Lara, Michael Beschloss, Pastor Kirby John H. Caldwell, Roger Wilkins",
+            "speaker": "Mark Shields",
+            "person": "Mark Shields",
+            "verified": "diarization"
+          },
+          {
+            "item_id": "cpb-aacip-507-fj29883b24:ch_4",
+            "video_id": "cpb-aacip-507-fj29883b24",
+            "seg_id": "ch_4",
+            "title": "Super Tuesday and Kerry's Position",
+            "start_ms": 1801000,
+            "end_ms": 3503760,
+            "snippet": "Yeah. But it does make you a little gun shy considering what you said earlier about Howard Dean, because we would have e",
+            "excerpt": "There is a great and good nation whose freedom and security must be defended and dear friends that work by me and you and people all across america will never never end thank you god bless you and god bless the united states of america and shields and brooks indicated columnist mark shields and new york times columnist",
+            "people": "Mark Shields, Wesley Clark, Ted Gupp, Roy Godson, Jim Lehrer",
+            "person": "Mark Shields",
+            "verified": "llm-unconfirmed"
+          },
+          {
+            "item_id": "cpb-aacip-507-nk3610wp6s:ch_1",
+            "video_id": "cpb-aacip-507-nk3610wp6s",
+            "seg_id": "ch_1",
+            "title": "Bosnia Peace Agreement",
+            "start_ms": 434000,
+            "end_ms": 904000,
+            "snippet": "Later, the Clintons traveled to Londonderry. Thousands were on hand for the President's speech in the streets of the 300",
+            "excerpt": "Now it's on to Senator McCain, Bosnia hearings, the US as the world's peacemakers and keepers, new word on breast cancer treatment, and Gergen and Gates.",
+            "people": "David Gergen, Professor Kagan, Bill Gates, Charlene Hunter-Gault, Professor",
+            "speaker": "David Gergen",
+            "person": "David Gergen",
+            "verified": "diarization"
+          }
+        ],
+        "format": "retrieval_set"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "skipped": "corpus-scope"
+      },
+      "completeness": {
+        "near_miss_checked": 8,
+        "false_negatives": 1,
+        "completeness_risk": true,
+        "scope": "grounded-participants-only"
+      },
+      "keep": false
+    },
+    {
+      "video_id": null,
+      "cell": "Exploration/L4",
+      "w_role": "who",
+      "element": "explore:occupation:columnist",
+      "evidence": {
+        "scope": "corpus"
+      },
+      "qa": {
+        "question": "Which broadcasts feature a columnist speaking?",
+        "rationale": "occupation-based corpus retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-251fj2b03t:ch_1",
+            "video_id": "cpb-aacip-507-251fj2b03t",
+            "seg_id": "ch_1",
+            "title": "Barbara Bush Tribute",
+            "start_ms": 434000,
+            "end_ms": 4184000,
+            "snippet": "Thank you very, very much. Thank you, Lee. And thank you all for that warm welcome. Before I start, before I start, I ju",
+            "excerpt": "And of course, our coverage here on public television continues now with David Gergen and Mark Shields, and to our skybox panelists, Congresswoman It's a pleasure and once again, I remind our viewers that NBC will be back on the air in just a few moments.",
+            "people": "George H. W. Bush, Lynn Martin, George P. Bush, Hurchitson, David Gergen",
+            "speaker": "George H.W. Bush",
+            "person": "Mark Shields",
+            "verified": "llm-unconfirmed"
+          },
+          {
+            "item_id": "cpb-aacip-507-3x83j39n00:ch_4",
+            "video_id": "cpb-aacip-507-3x83j39n00",
+            "seg_id": "ch_4",
+            "title": "Mark Shields' Analysis of the Speech",
+            "start_ms": 1774000,
+            "end_ms": 1824000,
+            "snippet": "I thought it was about as good a speech as I've heard him deliver, Jim. I mean, he's not the commanding presence on the ",
+            "excerpt": "I thought it was about as good a speech as I've heard him deliver, Jim.",
+            "people": "George W. Bush, Jim Lara, Michael Beschloss, Pastor Kirby John H. Caldwell, Roger Wilkins",
+            "speaker": "Mark Shields",
+            "person": "Mark Shields",
+            "verified": "diarization"
+          },
+          {
+            "item_id": "cpb-aacip-507-fj29883b24:ch_4",
+            "video_id": "cpb-aacip-507-fj29883b24",
+            "seg_id": "ch_4",
+            "title": "Super Tuesday and Kerry's Position",
+            "start_ms": 1801000,
+            "end_ms": 3503760,
+            "snippet": "Yeah. But it does make you a little gun shy considering what you said earlier about Howard Dean, because we would have e",
+            "excerpt": "There is a great and good nation whose freedom and security must be defended and dear friends that work by me and you and people all across america will never never end thank you god bless you and god bless the united states of america and shields and brooks indicated columnist mark shields and new york times columnist",
+            "people": "Mark Shields, Wesley Clark, Ted Gupp, Roy Godson, Jim Lehrer",
+            "person": "Mark Shields",
+            "verified": "llm-unconfirmed"
+          }
+        ],
+        "format": "retrieval_set"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "skipped": "corpus-scope"
+      },
+      "completeness": {
+        "near_miss_checked": 8,
+        "false_negatives": 2,
+        "completeness_risk": true,
+        "scope": "grounded-participants-only"
+      },
+      "keep": false
+    },
+    {
+      "video_id": null,
+      "cell": "Exploration/L4",
+      "w_role": "who",
+      "element": "explore:occupation:political adviser",
+      "evidence": {
+        "scope": "corpus"
+      },
+      "qa": {
+        "question": "Which broadcasts feature a political adviser speaking?",
+        "rationale": "occupation-based corpus retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-251fj2b03t:ch_1",
+            "video_id": "cpb-aacip-507-251fj2b03t",
+            "seg_id": "ch_1",
+            "title": "Barbara Bush Tribute",
+            "start_ms": 434000,
+            "end_ms": 4184000,
+            "snippet": "Thank you very, very much. Thank you, Lee. And thank you all for that warm welcome. Before I start, before I start, I ju",
+            "excerpt": "And of course, our coverage here on public television continues now with David Gergen and Mark Shields, and to our skybox panelists, Congresswoman It's a pleasure and once again, I remind our viewers that NBC will be back on the air in just a few moments.",
+            "people": "George H. W. Bush, Lynn Martin, George P. Bush, Hurchitson, David Gergen",
+            "speaker": "George H.W. Bush",
+            "person": "Mark Shields",
+            "verified": "llm-unconfirmed"
+          },
+          {
+            "item_id": "cpb-aacip-507-3x83j39n00:ch_4",
+            "video_id": "cpb-aacip-507-3x83j39n00",
+            "seg_id": "ch_4",
+            "title": "Mark Shields' Analysis of the Speech",
+            "start_ms": 1774000,
+            "end_ms": 1824000,
+            "snippet": "I thought it was about as good a speech as I've heard him deliver, Jim. I mean, he's not the commanding presence on the ",
+            "excerpt": "I thought it was about as good a speech as I've heard him deliver, Jim.",
+            "people": "George W. Bush, Jim Lara, Michael Beschloss, Pastor Kirby John H. Caldwell, Roger Wilkins",
+            "speaker": "Mark Shields",
+            "person": "Mark Shields",
+            "verified": "diarization"
+          },
+          {
+            "item_id": "cpb-aacip-507-fj29883b24:ch_4",
+            "video_id": "cpb-aacip-507-fj29883b24",
+            "seg_id": "ch_4",
+            "title": "Super Tuesday and Kerry's Position",
+            "start_ms": 1801000,
+            "end_ms": 3503760,
+            "snippet": "Yeah. But it does make you a little gun shy considering what you said earlier about Howard Dean, because we would have e",
+            "excerpt": "There is a great and good nation whose freedom and security must be defended and dear friends that work by me and you and people all across america will never never end thank you god bless you and god bless the united states of america and shields and brooks indicated columnist mark shields and new york times columnist",
+            "people": "Mark Shields, Wesley Clark, Ted Gupp, Roy Godson, Jim Lehrer",
+            "person": "Mark Shields",
+            "verified": "llm-unconfirmed"
+          }
+        ],
+        "format": "retrieval_set"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "skipped": "corpus-scope"
+      },
+      "completeness": {
+        "near_miss_checked": 8,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "scope": "grounded-participants-only"
+      },
+      "keep": true
+    },
+    {
+      "video_id": null,
+      "cell": "Exploration/L4",
+      "w_role": "who",
+      "element": "explore:occupation:political analyst",
+      "evidence": {
+        "scope": "corpus"
+      },
+      "qa": {
+        "question": "Which broadcasts feature a political analyst speaking?",
+        "rationale": "occupation-based corpus retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-251fj2b03t:ch_1",
+            "video_id": "cpb-aacip-507-251fj2b03t",
+            "seg_id": "ch_1",
+            "title": "Barbara Bush Tribute",
+            "start_ms": 434000,
+            "end_ms": 4184000,
+            "snippet": "Thank you very, very much. Thank you, Lee. And thank you all for that warm welcome. Before I start, before I start, I ju",
+            "excerpt": "And of course, our coverage here on public television continues now with David Gergen and Mark Shields, and to our skybox panelists, Congresswoman It's a pleasure and once again, I remind our viewers that NBC will be back on the air in just a few moments.",
+            "people": "George H. W. Bush, Lynn Martin, George P. Bush, Hurchitson, David Gergen",
+            "speaker": "George H.W. Bush",
+            "person": "Mark Shields",
+            "verified": "llm-unconfirmed"
+          },
+          {
+            "item_id": "cpb-aacip-507-3x83j39n00:ch_4",
+            "video_id": "cpb-aacip-507-3x83j39n00",
+            "seg_id": "ch_4",
+            "title": "Mark Shields' Analysis of the Speech",
+            "start_ms": 1774000,
+            "end_ms": 1824000,
+            "snippet": "I thought it was about as good a speech as I've heard him deliver, Jim. I mean, he's not the commanding presence on the ",
+            "excerpt": "I thought it was about as good a speech as I've heard him deliver, Jim.",
+            "people": "George W. Bush, Jim Lara, Michael Beschloss, Pastor Kirby John H. Caldwell, Roger Wilkins",
+            "speaker": "Mark Shields",
+            "person": "Mark Shields",
+            "verified": "diarization"
+          },
+          {
+            "item_id": "cpb-aacip-507-fj29883b24:ch_4",
+            "video_id": "cpb-aacip-507-fj29883b24",
+            "seg_id": "ch_4",
+            "title": "Super Tuesday and Kerry's Position",
+            "start_ms": 1801000,
+            "end_ms": 3503760,
+            "snippet": "Yeah. But it does make you a little gun shy considering what you said earlier about Howard Dean, because we would have e",
+            "excerpt": "There is a great and good nation whose freedom and security must be defended and dear friends that work by me and you and people all across america will never never end thank you god bless you and god bless the united states of america and shields and brooks indicated columnist mark shields and new york times columnist",
+            "people": "Mark Shields, Wesley Clark, Ted Gupp, Roy Godson, Jim Lehrer",
+            "person": "Mark Shields",
+            "verified": "llm-unconfirmed"
+          }
+        ],
+        "format": "retrieval_set"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "skipped": "corpus-scope"
+      },
+      "completeness": {
+        "near_miss_checked": 8,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "scope": "grounded-participants-only"
+      },
+      "keep": false,
+      "dedup": "duplicate_answer_set"
+    }
+  ]
+}

@@ -1,0 +1,115 @@
+{
+  "video_id": "cpb-aacip-507-251fj2b03t",
+  "n": 2,
+  "rows": [
+    {
+      "video_id": "cpb-aacip-507-251fj2b03t",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:Bill Clinton",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Which segments of this PBS NewsHour broadcast discuss Bill Clinton?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-251fj2b03t:ch_1",
+            "video_id": "cpb-aacip-507-251fj2b03t",
+            "seg_id": "ch_1",
+            "title": "Barbara Bush Tribute",
+            "start_ms": 434000,
+            "end_ms": 4184000,
+            "snippet": "Thank you very, very much. Thank you, Lee. And thank you all for that warm welcome. Before I start, before I start, I ju",
+            "excerpt": "Sounds like a co-vice presidency almost, and yet for much of this week, the Republicans have been attacking what they say is the Clinton concept of a co-presidency, something that Bill Clinton today denied.",
+            "speaker": "George H.W. Bush"
+          },
+          {
+            "item_id": "cpb-aacip-507-251fj2b03t:ch_5",
+            "video_id": "cpb-aacip-507-251fj2b03t",
+            "seg_id": "ch_5",
+            "title": "Barbara Bush Biography",
+            "start_ms": 4574000,
+            "end_ms": 4820000,
+            "snippet": "I think that Barbara Bush not only gave the finest speech of the convention, it was a very effective speech. I would say",
+            "excerpt": "I don't think Bill Clinton will be able to match that before November, do we?"
+          }
+        ],
+        "format": "retrieval_set",
+        "question_pre_rolefix": "Which segments of this PBS NewsHour broadcast feature Bill Clinton as a speaker or subject?"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 0.667,
+        "ids": [
+          "cpb-aacip-507-251fj2b03t:ch_1",
+          "cpb-aacip-507-251fj2b03t:ch_5",
+          "cpb-aacip-507-251fj2b03t:ch_6",
+          "cpb-aacip-507-251fj2b03t:ch_7"
+        ],
+        "pass": false
+      },
+      "completeness": {
+        "near_miss_checked": 7,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": false
+    },
+    {
+      "video_id": "cpb-aacip-507-251fj2b03t",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:Mark Shields",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Which segments of this PBS NewsHour broadcast feature Mark Shields, either as a speaker or as a primary subject?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-251fj2b03t:ch_1",
+            "video_id": "cpb-aacip-507-251fj2b03t",
+            "seg_id": "ch_1",
+            "title": "Barbara Bush Tribute",
+            "start_ms": 434000,
+            "end_ms": 4184000,
+            "snippet": "Thank you very, very much. Thank you, Lee. And thank you all for that warm welcome. Before I start, before I start, I ju",
+            "excerpt": "And of course, our coverage here on public television continues now with David Gergen and Mark Shields, and to our skybox panelists, Congresswoman It's a pleasure and once again, I remind our viewers that NBC will be back on the air in just a few moments.",
+            "speaker": "George H.W. Bush"
+          },
+          {
+            "item_id": "cpb-aacip-507-251fj2b03t:ch_6",
+            "video_id": "cpb-aacip-507-251fj2b03t",
+            "seg_id": "ch_6",
+            "title": "Analysis of Barbara Bush Speech",
+            "start_ms": 4820000,
+            "end_ms": 4930000,
+            "snippet": "Mark? I think Barbara Bush did tonight what she could do very well and perhaps do better than anybody else. She's unique",
+            "excerpt": "But I also think the other thing I think it did, Jim, and the reason I think it was such an effective speech, I think the country has lost sight of something about George Bush in the last two or three years with all the fights we've had and the struggles we've had over the economy or Desert Storm or whatever."
+          }
+        ],
+        "format": "retrieval_set"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 0.5,
+        "ids": [
+          "cpb-aacip-507-251fj2b03t:ch_1",
+          "cpb-aacip-507-251fj2b03t:ch_5"
+        ],
+        "pass": false
+      },
+      "completeness": {
+        "near_miss_checked": 7,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": false
+    }
+  ]
+}

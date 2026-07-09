@@ -1,0 +1,126 @@
+{
+  "video_id": "cpb-aacip-507-jm23b5x19r",
+  "n": 2,
+  "rows": [
+    {
+      "video_id": "cpb-aacip-507-jm23b5x19r",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:White House",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Which segments of this PBS NewsHour broadcast focus on the White House, either through direct discussion, as a main subject, or featuring a White House spokesperson?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-jm23b5x19r:ch_4",
+            "video_id": "cpb-aacip-507-jm23b5x19r",
+            "seg_id": "ch_4",
+            "title": "President Interviewed by Grand Jury",
+            "start_ms": 2596000,
+            "end_ms": 3337000,
+            "snippet": "Again, the major developments of the day. Kenneth Lay, the former head of Enron, pleaded not guilty to federal charges t",
+            "excerpt": "[Music] Finally tonight, the White House leak investigation."
+          },
+          {
+            "item_id": "cpb-aacip-507-jm23b5x19r:ch_7",
+            "video_id": "cpb-aacip-507-jm23b5x19r",
+            "seg_id": "ch_7",
+            "title": "Summary of the News",
+            "start_ms": 3682000,
+            "end_ms": 3738000,
+            "snippet": "Good evening, I'm Jim Lara. On the News Hour tonight, our summary of the news. Then, full coverage of today's indictment",
+            "excerpt": "Then, full coverage of today's indictment and arraignment of Kenneth Lay, former head of Enron, the latest on a Pentagon move toward hearings for Guantanamo detainees, a report from Oregon on the sufferings of a National Guard unit in Iraq, and an update of the White House leak investigation concerning an undercover CI"
+          }
+        ],
+        "format": "retrieval_set"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 0.667,
+        "ids": [
+          "cpb-aacip-507-jm23b5x19r:ch_1",
+          "cpb-aacip-507-jm23b5x19r:ch_2",
+          "cpb-aacip-507-jm23b5x19r:ch_4",
+          "cpb-aacip-507-jm23b5x19r:ch_7"
+        ],
+        "pass": false
+      },
+      "completeness": {
+        "near_miss_checked": 8,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": false
+    },
+    {
+      "video_id": "cpb-aacip-507-jm23b5x19r",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:Oregon Army National Guard",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Which segments of this PBS NewsHour broadcast discuss the Oregon Army National Guard?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-jm23b5x19r:ch_4",
+            "video_id": "cpb-aacip-507-jm23b5x19r",
+            "seg_id": "ch_4",
+            "title": "President Interviewed by Grand Jury",
+            "start_ms": 2596000,
+            "end_ms": 3337000,
+            "snippet": "Again, the major developments of the day. Kenneth Lay, the former head of Enron, pleaded not guilty to federal charges t",
+            "excerpt": "Doesn't doesn't matter, doesn't matter uh National Guard, Reserve, or active duty."
+          },
+          {
+            "item_id": "cpb-aacip-507-jm23b5x19r:ch_3",
+            "video_id": "cpb-aacip-507-jm23b5x19r",
+            "seg_id": "ch_3",
+            "title": "Reporter's Privilege",
+            "start_ms": 1904000,
+            "end_ms": 2596000,
+            "snippet": "In addition to attending McKinley's funeral, Oregon Governor Ted Kulangosky, commander-in-chief of the Oregon Guard, tra",
+            "excerpt": "[Music] Four of its Army National Guardsmen were killed nine days apart in violent ambushes in Iraq, the worst loss for the Oregon Guard in one place since World War II.",
+            "speaker": "Jim Lehrer"
+          },
+          {
+            "item_id": "cpb-aacip-507-jm23b5x19r:ch_7",
+            "video_id": "cpb-aacip-507-jm23b5x19r",
+            "seg_id": "ch_7",
+            "title": "Summary of the News",
+            "start_ms": 3682000,
+            "end_ms": 3738000,
+            "snippet": "Good evening, I'm Jim Lara. On the News Hour tonight, our summary of the news. Then, full coverage of today's indictment",
+            "excerpt": "Then, full coverage of today's indictment and arraignment of Kenneth Lay, former head of Enron, the latest on a Pentagon move toward hearings for Guantanamo detainees, a report from Oregon on the sufferings of a National Guard unit in Iraq, and an update of the White House leak investigation concerning an undercover CI"
+          }
+        ],
+        "format": "retrieval_set",
+        "question_pre_rolefix": "Which segments of this PBS NewsHour broadcast feature the Oregon Army National Guard?"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 0.571,
+        "ids": [
+          "cpb-aacip-507-jm23b5x19r:ch_1",
+          "cpb-aacip-507-jm23b5x19r:ch_2",
+          "cpb-aacip-507-jm23b5x19r:ch_3",
+          "cpb-aacip-507-jm23b5x19r:ch_7"
+        ],
+        "pass": false
+      },
+      "completeness": {
+        "near_miss_checked": 8,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": false
+    }
+  ]
+}

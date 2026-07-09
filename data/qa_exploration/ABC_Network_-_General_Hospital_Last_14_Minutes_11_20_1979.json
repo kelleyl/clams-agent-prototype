@@ -1,0 +1,123 @@
+{
+  "video_id": "ABC_Network_-_General_Hospital_Last_14_Minutes_11_20_1979",
+  "n": 2,
+  "rows": [
+    {
+      "video_id": "ABC_Network_-_General_Hospital_Last_14_Minutes_11_20_1979",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:Bobbie Spencer",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Which segments of the FuzzyMemories TV (Chicago) broadcast from November 20, 1979, discuss Bobbie Spencer?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "ABC_Network_-_General_Hospital_Last_14_Minutes_11_20_1979:ch_4",
+            "video_id": "ABC_Network_-_General_Hospital_Last_14_Minutes_11_20_1979",
+            "seg_id": "ch_4",
+            "title": "Steve and Jeff Discuss Bobby",
+            "start_ms": 442000,
+            "end_ms": 600000,
+            "snippet": "Time off? Steve, come on. Now, you're dealing with a very proud woman. I mean, she'd never come back. I mean, she'd thin",
+            "excerpt": "Anyway, with this newspaper campaign going on, the question of Bobby Spencer boils down to one thing."
+          },
+          {
+            "item_id": "ABC_Network_-_General_Hospital_Last_14_Minutes_11_20_1979:ch_3",
+            "video_id": "ABC_Network_-_General_Hospital_Last_14_Minutes_11_20_1979",
+            "seg_id": "ch_3",
+            "title": "Bobby Spencer's Job",
+            "start_ms": 396000,
+            "end_ms": 442000,
+            "snippet": "Oh, damn them. Damn all of them. Damn this whole system. Oh, Luke, that's not going to do any good. You know, this would",
+            "excerpt": "Damn them, damn all of them, damn this whole system.",
+            "speaker": "I'm glad to see you. Yeah, well, I'll take over."
+          }
+        ],
+        "format": "retrieval_set",
+        "question_pre_rolefix": "Which segments of the FuzzyMemories TV (Chicago) broadcast from November 20, 1979, feature Bobbie Spencer?"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 0.5,
+        "ids": [
+          "ABC_Network_-_General_Hospital_Last_14_Minutes_11_20_1979:ch_2",
+          "ABC_Network_-_General_Hospital_Last_14_Minutes_11_20_1979:ch_4"
+        ],
+        "pass": false
+      },
+      "completeness": {
+        "near_miss_checked": 6,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": false
+    },
+    {
+      "video_id": "ABC_Network_-_General_Hospital_Last_14_Minutes_11_20_1979",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:theme:Bobby Spencer",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Within the FuzzyMemories TV (Chicago) YouTube uploads from 1979-11-20, identify the segments that discuss Bobby Spencer.",
+        "rationale": "theme-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "ABC_Network_-_General_Hospital_Last_14_Minutes_11_20_1979:ch_4",
+            "video_id": "ABC_Network_-_General_Hospital_Last_14_Minutes_11_20_1979",
+            "seg_id": "ch_4",
+            "title": "Steve and Jeff Discuss Bobby",
+            "start_ms": 442000,
+            "end_ms": 600000,
+            "snippet": "Time off? Steve, come on. Now, you're dealing with a very proud woman. I mean, she'd never come back. I mean, she'd thin",
+            "excerpt": "Anyway, with this newspaper campaign going on, the question of Bobby Spencer boils down to one thing."
+          },
+          {
+            "item_id": "ABC_Network_-_General_Hospital_Last_14_Minutes_11_20_1979:ch_2",
+            "video_id": "ABC_Network_-_General_Hospital_Last_14_Minutes_11_20_1979",
+            "seg_id": "ch_2",
+            "title": "Ryan's Hope",
+            "start_ms": 259000,
+            "end_ms": 396000,
+            "snippet": "There's more to love in the afternoon on Ryan's Hope. I'm assuming that you won't have any problem with the nudity. What",
+            "excerpt": "Listen, Bobby, um, if you need anything, anything at all, I'll be around, okay?"
+          },
+          {
+            "item_id": "ABC_Network_-_General_Hospital_Last_14_Minutes_11_20_1979:ch_3",
+            "video_id": "ABC_Network_-_General_Hospital_Last_14_Minutes_11_20_1979",
+            "seg_id": "ch_3",
+            "title": "Bobby Spencer's Job",
+            "start_ms": 396000,
+            "end_ms": 442000,
+            "snippet": "Oh, damn them. Damn all of them. Damn this whole system. Oh, Luke, that's not going to do any good. You know, this would",
+            "excerpt": "Damn them, damn all of them, damn this whole system.",
+            "speaker": "I'm glad to see you. Yeah, well, I'll take over."
+          }
+        ],
+        "format": "retrieval_set"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 0.8,
+        "ids": [
+          "ABC_Network_-_General_Hospital_Last_14_Minutes_11_20_1979:ch_2",
+          "ABC_Network_-_General_Hospital_Last_14_Minutes_11_20_1979:ch_4"
+        ],
+        "pass": true
+      },
+      "completeness": {
+        "near_miss_checked": 6,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": true
+    }
+  ]
+}

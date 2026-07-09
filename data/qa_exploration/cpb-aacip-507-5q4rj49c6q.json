@@ -1,0 +1,117 @@
+{
+  "video_id": "cpb-aacip-507-5q4rj49c6q",
+  "n": 2,
+  "rows": [
+    {
+      "video_id": "cpb-aacip-507-5q4rj49c6q",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:George W. Bush",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Identify the segments within this PBS NewsHour broadcast that discuss George W. Bush?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-5q4rj49c6q:ch_5",
+            "video_id": "cpb-aacip-507-5q4rj49c6q",
+            "seg_id": "ch_5",
+            "title": "John Kerry's Gas Tax Proposal",
+            "start_ms": 2601000,
+            "end_ms": 3085000,
+            "snippet": "Well, we have to look at the headlines, and the headlines say, OPEC, the big bad culprit, when prices are high. And that",
+            "excerpt": "In response, President Bush in Wisconsin claimed Democrats favored increasing the federal gasoline tax."
+          },
+          {
+            "item_id": "cpb-aacip-507-5q4rj49c6q:ch_1",
+            "video_id": "cpb-aacip-507-5q4rj49c6q",
+            "seg_id": "ch_1",
+            "title": "Killing of American Contractors in Iraq",
+            "start_ms": 434000,
+            "end_ms": 807000,
+            "snippet": "U.S. oil prices topped $38 a barrel in recent weeks. They fell today after the federal government reported inventories o",
+            "excerpt": "A White House spokesman said today, President Bush was disappointed by OPEC's decision.",
+            "speaker": "Jim Lehrer"
+          }
+        ],
+        "format": "retrieval_set",
+        "question_pre_rolefix": "Identify the segments within this PBS NewsHour broadcast that feature George W. Bush, either as a speaker or a primary topic of discussion."
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 0.667,
+        "ids": [
+          "cpb-aacip-507-5q4rj49c6q:ch_1",
+          "cpb-aacip-507-5q4rj49c6q:ch_4",
+          "cpb-aacip-507-5q4rj49c6q:ch_5",
+          "cpb-aacip-507-5q4rj49c6q:ch_6"
+        ],
+        "pass": false
+      },
+      "completeness": {
+        "near_miss_checked": 7,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": false
+    },
+    {
+      "video_id": "cpb-aacip-507-5q4rj49c6q",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:Jim Lehrer",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Which segments of this PBS NewsHour broadcast feature Jim Lehrer, either as a speaker or main subject?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-5q4rj49c6q:ch_7",
+            "video_id": "cpb-aacip-507-5q4rj49c6q",
+            "seg_id": "ch_7",
+            "title": "Closing Segment",
+            "start_ms": 3433000,
+            "end_ms": 3844880,
+            "snippet": "Nine Americans were killed today in Iraq and a mob brutalized some of the bodies. The worst event was in Fallujah, where",
+            "excerpt": "Major funding for the NewsHour with Jim Lehrer has been provided by Major funding for the news hour with Jim Lehrer has been provided by."
+          },
+          {
+            "item_id": "cpb-aacip-507-5q4rj49c6q:ch_1",
+            "video_id": "cpb-aacip-507-5q4rj49c6q",
+            "seg_id": "ch_1",
+            "title": "Killing of American Contractors in Iraq",
+            "start_ms": 434000,
+            "end_ms": 807000,
+            "snippet": "U.S. oil prices topped $38 a barrel in recent weeks. They fell today after the federal government reported inventories o",
+            "excerpt": "Karzai asked for $28 billion in aid spread over seven years.",
+            "speaker": "Jim Lehrer"
+          }
+        ],
+        "format": "retrieval_set"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 0.667,
+        "ids": [
+          "cpb-aacip-507-5q4rj49c6q:ch_1",
+          "cpb-aacip-507-5q4rj49c6q:ch_3",
+          "cpb-aacip-507-5q4rj49c6q:ch_6",
+          "cpb-aacip-507-5q4rj49c6q:ch_7"
+        ],
+        "pass": false
+      },
+      "completeness": {
+        "near_miss_checked": 7,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": false
+    }
+  ]
+}

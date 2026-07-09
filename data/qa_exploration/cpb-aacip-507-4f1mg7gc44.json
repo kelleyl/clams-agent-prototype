@@ -1,0 +1,59 @@
+{
+  "video_id": "cpb-aacip-507-4f1mg7gc44",
+  "n": 1,
+  "rows": [
+    {
+      "video_id": "cpb-aacip-507-4f1mg7gc44",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:Michael Fortier",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Within this PBS NewsHour broadcast, identify the segments that discuss Michael Fortier?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-4f1mg7gc44:ch_1",
+            "video_id": "cpb-aacip-507-4f1mg7gc44",
+            "seg_id": "ch_1",
+            "title": "Mount Everest Climbing Accident",
+            "start_ms": 434000,
+            "end_ms": 2493000,
+            "snippet": "The House has already passed a comp time bill. President Clinton has promised to veto the measure in its current form. A",
+            "excerpt": "He's Michael Fortier, a former Army roommate and close friend of the defendant Timothy McVeigh."
+          },
+          {
+            "item_id": "cpb-aacip-507-4f1mg7gc44:ch_0",
+            "video_id": "cpb-aacip-507-4f1mg7gc44",
+            "seg_id": "ch_0",
+            "title": "Oklahoma City Bombing Trial",
+            "start_ms": 0,
+            "end_ms": 434000,
+            "snippet": "This was the first of a series of House hearings on FBI practices. On the Senate side today, FBI Director Free, Attorney",
+            "excerpt": "On the NewsHour tonight, an update on the Michael Fortier testimony at the Oklahoma City bombing trial, a report from Oregon on the changing length of hospital stays, a newsmaker interview with the co-prime minister of Bosnia, some perspective on the Mont Everest hikers tragedy, and an Ann Taylor Fleming essay on Holly"
+          }
+        ],
+        "format": "retrieval_set",
+        "question_pre_rolefix": "Within this PBS NewsHour broadcast, identify the segments that feature Michael Fortier, whether as a speaker or a central topic of discussion."
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 1.0,
+        "ids": [
+          "cpb-aacip-507-4f1mg7gc44:ch_0",
+          "cpb-aacip-507-4f1mg7gc44:ch_1"
+        ],
+        "pass": true
+      },
+      "completeness": {
+        "near_miss_checked": 4,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": true
+    }
+  ]
+}

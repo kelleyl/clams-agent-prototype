@@ -1,0 +1,61 @@
+{
+  "video_id": "ABC_News_Weekend_Report_-_WLS_Channel_7_Complete_Broadcast_3_9_1980",
+  "n": 1,
+  "rows": [
+    {
+      "video_id": "ABC_News_Weekend_Report_-_WLS_Channel_7_Complete_Broadcast_3_9_1980",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:Ted Kennedy",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Which segments of the March 9, 1980 FuzzyMemories TV (Chicago) broadcast discuss Ted Kennedy?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "ABC_News_Weekend_Report_-_WLS_Channel_7_Complete_Broadcast_3_9_1980:ch_5",
+            "video_id": "ABC_News_Weekend_Report_-_WLS_Channel_7_Complete_Broadcast_3_9_1980",
+            "seg_id": "ch_5",
+            "title": "Edward Kennedy Presidential Campaign",
+            "start_ms": 550000,
+            "end_ms": 677000,
+            "snippet": "An administration source said today President Carter may announce his latest plans for curbing inflation even before all",
+            "excerpt": "Edward Kennedy has all but written off the South, concentrating instead here in Illinois where he hopes to boost his sagging campaign by emphasizing bread and butter economic issues.",
+            "speaker": "Sam Donaldson"
+          },
+          {
+            "item_id": "ABC_News_Weekend_Report_-_WLS_Channel_7_Complete_Broadcast_3_9_1980:ch_4",
+            "video_id": "ABC_News_Weekend_Report_-_WLS_Channel_7_Complete_Broadcast_3_9_1980",
+            "seg_id": "ch_4",
+            "title": "Gerald Ford Presidential Campaign",
+            "start_ms": 434000,
+            "end_ms": 550000,
+            "snippet": "An ABC News Lou Harris poll completed last night finds that Republican and Independent voters prefer former President Ge",
+            "excerpt": "Meanwhile, Senator Edward Kennedy is redoubling his efforts to see to it that President Carter doesn't get the run against anyone this fall.",
+            "speaker": "Sam Donaldson"
+          }
+        ],
+        "format": "retrieval_set",
+        "question_pre_rolefix": "Which segments of the March 9, 1980 FuzzyMemories TV (Chicago) broadcast feature Ted Kennedy, either as a speaker or as the main subject of discussion?"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 1.0,
+        "ids": [
+          "ABC_News_Weekend_Report_-_WLS_Channel_7_Complete_Broadcast_3_9_1980:ch_4",
+          "ABC_News_Weekend_Report_-_WLS_Channel_7_Complete_Broadcast_3_9_1980:ch_5"
+        ],
+        "pass": true
+      },
+      "completeness": {
+        "near_miss_checked": 9,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": true
+    }
+  ]
+}

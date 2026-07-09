@@ -1,0 +1,60 @@
+{
+  "video_id": "cpb-aacip-507-4t6f18t15n",
+  "n": 1,
+  "rows": [
+    {
+      "video_id": "cpb-aacip-507-4t6f18t15n",
+      "cell": "Exploration/L3",
+      "w_role": "what",
+      "element": "explore:entity:The Boston Globe",
+      "evidence": {
+        "scope": "program"
+      },
+      "qa": {
+        "question": "Which segments of this PBS NewsHour broadcast discuss discussion of or reporting related to The Boston Globe?",
+        "rationale": "entity-based retrieval",
+        "answer_set": [
+          {
+            "item_id": "cpb-aacip-507-4t6f18t15n:ch_3",
+            "video_id": "cpb-aacip-507-4t6f18t15n",
+            "seg_id": "ch_3",
+            "title": "William Beecher Interview",
+            "start_ms": 857000,
+            "end_ms": 1200000,
+            "snippet": "I don't really think it's had that much impact on the Congress. I think it was very interesting that the Congress this y",
+            "excerpt": "Robin William Beecher is a Washington correspondent for the Boston Globe."
+          },
+          {
+            "item_id": "cpb-aacip-507-4t6f18t15n:ch_2",
+            "video_id": "cpb-aacip-507-4t6f18t15n",
+            "seg_id": "ch_2",
+            "title": "Joseph Sisko Interview",
+            "start_ms": 564000,
+            "end_ms": 857000,
+            "snippet": "Well, first of all, we are committed to assist the Saudis in arms. And Robin, I think it's well to recall that this was ",
+            "excerpt": "Robin William Beecher is a Washington correspondent for the Boston Globe.",
+            "speaker": "Jonathan Bingham"
+          }
+        ],
+        "format": "retrieval_set",
+        "question_pre_rolefix": "Which segments of this PBS NewsHour broadcast feature discussion of or reporting related to The Boston Globe?"
+      },
+      "necessity": "robust_by_construction",
+      "set_roundtrip": {
+        "f1": 1.0,
+        "ids": [
+          "cpb-aacip-507-4t6f18t15n:ch_2",
+          "cpb-aacip-507-4t6f18t15n:ch_3"
+        ],
+        "pass": true
+      },
+      "completeness": {
+        "near_miss_checked": 5,
+        "false_negatives": 0,
+        "completeness_risk": false,
+        "exhaustive": true
+      },
+      "keep": true
+    }
+  ]
+}
