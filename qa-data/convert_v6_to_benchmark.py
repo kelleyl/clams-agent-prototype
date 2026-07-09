@@ -26,6 +26,14 @@ import json
 from collections import Counter
 from pathlib import Path
 
+
+import hashlib
+
+
+def _vid_key(vid):
+    """Collision-free short video key (12-char tails collide for slug names)."""
+    return hashlib.md5((vid or "").encode()).hexdigest()[:10]
+
 QA_DIR = Path("data/qa_needdown")
 EXP_DIR = Path("data/qa_exploration")
 
@@ -107,7 +115,7 @@ def main():
             spans = ([{"start_ms": ev["start_ms"], "end_ms": ev.get("end_ms")}]
                      if ev.get("start_ms") is not None else [])
             rows_out.append({
-                "id": f"v6-{vid.split('-')[-1][:12]}-{i:03d}",
+                "id": f"v6-{_vid_key(vid)}-{i:03d}",
                 "video_id": vid,
                 "question": q,
                 "answer": a,
@@ -171,7 +179,7 @@ def main():
             kept_by_video.append((q, str(a)))
             ev = r.get("evidence", {}) or {}
             rows_out.append({
-                "id": f"v6v-{vid.split('-')[-1][:12]}-{i:03d}",
+                "id": f"v6v-{_vid_key(vid)}-{i:03d}",
                 "video_id": vid,
                 "question": q,
                 "answer": a,
@@ -205,7 +213,7 @@ def main():
             qa = r.get("qa", {})
             gold = qa.get("answer_set") or []
             rows_out.append({
-                "id": f"v6x-{(vid or 'corpus').split('-')[-1][:12]}-{i:03d}",
+                "id": f"v6x-{_vid_key(vid or 'corpus')}-{i:03d}",
                 "video_id": r.get("video_id"),   # None for corpus scope
                 "question": qa.get("question"),
                 "answer": [{k: g.get(k) for k in

@@ -1,0 +1,686 @@
+[
+ {
+  "id": "v6-301701ac33-008",
+  "video_id": "ABC_Network_-_Let_s_Make_a_Deal_-_WLS_Channel_7_Pre-Show_Break_Opening_Moments_2_5_1976",
+  "question": "What item does Nancy Smith\u2019s husband offer to trade in exchange for a deal on the February 5, 1976, broadcast of Let's Make a Deal?",
+  "answer": "Creole",
+  "tags": [
+   "GARBLED"
+  ],
+  "reason": "'Creole' as traded item looks ASR-garbled",
+  "confirmation": "'Creole/creel' remains garbled/unclear even in full evidence"
+ },
+ {
+  "id": "v6-6a7b4b3ea1-003",
+  "video_id": "ABC_News_Nightline_-_Bitter_Cold_-_WLS_Channel_7_1st_16_Minutes_1_11_1982",
+  "question": "Who is the New York City official responsible for addressing complaints about heatless homes, according to Housing Commissioner Anthony Gleidman during a news report on January 11, 1982?",
+  "answer": "Anthony Gleidman",
+  "tags": [
+   "LEAK"
+  ],
+  "reason": "Question names Gleidman then asks who is responsible; answer is Gleidman.",
+  "confirmation": "question names Gleidman then asks for same name; circular leak"
+ },
+ {
+  "id": "v6-9b95482ca4-001",
+  "video_id": "ABC_News_Special_Report_-_The_President_at_the_United_Nations_-_WLS-TV_1985",
+  "question": "What position does Edward Trevenanti hold, according to President Reagan's 40th anniversary memorial speech in 1985?",
+  "answer": "New Foreign Minister",
+  "tags": [
+   "GARBLED"
+  ],
+  "reason": "Name/title garbled ASR, likely conflated with Shevardnadze.",
+  "confirmation": "name/title garbled, conflates Shevardnadze and Troyanovsky"
+ },
+ {
+  "id": "v6-9b95482ca4-005",
+  "video_id": "ABC_News_Special_Report_-_The_President_at_the_United_Nations_-_WLS-TV_1985",
+  "question": "Why did the administration encourage viewers to pay attention to President Reagan's speech to the UN General Assembly in 1985?",
+  "answer": "to look for a new initiative",
+  "tags": [
+   "MISMATCH"
+  ],
+  "reason": "answer explains what to look for, not why encouraged",
+  "confirmation": "answer states what to look for, not why encouraged"
+ },
+ {
+  "id": "v6-a1378bcd5c-004",
+  "video_id": "ABC_News_Weekend_Report_-_WLS_Channel_7_Complete_Broadcast_2_18_1979",
+  "question": "Who, as reported in a February 18, 1979, FuzzyMemories TV broadcast about news, recently visited the United States to meet with administration advisors?",
+  "answer": "Thailand's Prime Minister Shama Lan",
+  "tags": [
+   "GARBLED"
+  ],
+  "reason": "ASR-garbled name 'Shama Lan' vs excerpt 'Shaman Ann' baked into answer",
+  "confirmation": "name varies Shaman Ann/Shyamalan, unrecognizable garble"
+ },
+ {
+  "id": "v6-ce9a297126-007",
+  "video_id": "cpb-aacip-114-881jx2h7",
+  "question": "According to John Peters, what is the central function of his position?",
+  "answer": "religion",
+  "tags": [
+   "UNSUPPORTED"
+  ],
+  "reason": "excerpt lacks any mention of 'religion'",
+  "confirmation": null
+ },
+ {
+  "id": "v6-1279b012b8-003",
+  "video_id": "cpb-aacip-120-80ht7h8d",
+  "question": "What four animals were specifically named as having been released back into the wild by volunteers at the California Marine Mammal Center?",
+  "answer": "Aluthra, Tyler, Crane, and Frederica",
+  "tags": [
+   "MISMATCH"
+  ],
+  "reason": "question says four animals but evidence names five",
+  "confirmation": "evidence names five animals, question/answer arbitrarily say four"
+ },
+ {
+  "id": "v6-0169b45d48-001",
+  "video_id": "cpb-aacip-15-1c1td9n55n",
+  "question": "What month did James begin attending karate classes with Ernie Branch?",
+  "answer": "January",
+  "tags": [
+   "UNSUPPORTED"
+  ],
+  "reason": "names James/Ernie Branch absent from excerpt",
+  "confirmation": "'Ernie Branch' never appears anywhere in full_evidence"
+ },
+ {
+  "id": "v6-da2a0fe492-001",
+  "video_id": "cpb-aacip-302a0ce217c",
+  "question": "What is the stated reason the customer is in a rush during the restaurant conversation with Maya Angelou?",
+  "answer": "They are double parked.",
+  "tags": [
+   "CONFLATION"
+  ],
+  "reason": "question ties scene to Maya Angelou, not evident in excerpt",
+  "confirmation": "Full evidence never mentions Maya Angelou at all"
+ },
+ {
+  "id": "v6-e708482fb1-000",
+  "video_id": "cpb-aacip-4f036fc316b",
+  "question": "According to the Modern AAPB item (hex GUID) broadcast, how long has it been since Ambassador Lincoln Gordon last took a trip away from the embassy?",
+  "answer": "Three weeks",
+  "tags": [
+   "CONFLATION"
+  ],
+  "reason": "'Three weeks' modifies Goulart's trip, not Gordon's absence.",
+  "confirmation": "Three weeks modifies Goulart's route, not Gordon's absence"
+ },
+ {
+  "id": "v6-b95295228e-003",
+  "video_id": "cpb-aacip-507-1v5bc3tf81",
+  "question": "According to Henry Camp, what is essential for someone to 'find their place' in the city?",
+  "answer": "Employment",
+  "tags": [
+   "UNSUPPORTED"
+  ],
+  "reason": "speaker name Henry Camp not shown in excerpt",
+  "confirmation": "speaker name Henry Camp unverifiable in full evidence"
+ },
+ {
+  "id": "v6-b95295228e-007",
+  "video_id": "cpb-aacip-507-1v5bc3tf81",
+  "question": "According to Henry Cam, approximately how long ago did he first visit Cambodia?",
+  "answer": "30 years",
+  "tags": [
+   "GARBLED"
+  ],
+  "reason": "Speaker name 'Henry Cam' not shown/supported in evidence, likely ASR mangle.",
+  "confirmation": "'Henry Cam' is garbled ASR of journalist Henry Kamm"
+ },
+ {
+  "id": "v6-b95295228e-009",
+  "video_id": "cpb-aacip-507-1v5bc3tf81",
+  "question": "What publication did Henry Cam work for as a Pulitzer Prize winning foreign correspondent covering Cambodia?",
+  "answer": "The New York Times",
+  "tags": [
+   "GARBLED"
+  ],
+  "reason": "ASR mangled Henry Kamm as 'Henry Cam' in question/gold",
+  "confirmation": "real name Henry Kamm garbled to Henry Cam in Q and gold"
+ },
+ {
+  "id": "v6-d2204afef6-000",
+  "video_id": "cpb-aacip-507-251fj2b03t",
+  "question": "According to Barbara Bush, what profession did she choose to pursue?",
+  "answer": "Lawyer",
+  "tags": [
+   "UNSUPPORTED"
+  ],
+  "reason": "Evidence excerpt is about Quayle/Clintons; no lawyer quote from Barbara Bush.",
+  "confirmation": "speaker is Marilyn Quayle ('Dan married me'), not Barbara Bush"
+ },
+ {
+  "id": "v6-d2204afef6-002",
+  "video_id": "cpb-aacip-507-251fj2b03t",
+  "question": "According to the speaker, in what year did John Kennedy perform this action?",
+  "answer": "1960",
+  "tags": [
+   "DEIXIS"
+  ],
+  "reason": "\"this action\" unresolved; not self-contained without prior context.",
+  "confirmation": "'this action' antecedent never specified in evidence"
+ },
+ {
+  "id": "v6-d2204afef6-010",
+  "video_id": "cpb-aacip-507-251fj2b03t",
+  "question": "What specific activity does Barbara Bush repeatedly mention as a common experience among her generation?",
+  "answer": "going to school, to church, and to work",
+  "tags": [
+   "UNSUPPORTED"
+  ],
+  "reason": "Excerpt shown never mentions Barbara Bush or quote.",
+  "confirmation": "quote is Marilyn Quayle's speech, misattributed to Barbara Bush"
+ },
+ {
+  "id": "v6-30c466bae7-003",
+  "video_id": "cpb-aacip-507-3b5w669q04",
+  "question": "According to this PBS NewsHour broadcast, for how many years has Pacific Life been providing financial solutions to Americans?",
+  "answer": "135 years",
+  "tags": [
+   "TRIVIA"
+  ],
+  "reason": "sponsor underwriting ad copy, not editorial content",
+  "confirmation": "sponsor ad copy misframed as broadcast editorial content"
+ },
+ {
+  "id": "v6-30c466bae7-010",
+  "video_id": "cpb-aacip-507-3b5w669q04",
+  "question": "What problem does Governor Blanco state is making firefighting difficult in New Orleans?",
+  "answer": "Too little water pressure",
+  "tags": [
+   "CONFLATION"
+  ],
+  "reason": "water pressure line not clearly attributed to Blanco",
+  "confirmation": "water pressure line is narration, not attributed to Blanco"
+ },
+ {
+  "id": "v6-b494468686-000",
+  "video_id": "cpb-aacip-507-5q4rj49c6q",
+  "question": "According to Jim Lehrer, Professor Lieber, Ray Suarez, Vijay Vaitiswaran, and Dick Cheney during a PBS NewsHour broadcast, what has been the average weekly number of attacks recently?",
+  "answer": "150",
+  "tags": [
+   "UNSUPPORTED"
+  ],
+  "reason": "5 named speakers not attributed to quote in evidence",
+  "confirmation": "Quote said by Cordesman, not the 5 people named in question"
+ },
+ {
+  "id": "v6-fab8913b45-006",
+  "video_id": "cpb-aacip-507-5x2599zp0m",
+  "question": "According to Marshall Goldman in this PBS NewsHour broadcast, what historical figure could he be if he had a brain?",
+  "answer": "Arthur Lincoln",
+  "tags": [
+   "CONFLATION",
+   "GARBLED"
+  ],
+  "reason": "Wizard of Oz dialogue misattributed to Marshall Goldman; mangled name",
+  "confirmation": "Wizard of Oz dialogue misattributed to Marshall Goldman, name garbled"
+ },
+ {
+  "id": "v6-a02f8a4d03-008",
+  "video_id": "cpb-aacip-507-6h4cn6zk04",
+  "question": "What role did Reverend Leon Sullivan play in relation to American businesses operating in South Africa, as described in the PBS NewsHour broadcast featuring details on the Iran-Contra hearings?",
+  "answer": "devised the Code of Conduct",
+  "tags": [
+   "UNSUPPORTED",
+   "CONFLATION"
+  ],
+  "reason": "Excerpt is about a visa-fraud indictment, not Sullivan/South Africa/Iran-Contra.",
+  "confirmation": "question wrongly frames story as Iran-Contra hearings coverage"
+ },
+ {
+  "id": "v6-e910571ac6-000",
+  "video_id": "cpb-aacip-507-6w96689725",
+  "question": "According to the report from the PBS NewsHour broadcast on 9725, what group did the Ford campaign specifically mention in relation to the presidential election?",
+  "answer": "Catholic vote",
+  "tags": [
+   "GARBLED"
+  ],
+  "reason": "'broadcast on 9725' is id fragment, not a date",
+  "confirmation": "question fabricates broadcast date from video-id fragment"
+ },
+ {
+  "id": "v6-c2df6d1e89-002",
+  "video_id": "cpb-aacip-507-cf9j38m509",
+  "question": "In what year did the person in the PBS NewsHour broadcast segment mention nearly losing their business?",
+  "answer": "1984",
+  "tags": [
+   "TRIVIA"
+  ],
+  "reason": "answer sourced from Smith Barney ad testimonial, not news",
+  "confirmation": "answer sourced from ad testimonial, framed as news segment"
+ },
+ {
+  "id": "v6-8fda9d1ec4-000",
+  "video_id": "cpb-aacip-507-dv1cj8881m",
+  "question": "According to the speaker, by what time did the skipper need to return with the group on board?",
+  "answer": "1600",
+  "tags": [
+   "DEIXIS"
+  ],
+  "reason": "\"The speaker\" is unidentified/unresolved referent.",
+  "confirmation": "Speaker identity genuinely unresolved in evidence snippet"
+ },
+ {
+  "id": "v6-8fda9d1ec4-003",
+  "video_id": "cpb-aacip-507-dv1cj8881m",
+  "question": "What specific type of regulation, according to Jim Lara, applied to family cruises when he was attempting to implement them in the Pacific Fleet?",
+  "answer": "Pacific Fleet regs",
+  "tags": [
+   "DEGENERATE"
+  ],
+  "reason": "answer 'Pacific Fleet regs' is circular, near content-free",
+  "confirmation": "answer circularly restates question terms, near content-free"
+ },
+ {
+  "id": "v6-8fda9d1ec4-008",
+  "video_id": "cpb-aacip-507-dv1cj8881m",
+  "question": "Why do American soldiers at checkpoint Terminator state they are not to react to provocation?",
+  "answer": "they are professional representatives of the state",
+  "tags": [
+   "CONFLATION"
+  ],
+  "reason": "Evidence shows Serb checkpoint, not 'American soldiers at Terminator'.",
+  "confirmation": "evidence shows Serb checkpoint, 'Terminator'/American fabricated"
+ },
+ {
+  "id": "v6-512e6593b0-004",
+  "video_id": "cpb-aacip-507-f47gq6rq94",
+  "question": "According to the PBS NewsHour broadcast, how many people does SBC Communications employ?",
+  "answer": "Nearly 190,000",
+  "tags": [
+   "TRIVIA"
+  ],
+  "reason": "sponsor underwriting ad copy, not editorial content",
+  "confirmation": "SBC figure is sponsor ad copy, not editorial content"
+ },
+ {
+  "id": "v6-8caebf6903-011",
+  "video_id": "cpb-aacip-507-h707w67w4s",
+  "question": "What specific location saw a car bombing resulting in significant casualties on Friday, according to reports during a news program featuring Jim Lehrer, Linda Lim, Fred Bergson, and Treasury Secretary Jon Snow?",
+  "answer": "Nazhov",
+  "tags": [
+   "GARBLED"
+  ],
+  "reason": "Nazhov likely ASR-garbled, distinct Najaf named nearby",
+  "confirmation": "full evidence still shows garbled 'Nazhov', not fixed"
+ },
+ {
+  "id": "v6-b21d9905dc-000",
+  "video_id": "cpb-aacip-507-jw86h4dh3c",
+  "question": "According to Ben Armstrong, what situation makes the drug development process *seem* slow, even with recent improvements?",
+  "answer": "a critical situation that's so charged",
+  "tags": [
+   "DEGENERATE"
+  ],
+  "reason": "Answer is a vague, near-circular phrase, not a concrete situation.",
+  "confirmation": "answer is vague circular phrase, not concrete fact"
+ },
+ {
+  "id": "v6-3ad921fcd6-002",
+  "video_id": "cpb-aacip-507-nk3610wp6s",
+  "question": "What two types of activities, beyond military operations, are specifically outlined in the peace agreement discussed by Senator Dole?",
+  "answer": "Resettlement of refugees and elections",
+  "tags": [
+   "UNSUPPORTED"
+  ],
+  "reason": "Excerpt never names the speaker as Senator Dole.",
+  "confirmation": "'Senator Dole' name never appears in full evidence shown"
+ },
+ {
+  "id": "v6-843cd04590-001",
+  "video_id": "cpb-aacip-507-z892805z01",
+  "question": "According to Jim Lehrer, what region has reportedly seen reasonable progress in both its economy and security situation?",
+  "answer": "other parts of Iraq",
+  "tags": [
+   "DEGENERATE"
+  ],
+  "reason": "\"Other parts of Iraq\" is a vague non-answer to \"what region.\"",
+  "confirmation": "'Other parts of Iraq' is vague non-answer to 'what region'"
+ },
+ {
+  "id": "v6-a65dc7edcf-003",
+  "video_id": "cpb-aacip-507-zk55d8pd1h",
+  "question": "What specific practice does Dr. Axelrod identify as being most impacted by the fear of malpractice claims, as discussed in a PBS NewsHour segment covering the No-Fault Malpractice Insurance System Proposal, Medical Malpractice Study Released, Exxon Indictment and Environmental Laws, Fear of Malpractice Claims Distorting Medical Delivery System, and Concerns about the Indictment and Environmental Laws?",
+  "answer": "physicians\u2019 unwillingness to participate in peer review of their own colleagues",
+  "tags": [
+   "MISMATCH"
+  ],
+  "reason": "question lists five segment titles, malformed/template leak",
+  "confirmation": "Question is malformed template leak listing five segment titles"
+ },
+ {
+  "id": "v6-a65dc7edcf-006",
+  "video_id": "cpb-aacip-507-zk55d8pd1h",
+  "question": "What event did Nicaragua's government announce on this Wednesday evening?",
+  "answer": "A unilateral ceasefire in the war against the Contras",
+  "tags": [
+   "DEIXIS"
+  ],
+  "reason": "\"This Wednesday evening\" is unresolved relative time.",
+  "confirmation": "'this Wednesday evening' is unresolved deixis, not self-contained"
+ },
+ {
+  "id": "v6-167673f29f-000",
+  "video_id": "cpb-aacip-526-2z12n50h89",
+  "question": "What name does Charles Duset give when asked by people at a meeting?",
+  "answer": "Charles Doucet",
+  "tags": [
+   "GARBLED"
+  ],
+  "reason": "ASR name varies Duset/Doucet/Dusette across excerpt",
+  "confirmation": "name unstable across evidence: Duset/Doucet/Dusette"
+ },
+ {
+  "id": "v6-432196bd5b-000",
+  "video_id": "cpb-aacip-526-7w6736n449",
+  "question": "According to Speaker 5 in this discussion of Ojibwe culture, why has their community remained largely unknown?",
+  "answer": "They never made the history books.",
+  "tags": [
+   "DEIXIS"
+  ],
+  "reason": "'Speaker 5' is an unresolved, non-self-contained label.",
+  "confirmation": "'Speaker 5' never resolved anywhere in evidence"
+ },
+ {
+  "id": "v6-432196bd5b-007",
+  "video_id": "cpb-aacip-526-7w6736n449",
+  "question": "Why does Speaker 5 state people have \u2018never heard of\u2019 the Ojibwe people?",
+  "answer": "they never made the history books",
+  "tags": [
+   "DEIXIS"
+  ],
+  "reason": "\"Speaker 5\" is an anonymized diarization label, not self-contained.",
+  "confirmation": "duplicate 'Speaker 5' deixis, unresolved in evidence"
+ },
+ {
+  "id": "v6-432196bd5b-010",
+  "video_id": "cpb-aacip-526-7w6736n449",
+  "question": "According to Speaker 5, what is one reason people are unfamiliar with Ojibwe history?",
+  "answer": "They never made the history books.",
+  "tags": [
+   "DEIXIS"
+  ],
+  "reason": "\"Speaker 5\" label is not self-contained/resolvable.",
+  "confirmation": "'Speaker 5' label unresolvable, not self-contained"
+ },
+ {
+  "id": "v6-097a8ff5e3-004",
+  "video_id": "cpb-aacip-526-mk6542kh8x",
+  "question": "What year did George Schulte become music director of the Chicago Symphony Orchestra?",
+  "answer": "1969",
+  "tags": [
+   "GARBLED"
+  ],
+  "reason": "George Schulte is ASR garble of conductor Georg Solti",
+  "confirmation": "garbled ASR name 'George Schulte' baked into gold answer"
+ },
+ {
+  "id": "v6-097a8ff5e3-007",
+  "video_id": "cpb-aacip-526-mk6542kh8x",
+  "question": "Why does Daniel Barenboim state that rhythm is a main element in music?",
+  "answer": "It's really the basis of many, many things.",
+  "tags": [
+   "DEGENERATE"
+  ],
+  "reason": "Answer restates claim, doesn't explain why",
+  "confirmation": "Answer merely restates claim, doesn't explain the 'why'"
+ },
+ {
+  "id": "v6-62138b60c9-000",
+  "video_id": "cpb-aacip-526-sb3ws8js8p",
+  "question": "According to Dr. Bell during the discussion of Community Efforts to Reduce Crime, which organization posed a 'very legitimate question'?",
+  "answer": "Prince ICL",
+  "tags": [
+   "GARBLED"
+  ],
+  "reason": "name inconsistent: Prince ICL vs Prince Asiel in same excerpt",
+  "confirmation": "full_evidence still has 'Prince ICL' vs 'Prince Asiel' unresolved"
+ },
+ {
+  "id": "v6-62138b60c9-008",
+  "video_id": "cpb-aacip-526-sb3ws8js8p",
+  "question": "According to Prince Aciel, where do they personally reside, referencing a recent shooting incident?",
+  "answer": "74th Street and South Shore",
+  "tags": [
+   "UNSUPPORTED"
+  ],
+  "reason": "Excerpt lacks speaker name and quoted location entirely.",
+  "confirmation": "quote/location correct but 'Prince Aciel' name unverifiable"
+ },
+ {
+  "id": "v6-7261698190-000",
+  "video_id": "cpb-aacip-526-sj19k47399",
+  "question": "According to the speaker in a broadcast from 7399, what type of agreement existed between Iraq and Saudi Arabia?",
+  "answer": "Non-aggression pact",
+  "tags": [
+   "GARBLED"
+  ],
+  "reason": "'broadcast from 7399' is id fragment, not a date",
+  "confirmation": "question embeds video-id fragment '7399' as if a date"
+ },
+ {
+  "id": "v6-7261698190-008",
+  "video_id": "cpb-aacip-526-sj19k47399",
+  "question": "What type of agreement did Iraq have with Saudi Arabia, according to the speaker in the Peabody Awards corpus / NJN (mixed) broadcast of 7399 from 7399?",
+  "answer": "A non-aggression pact",
+  "tags": [
+   "GARBLED"
+  ],
+  "reason": "Question references garbled internal ID 'broadcast of 7399 from 7399'.",
+  "confirmation": "question text contains nonsensical 'broadcast of 7399 from 7399'"
+ },
+ {
+  "id": "v6-8f80c3c2ea-001",
+  "video_id": "cpb-aacip-526-sn00z72802",
+  "question": "What is the phone number viewers are instructed to call to participate in the Talk Back show on February 28, 1980?",
+  "answer": "800-777-1234",
+  "tags": [
+   "UNSUPPORTED"
+  ],
+  "reason": "Feb 28 1980 date not present anywhere in evidence",
+  "confirmation": "no Feb 28 1980 date anywhere in full evidence"
+ },
+ {
+  "id": "v6-3782846bc7-003",
+  "video_id": "cpb-aacip-526-v69862cp2j",
+  "question": "According to the segment, despite the possibility of it being considered an open 'back door', what has not happened in this country?",
+  "answer": "significant amount of plutonium has ever been stolen",
+  "tags": [
+   "DEIXIS"
+  ],
+  "reason": "'This country' is unresolved; no country named in evidence shown.",
+  "confirmation": null
+ },
+ {
+  "id": "v6-ea79b1a91c-003",
+  "video_id": "cpb-aacip-526-x34mk66j2p",
+  "question": "What does Lloyd Price repeatedly address the person they are speaking to as?",
+  "answer": "Baby",
+  "tags": [
+   "TRIVIA"
+  ],
+  "reason": "generic filler address term, not archivable fact",
+  "confirmation": "generic song lyric filler, not archivable fact"
+ },
+ {
+  "id": "v6-0587671f14-002",
+  "video_id": "cpb-aacip-526-x921c1vv2j",
+  "question": "What does Darliwa state is 'dear to me' during the Peabody Awards corpus / NJN (mixed) broadcast segment?",
+  "answer": "These things",
+  "tags": [
+   "DEGENERATE"
+  ],
+  "reason": "answer 'These things' is a near-empty circular lyric fragment",
+  "confirmation": "circular lyric, 'these things' referent never specified"
+ },
+ {
+  "id": "v6-0587671f14-010",
+  "video_id": "cpb-aacip-526-x921c1vv2j",
+  "question": "What repeated warning does Darliwa give to someone experiencing heartbreak?",
+  "answer": "before you do anything rash, baby",
+  "tags": [
+   "GARBLED"
+  ],
+  "reason": "Speaker name 'Darliwa' absent from evidence",
+  "confirmation": "'Darliwa' name absent from full_evidence, fabricated speaker"
+ },
+ {
+  "id": "v6-bfb42eb6d8-006",
+  "video_id": "cpb-aacip-75-72p5j4xx",
+  "question": "Why did Gene Reynold believe Marcel Duchamp removed himself from the world of art?",
+  "answer": "rather than repeat it",
+  "tags": [
+   "DEGENERATE"
+  ],
+  "reason": "answer is a dangling fragment, not a standalone reason",
+  "confirmation": "dangling fragment, not standalone reason for removal"
+ },
+ {
+  "id": "v6-aa46dfce16-004",
+  "video_id": "cpb-aacip-75-87brvgkp",
+  "question": "Pat Senyon, Sam Maiton, Walter L. Wolfe, and Bertha von Maschisker discuss the Prints in Progress program, repeatedly identifying one artist as a key founder; what is that artist's name?",
+  "answer": "Benton Spruance",
+  "tags": [
+   "UNSUPPORTED"
+  ],
+  "reason": "named panelists in question absent from excerpt",
+  "confirmation": "named panelists absent even from full evidence"
+ },
+ {
+  "id": "v6v-e708482fb1-002",
+  "video_id": "cpb-aacip-4f036fc316b",
+  "question": "In the on-screen graphic introducing Ambassador Lincoln Gordon, what is the name of the newspaper visible?",
+  "answer": "Folha",
+  "tags": [
+   "UNSUPPORTED"
+  ],
+  "reason": "'Folha' is isolated OCR fragment, not clearly named newspaper",
+  "confirmation": "isolated OCR fragment, not clearly a newspaper name"
+ },
+ {
+  "id": "v6v-272c8b8e13-002",
+  "video_id": "cpb-aacip-507-7659c6sk9k",
+  "question": "According to the on-screen text, what kind of novel is \"Smiley's People\" by John Le Carr\u00e9?",
+  "answer": "A JAMES BOND NOVEL",
+  "tags": [
+   "CONFLATION"
+  ],
+  "reason": "'James Bond novel' text wrongly tied to Smiley's People",
+  "confirmation": "James Bond text likely conflated from separate ad/book cover"
+ },
+ {
+  "id": "v6v-c2df6d1e89-001",
+  "video_id": "cpb-aacip-507-cf9j38m509",
+  "question": "In the on-screen graphic shown during the Super Bowl Analysis, what is the 'Class Number' displayed?",
+  "answer": "100002",
+  "tags": [
+   "TRIVIA"
+  ],
+  "reason": "unrelated software UI id no researcher would seek",
+  "confirmation": "arbitrary software UI field, no archival value"
+ },
+ {
+  "id": "v6v-e52df4d408-000",
+  "video_id": "cpb-aacip-507-dj58c9rs7q",
+  "question": "In the PBS NewsHour interview with Robert Rubin, what countries are explicitly mentioned as beneficiaries of 'protection of essential security' according to the on-screen graphic?",
+  "answer": "Iraq, United States",
+  "tags": [
+   "GARBLED"
+  ],
+  "reason": "OCR text garbled, answer arbitrarily excludes Coalition partners",
+  "confirmation": "full_evidence empty, no support to verify OCR claim"
+ },
+ {
+  "id": "v6v-b21d9905dc-002",
+  "video_id": "cpb-aacip-507-jw86h4dh3c",
+  "question": "What brand name is prominently displayed on the on-screen graphic?",
+  "answer": "TAMMY FAIE",
+  "tags": [
+   "GARBLED"
+  ],
+  "reason": "Gold answer 'TAMMY FAIE' is OCR-mangled Tammy Faye",
+  "confirmation": null
+ },
+ {
+  "id": "v6v-5d2bc841e6-001",
+  "video_id": "cpb-aacip-507-kk94747k0n",
+  "question": "According to the on-screen text, which publication raised questions about the authenticity of papers related to George Bush, and who were the writers who reported on this?",
+  "answer": "The Washington Post; Michael Dorni and Mike Allen",
+  "tags": [
+   "GARBLED"
+  ],
+  "reason": "byline 'Michael Dorni' likely OCR-garbled reporter name",
+  "confirmation": "Byline 'Michael Dorni' is OCR-garbled name baked into answer"
+ },
+ {
+  "id": "v6v-26d9ef8db9-001",
+  "video_id": "cpb-aacip-526-7s7hq3sz9x",
+  "question": "In the closing graphic for Right Channel, what three words appear as part of the 'palabra' branding?",
+  "answer": "CLUB, JET, JCT",
+  "tags": [
+   "GARBLED"
+  ],
+  "reason": "on-screen text nonsensical, answer mismatches framing",
+  "confirmation": "OCR text nonsensical, answer doesn't match 'palabra' framing"
+ },
+ {
+  "id": "v6v-8e9e456904-004",
+  "video_id": "cpb-aacip-526-cj87h1fq6v",
+  "question": "What organization and city are identified on the chyron?",
+  "answer": "ACCURACY IN MEDIA, WASHINGTON, D.C.",
+  "tags": [
+   "DEIXIS"
+  ],
+  "reason": "'the chyron' unresolved, no broadcast context given",
+  "confirmation": "full_evidence empty, cannot verify chyron content"
+ },
+ {
+  "id": "v6v-097a8ff5e3-000",
+  "video_id": "cpb-aacip-526-mk6542kh8x",
+  "question": "According to the on-screen text, which organization's head 'greeted the joint appointment as \"a great asset to Chicago\"?",
+  "answer": "Card Pub of 1916 Opera",
+  "tags": [
+   "GARBLED"
+  ],
+  "reason": "'Card Pub of 1916 Opera' is garbled OCR baked into gold answer.",
+  "confirmation": "garbled OCR 'Card Pub of 1916 Opera' baked into gold answer"
+ },
+ {
+  "id": "v6v-2673bfa56d-000",
+  "video_id": "cpb-aacip-6e9ccb7f4f8",
+  "question": "In the visual evidence, what price is listed for strawberries?",
+  "answer": "3-1",
+  "tags": [
+   "GARBLED"
+  ],
+  "reason": "price '3-1' is OCR-mangled, baked verbatim into gold answer",
+  "confirmation": "OCR-mangled price '3-1' baked verbatim into gold answer"
+ },
+ {
+  "id": "v6x-046a36efb6-004",
+  "video_id": null,
+  "question": "Which broadcasts feature a political adviser speaking?",
+  "answer": null,
+  "tags": [
+   "MISMATCH"
+  ],
+  "reason": "Retrieved speaker is a commentator, not a \"political adviser.\"",
+  "confirmation": "Mark Shields is a commentator, not a 'political adviser'"
+ },
+ {
+  "id": "v6x-f1cc51dac0-000",
+  "video_id": "cpb-aacip-507-vm42r3pt6h",
+  "question": "Identify the segments of this PBS NewsHour broadcast focusing on William Kennedy Smith.",
+  "answer": null,
+  "tags": [
+   "MISMATCH"
+  ],
+  "reason": "credit reports segment doesn't mention William Kennedy Smith",
+  "confirmation": "no full_evidence to refute; credit-reports segment unrelated to WKS"
+ }
+]
