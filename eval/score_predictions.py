@@ -233,8 +233,9 @@ def main():
     print(f"Scoring {len(predictions)} predictions...")
     if benchmark_by_id:
         mc_count = sum(1 for q in benchmark_by_id.values() if q.get("format") == "multiple_choice")
-        ft_count = sum(1 for q in benchmark_by_id.values() if q.get("format") == "free_text")
-        print(f"Benchmark: {mc_count} MC + {ft_count} free-text questions")
+        ft_count = sum(1 for q in benchmark_by_id.values() if q.get("format") in ("free_text", "freetext"))
+        rs_count = sum(1 for q in benchmark_by_id.values() if q.get("format") == "retrieval_set")
+        print(f"Benchmark: {mc_count} MC + {ft_count} free-text + {rs_count} retrieval-set questions")
 
     # Score each prediction
     mc_scores = []

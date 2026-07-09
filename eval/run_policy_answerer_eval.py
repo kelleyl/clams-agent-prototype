@@ -498,7 +498,9 @@ def policy_generate_ollama(messages, tools, model_name, ollama_url, max_new_toke
         ollama_messages.append(omsg)
 
     # Build tool descriptions into the system prompt since Ollama doesn't
-    # natively support tool schemas for all models
+    # natively support tool schemas for all models.
+    # No-tools mode (empty tools list): skip injection entirely so the
+    # model is not primed to emit <tool_call> syntax.
     tool_desc = "You have access to these tools:\n\n"
     for t in tools:
         fn = t["function"]
@@ -521,10 +523,11 @@ def policy_generate_ollama(messages, tools, model_name, ollama_url, max_new_toke
     )
 
     # Prepend tool descriptions to system message or first user message
-    if ollama_messages and ollama_messages[0]["role"] == "system":
-        ollama_messages[0]["content"] = ollama_messages[0]["content"] + "\n\n" + tool_desc
-    else:
-        ollama_messages.insert(0, {"role": "system", "content": tool_desc})
+    if tools:
+        if ollama_messages and ollama_messages[0]["role"] == "system":
+            ollama_messages[0]["content"] = ollama_messages[0]["content"] + "\n\n" + tool_desc
+        else:
+            ollama_messages.insert(0, {"role": "system", "content": tool_desc})
 
     resp = requests.post(f"{ollama_url}/api/chat", json={
         "model": model_name,
@@ -547,7 +550,9 @@ def policy_generate_vllm(messages, tools, model_name, vllm_url, max_new_tokens=5
     """
     import requests
 
-    # Build tool descriptions into system prompt
+    # Build tool descriptions into system prompt.
+    # No-tools mode (empty tools list): skip injection entirely so the
+    # model is not primed to emit <tool_call> syntax.
     tool_desc = "You are a video research agent. You MUST use tools to answer questions about videos. Never answer without gathering evidence first.\n\nAvailable tools:\n\n"
     for t in tools:
         fn = t["function"]
@@ -580,9 +585,12 @@ def policy_generate_vllm(messages, tools, model_name, vllm_url, max_new_tokens=5
         image_b64 = msg.get("_v6_image_b64")
 
         if role == "system":
-            api_messages.append({"role": "system", "content": content + "\n\n" + tool_desc})
+            if tools:
+                api_messages.append({"role": "system", "content": content + "\n\n" + tool_desc})
+            else:
+                api_messages.append({"role": "system", "content": content})
         elif role == "user":
-            if not api_messages:
+            if not api_messages and tools:
                 api_messages.append({"role": "system", "content": tool_desc})
             api_messages.append({"role": "user", "content": content})
         elif role == "assistant":
@@ -721,9 +729,9 @@ For multiple-choice questions, you MUST select one option (A/B/C/D). Base your a
 NO_TOOLS_SYSTEM = """You are answering questions about broadcast video content. You do NOT have access to any tools or video data. Answer based solely on your own knowledge.
 
 Respond with a JSON object:
-{"answer": "your answer (for multiple-choice: the letter like A, B, C, or D)", "rationale": "brief explanation"}
+{"answer": "your answer", "rationale": "brief explanation"}
 
-For multiple-choice questions, you MUST select exactly one option (A, B, C, or D). If you are unsure, make your best guess."""
+If the question shows multiple-choice options, you MUST answer with exactly one option letter (A, B, C, or D). Otherwise, give a short, direct free-text answer (a name, phrase, or number). If you are unsure, make your best guess."""
 
 
 def gather_evidence(
