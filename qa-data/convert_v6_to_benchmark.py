@@ -129,6 +129,56 @@ def main():
             })
             stats[f"needdown_keep_{st}"] += 1
 
+    # ---- visual VQA rows (two-sided modality gate replaces the round-trip) ----
+    vis_dir = Path("data/qa_visual")
+    for f in sorted(vis_dir.glob("*.json")) if vis_dir.exists() else []:
+        d = json.load(open(f))
+        vid = d.get("video_id", f.stem)
+        kept_by_video = []
+        for i, r in enumerate(d.get("rows", [])):
+            qa = r.get("qa", {})
+            q, a = qa.get("question"), qa.get("answer")
+            gate = r.get("visual_gate") or {}
+            if not q or not a:
+                stats["visual_malformed"] += 1
+                continue
+            if not gate.get("keep"):
+                stats["visual_drop_speech_answerable" if gate.get("speech_answerable")
+                      else "visual_drop_gate"] += 1
+                continue
+            st = stratum(qa.get("blind_score"))
+            if st == "trivial":
+                stats["visual_drop_trivial"] += 1
+                continue
+            if is_near_dup(q, str(a), kept_by_video):
+                stats["visual_drop_near_dup"] += 1
+                continue
+            kept_by_video.append((q, str(a)))
+            ev = r.get("evidence", {}) or {}
+            rows_out.append({
+                "id": f"v6v-{vid.split('-')[-1][:12]}-{i:03d}",
+                "video_id": vid,
+                "question": q,
+                "answer": a,
+                "format": "freetext",
+                "modalities_required": ["visual"],
+                "source_segment_times": [{"start_ms": ev.get("start_ms"),
+                                          "end_ms": ev.get("end_ms")}],
+                "reasoning_type": r.get("w_role"),
+                "pipeline_version": args.pipeline_version,
+                "v6": {
+                    "cell": r.get("cell"),
+                    "element": r.get("element"),
+                    "blind_score": qa.get("blind_score"),
+                    "blind_stratum": st,
+                    "blind_panel": qa.get("blind_panel"),
+                    "visual_gate": {k: gate.get(k) for k in
+                                    ("visual_pass", "speech_answerable")},
+                    "visual_evidence": ev.get("visual_text"),
+                },
+            })
+            stats[f"visual_keep_{st}"] += 1
+
     # ---- exploration retrieval sets ----
     for f in sorted(EXP_DIR.glob("*.json")) if EXP_DIR.exists() else []:
         d = json.load(open(f))

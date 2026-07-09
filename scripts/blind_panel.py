@@ -61,11 +61,16 @@ def tier(size):
 
 
 def main():
+    global QA_DIR
     ap = argparse.ArgumentParser()
     ap.add_argument("--video", nargs="+", required=True)
+    ap.add_argument("--qa-dir", default=str(QA_DIR),
+                    help="sidecar dir (default data/qa_needdown; use data/qa_visual "
+                         "for the visual rows)")
     ap.add_argument("--models", default="", help="comma list to subset the panel")
     ap.add_argument("--api-key", default="EMPTY")
     args = ap.parse_args()
+    QA_DIR = Path(args.qa_dir)
     want = set(x.strip() for x in args.models.split(",") if x.strip())
     panel = [m for m in PANEL if not want or m["name"] in want]
 
@@ -73,7 +78,10 @@ def main():
     videos = []
     rows = []
     for vid in args.video:
-        data = json.load(open(QA_DIR / f"{vid}.json"))
+        p = QA_DIR / f"{vid}.json"
+        if not p.exists():      # not every video yields rows in every sidecar dir
+            continue
+        data = json.load(open(p))
         videos.append((vid, data))
         for r in data.get("rows", []):
             if r["qa"].get("question") and not r["qa"].get("error"):

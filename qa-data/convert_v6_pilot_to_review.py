@@ -176,6 +176,8 @@ def main():
     ap.add_argument("--input-dir", default="data/gen_compare/A-slice")
     ap.add_argument("--exploration-dir", default="",
                     help="also append kept rows from this qa_exploration dir")
+    ap.add_argument("--visual-dir", default="",
+                    help="also append rows from this qa_visual dir (all rows, gate shown)")
     ap.add_argument("--index-dir", default="data/video_indexes")
     ap.add_argument("--output", default="qa-data/raw/v6/pilot_review.jsonl")
     args = ap.parse_args()
@@ -256,12 +258,49 @@ def main():
                 out.write(json.dumps(row) + "\n")
                 n_rows += 1
 
+    n_vis = 0
+    if args.visual_dir:
+        with open(out_path, "a") as out:
+            for sp in sorted(Path(args.visual_dir).glob("*.json")):
+                data = json.load(open(sp))
+                vid = data.get("video_id", sp.stem)
+                for i, r in enumerate(data.get("rows", [])):
+                    qa = r.get("qa", {})
+                    gate = r.get("visual_gate") or {}
+                    if not qa.get("question") or not qa.get("answer"):
+                        continue
+                    ev = r.get("evidence", {}) or {}
+                    out.write(json.dumps({
+                        "id": f"v6v-{vid.split('-')[-1][:12]}-{i:03d}",
+                        "video_id": vid,
+                        "question": qa["question"],
+                        "answer": qa["answer"],
+                        "format": "freetext",
+                        "task_family": f"{r.get('cell')} / visual",
+                        "window_start_ms": ev.get("start_ms"),
+                        "window_end_ms": ev.get("end_ms"),
+                        "support_anchor_ms": ev.get("start_ms"),
+                        "verification": {
+                            "rationale": qa.get("rationale", ""),
+                            "support_spans": [{"modality": "visual",
+                                               "text": ev.get("visual_text") or ""}],
+                        },
+                        "v6": {"cell": r.get("cell"), "w_role": r.get("w_role"),
+                               "element": r.get("element"),
+                               "blind_score": qa.get("blind_score"),
+                               "blind_panel": qa.get("blind_panel"),
+                               "densified": False,
+                               "roundtrip_consistent": gate.get("keep"),
+                               "visual_gate": gate},
+                    }) + "\n")
+                    n_vis += 1
+
     n_exp = 0
     if args.exploration_dir:
         with open(out_path, "a") as out:
             n_exp = exploration_rows(args.exploration_dir, out)
 
-    print(f"wrote {n_rows} need-down + {n_exp} exploration rows -> {out_path} "
+    print(f"wrote {n_rows} need-down + {n_vis} visual + {n_exp} exploration rows -> {out_path} "
           f"(excluded {n_skipped} stale video(s), {n_policy_skipped} policy-dropped rows: "
           f"two-hop + near-dups)")
 

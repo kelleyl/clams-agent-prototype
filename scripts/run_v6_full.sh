@@ -37,6 +37,12 @@ for V in $VIDS; do
   echo "[stage1] done: $V $(date +%H:%M:%S)"
 done
 
+echo "=== STAGE 1b: visual VQA (text_focus + corroborated scene captions) $(date +%H:%M:%S) ==="
+for V in $VIDS; do
+  $PY scripts/generate_qa_visual.py --only-video "$V" --skip-done \
+      --gen-url $URL --gen-model "$GEN" --verify-url $URL --verify-model "$VERIFY" 2>&1 | tail -1
+done
+
 echo "=== STAGE 2: exploration (program + corpus) $(date +%H:%M:%S) ==="
 for V in $VIDS; do
   $PY scripts/generate_qa_exploration.py --scope program --only-video "$V" --skip-done \
@@ -47,6 +53,8 @@ $PY scripts/generate_qa_exploration.py --scope corpus --limit-questions 40 \
 
 echo "=== STAGE 3: blind panel (7 models) $(date +%H:%M:%S) ==="
 $PY scripts/blind_panel.py --models "$PANEL7" --video $VIDS
+echo "=== STAGE 3b: blind panel over visual rows $(date +%H:%M:%S) ==="
+$PY scripts/blind_panel.py --qa-dir data/qa_visual --models "$PANEL7" --video $VIDS
 
 echo "=== STAGE 4: round-trip gate ($VERIFY) $(date +%H:%M:%S) ==="
 for V in $VIDS; do

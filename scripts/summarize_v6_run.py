@@ -67,6 +67,16 @@ def main():
             exp_rows += 1
             exp_keep += 1 if r.get("keep") else 0
 
+    vis_dir = Path("data/qa_visual")
+    vis_rows = vis_keep = vis_speech = 0
+    for f in sorted(vis_dir.glob("*.json")) if vis_dir.exists() else []:
+        d = json.load(open(f))
+        for r in d.get("rows", []):
+            vis_rows += 1
+            g = r.get("visual_gate") or {}
+            vis_keep += 1 if g.get("keep") else 0
+            vis_speech += 1 if g.get("speech_answerable") else 0
+
     try:
         sha = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"],
                                       text=True).strip()
@@ -85,6 +95,8 @@ def main():
         "blind_strata": dict(strata),
         "roundtrip": dict(rt),
         "exploration": {"rows": exp_rows, "keep": exp_keep},
+        "visual": {"rows": vis_rows, "keep": vis_keep,
+                   "rejected_speech_answerable": vis_speech},
         "videos_with_zero_keep": [v for v, c in per_video.items() if c["keep"] == 0],
         "excluded": (json.load(open(EXCL)).get("excluded", []) if EXCL.exists() else []),
         "per_video": per_video,
@@ -97,6 +109,8 @@ def main():
     print("blind strata:", dict(strata))
     print("round-trip:", dict(rt))
     print(f"exploration: {exp_keep}/{exp_rows} kept")
+    print(f"visual: {vis_keep}/{vis_rows} kept "
+          f"({vis_speech} rejected as speech-answerable)")
     zk = stats["videos_with_zero_keep"]
     print(f"videos with zero surviving questions: {len(zk)}"
           + (f" -> {[v[:40] for v in zk[:8]]}" if zk else ""))
