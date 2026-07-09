@@ -91,13 +91,35 @@ def asr_excerpt(doc, start_ms, end_ms, query="", answer="", max_chars=900):
     if anchor_ms is None and scores[ranked[0]] > 0:
         anchor_ms = parts[ranked[0]][0]
 
+    def clip_turn(text, cap):
+        """Truncate a long turn AROUND its most query-relevant sentence, not its
+        head - the relevant clause is often deep inside a long news-summary turn."""
+        if len(text) <= cap:
+            return text
+        import re as _re
+        sents = _re.split(r"(?<=[.!?])\s+", text)
+        best = max(range(len(sents)), key=lambda i: len(q & _toks(sents[i])))
+        out, lo, hi = sents[best], best - 1, best + 1
+        while len(out) < cap and (lo >= 0 or hi < len(sents)):
+            if hi < len(sents) and len(out) + len(sents[hi]) < cap:
+                out = out + " " + sents[hi]
+                hi += 1
+            elif lo >= 0 and len(out) + len(sents[lo]) < cap:
+                out = sents[lo] + " " + out
+                lo -= 1
+            else:
+                break
+        pre = "[...] " if lo >= 0 else ""
+        post = " [...]" if hi < len(sents) else ""
+        return pre + out + post
+
     selected, budget = set(), max_chars
     for i in ranked[:4]:
         if scores[i] == 0 or budget <= 0:
             break
         for j in (i, i - 1, i + 1):        # core first, then neighbors
             if 0 <= j < len(parts) and j not in selected:
-                t = parts[j][1][:per_turn]
+                t = clip_turn(parts[j][1], per_turn)
                 if len(t) <= budget or (j == i and not selected):
                     selected.add(j)
                     budget -= len(t)
@@ -105,7 +127,7 @@ def asr_excerpt(doc, start_ms, end_ms, query="", answer="", max_chars=900):
     for j in sorted(selected):
         if prev is not None and j > prev + 1:
             pieces.append("[...]")
-        pieces.append(parts[j][1][:per_turn])
+        pieces.append(clip_turn(parts[j][1], per_turn))
         prev = j
     return " ".join(pieces), anchor_ms
 

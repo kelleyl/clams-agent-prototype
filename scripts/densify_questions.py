@@ -108,7 +108,9 @@ def topic_of(t):
 def densify(setting, anchor, topic, ctx, question, answer, url, model, api_key,
             timeout=90, bdate=""):
     sysm = ("You rewrite a benchmark question to be self-contained, without changing what it "
-            "asks and without revealing the answer.")
+            "asks and without revealing the answer. You make the MINIMAL edit: if the original "
+            "is already self-contained, return it UNCHANGED; otherwise change only what "
+            "self-containment requires and keep the original's natural wording everywhere else.")
     user = (f"Setting: {setting}.\n"
             f"Broadcast date: {bdate or 'unknown'}.\n"
             f"Who and what this broadcast is about (BACKGROUND ONLY - the broadcast covers "
@@ -126,8 +128,10 @@ def densify(setting, anchor, topic, ctx, question, answer, url, model, api_key,
             "story framing at all (name only the people/roles). "
             "Never use relative time words (today, yesterday, tonight, this week) - resolve "
             "them to the broadcast date or an absolute description of the event.\n"
-            "Rewrite the question so a reader who has NOT seen the video understands exactly what "
-            "is being asked. Crucially, name the SUBJECT explicitly: replace generic references "
+            "If a reader who has NOT seen the video would already understand exactly what is "
+            "being asked (subjects named, no vague references, no unresolved relative time), "
+            "return the original question UNCHANGED. Otherwise rewrite it MINIMALLY so such a "
+            "reader understands it. Crucially, name the SUBJECT explicitly: replace generic references "
             "like 'the president', 'his speech', 'this segment', 'the speaker' with the specific "
             "named person and the specific named event/occasion, using the who/what anchor and "
             "transcript above (e.g. 'the president' -> 'George W. Bush', 'his speech' -> 'his 2001 "
