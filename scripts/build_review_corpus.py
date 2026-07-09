@@ -32,7 +32,7 @@ def _toks(s):
     return set(w for w in s.split() if len(w) > 2 and w not in _STOP)
 
 
-def asr_excerpt(doc, start_ms, end_ms, query, answer="", max_chars=700):
+def asr_excerpt(doc, start_ms, end_ms, query, answer="", max_chars=1800):
     parts, seen = [], set()
     for k in doc.get("layers", {}):
         if not k.lower().startswith("asr"):
@@ -84,14 +84,14 @@ def asr_excerpt(doc, start_ms, end_ms, query, answer="", max_chars=700):
         i = a_ranked[0]
         if a & _toks(parts[i][1]):
             pieces.append(f"[answer context @{parts[i][0] // 60000}m] "
-                          + center_on(parts[i][1], a, 330))
+                          + center_on(parts[i][1], a, 700))
             used.add(i)
     budget = max_chars - sum(len(p) for p in pieces)
     ctx = []
     for i in ranked[:3]:
         for j in (i, i - 1, i + 1):
             if 0 <= j < len(parts) and j not in used:
-                t = parts[j][1][:220]
+                t = parts[j][1][:350]
                 if len(t) <= budget:
                     ctx.append((parts[j][0], t))
                     used.add(j)
@@ -160,7 +160,7 @@ def main():
                     "cell": r.get("cell"), "element": r.get("element"),
                     "question": qa["question"], "answer": qa["answer"],
                     "rationale": qa.get("rationale", "")[:400],
-                    "evidence_excerpt": (r.get("evidence", {}) or {}).get("visual_text", "")[:700],
+                    "evidence_excerpt": (r.get("evidence", {}) or {}).get("visual_text", "")[:1200],
                     "blind_score": qa.get("blind_score"),
                 }) + "\n")
                 n += 1
