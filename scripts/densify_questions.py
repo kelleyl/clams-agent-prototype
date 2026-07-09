@@ -64,6 +64,26 @@ ATTRIB = re.compile(r"\b(according to|as (?:mentioned|discussed|stated|described
 RELTIME = re.compile(r"\b(today|yesterday|tonight|this (?:week|morning|evening)|"
                      r"earlier today)\b", re.I)
 
+# program-reference deixis the LLM reliably refuses to fix ("According to the
+# news summary...") is anchored DETERMINISTICALLY: substitute the concrete
+# program + broadcast date into the phrase. No LLM, no semantic risk.
+PROG_DEIXIS = re.compile(r"\bth(?:is|e) (?:news )?summary\b|\bth(?:is|e) broadcast\b|"
+                         r"\bthis program\b|\bthe program\b|\bthis episode\b", re.I)
+
+
+def anchor_prog_deixis(q, program, bdate):
+    if not program:
+        return q
+    when = f" of {bdate}" if bdate else ""
+
+    def sub(m):
+        phrase = m.group(0).lower()
+        kind = "news summary" if "summary" in phrase else \
+               "episode" if "episode" in phrase else "broadcast"
+        return f"the {program} {kind}{when}"
+
+    return PROG_DEIXIS.sub(sub, q)
+
 
 def items(layer):
     if layer is None:
@@ -239,6 +259,8 @@ def main():
         if not new or str(new).startswith("__ERR__"):
             err += 1
             continue
+        if PROG_DEIXIS.search(new):     # deterministic backstop for program deixis
+            new = anchor_prog_deixis(new, setting.split(",")[0].strip(), bdate)
         qa["question_raw"] = q
         qa["question"] = new
         qa["densified"] = True
