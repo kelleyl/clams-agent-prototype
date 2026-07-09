@@ -291,6 +291,7 @@ def main():
         sal_files = sal_files[:args.limit_videos]
 
     tot_targets = tot_kept = tot_speech = tot_visfail = tot_trivia = tot_deixis = 0
+    tot_unsupported = 0
     for sp in sal_files:
         vid = sp.stem
         outp = OUT_DIR / f"{vid}.json"
@@ -355,6 +356,16 @@ def main():
             if norm_a in seen_answers:      # caption variants of the same card
                 continue
             seen_answers.add(norm_a)
+            # answer must be token-supported by the visual evidence itself
+            # (smell test: generators sometimes invent beyond the caption)
+            a_toks = set(_toks(str(a)))
+            supported = (str(a).lower() in t["text"].lower()
+                         or (a_toks and len(a_toks & set(_toks(t["text"]))) / len(a_toks) >= 0.6))
+            if not supported:
+                tot_unsupported += 1
+                if args.verbose:
+                    print(f"  [{vid[-14:]}] UNSUPPORTED-drop: {str(a)[:50]!r}")
+                continue
             gate = modality_gate(q, a, t, doc, vcfg)
             tot_kept += 1 if gate["keep"] else 0
             tot_speech += 1 if gate["speech_answerable"] else 0
@@ -362,7 +373,7 @@ def main():
             rows.append({"video_id": vid, "cell": "Visual/L2", "w_role": "what",
                          "element": f"{t['kind']}:{t['label']}",
                          "evidence": {"start_ms": t["start_ms"], "end_ms": t["end_ms"],
-                                      "modality": "visual", "visual_text": t["text"][:400]},
+                                      "modality": "visual", "visual_text": t["text"]},
                          "qa": {"question": q, "answer": a,
                                 "rationale": out.get("rationale", "")},
                          "visual_gate": gate})
@@ -376,7 +387,8 @@ def main():
 
     print(f"\ntargets: {tot_targets} | kept (visual-necessary): {tot_kept} | "
           f"rejected speech-answerable: {tot_speech} | visual round-trip failed: {tot_visfail} "
-          f"| trivia-dropped: {tot_trivia} | deixis-dropped: {tot_deixis}")
+          f"| trivia-dropped: {tot_trivia} | deixis-dropped: {tot_deixis} "
+          f"| unsupported-answer-dropped: {tot_unsupported}")
     print(f"output -> {OUT_DIR}/")
 
 

@@ -130,6 +130,11 @@ def main():
             stats[f"needdown_keep_{st}"] += 1
 
     # ---- visual VQA rows (two-sided modality gate replaces the round-trip) ----
+    # Post-pilot smell test (2026-07-09): benchmark keeps visual_text only
+    # (chyrons/slates/headlines/signs - overwhelmingly clean); visual_scene rows
+    # carry background-object trivia and stay raw-only pending frame-level
+    # verification. Gold answers must be token-supported by the recorded visual
+    # evidence (catches generator inventions beyond the caption).
     vis_dir = Path("data/qa_visual")
     for f in sorted(vis_dir.glob("*.json")) if vis_dir.exists() else []:
         d = json.load(open(f))
@@ -145,6 +150,16 @@ def main():
             if not gate.get("keep"):
                 stats["visual_drop_speech_answerable" if gate.get("speech_answerable")
                       else "visual_drop_gate"] += 1
+                continue
+            if not (r.get("element") or "").startswith("visual_text"):
+                stats["visual_drop_scene_family"] += 1
+                continue
+            ev_txt = (r.get("evidence") or {}).get("visual_text") or ""
+            a_toks = _toks(str(a))
+            support = (str(a).lower() in ev_txt.lower()
+                       or (a_toks and len(a_toks & _toks(ev_txt)) / len(a_toks) >= 0.6))
+            if not support:
+                stats["visual_drop_unsupported_answer"] += 1
                 continue
             st = stratum(qa.get("blind_score"))
             if st == "trivial":
