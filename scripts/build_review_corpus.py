@@ -58,6 +58,23 @@ def asr_excerpt(doc, start_ms, end_ms, query, answer="", max_chars=700):
     # budget (marked with its timestamp), then fill with question-ranked
     # context in time order. Time-ordered assembly under a char cap let intro
     # turns crowd the answer turn out.
+    def center_on(text, toks, cap):
+        """Slice a long turn AROUND its best-matching sentence, not its head."""
+        if len(text) <= cap:
+            return text
+        sents = re.split(r"(?<=[.!?])\s+", text)
+        best = max(range(len(sents)), key=lambda k: len(toks & _toks(sents[k])))
+        out, lo, hi = sents[best], best - 1, best + 1
+        while lo >= 0 or hi < len(sents):
+            grew = False
+            if hi < len(sents) and len(out) + len(sents[hi]) < cap:
+                out = out + " " + sents[hi]; hi += 1; grew = True
+            if lo >= 0 and len(out) + len(sents[lo]) < cap:
+                out = sents[lo] + " " + out; lo -= 1; grew = True
+            if not grew:
+                break
+        return ("[...] " if lo >= 0 else "") + out + (" [...]" if hi < len(sents) else "")
+
     pieces = []
     used = set()
     a = _toks(answer)
@@ -67,7 +84,7 @@ def asr_excerpt(doc, start_ms, end_ms, query, answer="", max_chars=700):
         i = a_ranked[0]
         if a & _toks(parts[i][1]):
             pieces.append(f"[answer context @{parts[i][0] // 60000}m] "
-                          + parts[i][1][:330])
+                          + center_on(parts[i][1], a, 330))
             used.add(i)
     budget = max_chars - sum(len(p) for p in pieces)
     ctx = []
