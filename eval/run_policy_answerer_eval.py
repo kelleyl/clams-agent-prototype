@@ -45,6 +45,7 @@ from utils.answerer_utils import (
     map_freetext_to_mc,
 )
 from utils.artifact_registry import ArtifactRegistry
+from utils.ctx_retrieval import retrieve_context, _toks
 from utils.simulated_artifact_tools import SimulatedArtifactExecutor
 from eval.v6_tools import V6_TOOL_SCHEMAS, V6Executor
 from eval.v7_tools import V7_TOOL_SCHEMAS, V7Executor
@@ -718,6 +719,183 @@ def execute_tool(func_name, params, index_data):
     )
 
 
+# ============================================================
+# Policy-free context builders (--oracle-evidence / --rag)
+# ============================================================
+
+ORACLE_SPAN_CHAR_CAP = 8000
+RAG_TOP_ASR = 8
+RAG_MAX_CHARS_PER_ITEM = 4000
+
+
+def _format_ms(ms):
+    ms = int(ms or 0)
+    return f"{ms // 60000}:{(ms // 1000) % 60:02d}"
+
+
+def _layer_items(layer):
+    if layer is None:
+        return []
+    return layer.get("items", []) if isinstance(layer, dict) else layer
+
+
+def _primary_asr_items(layers):
+    """Return the primary ASR layer items, falling back to any asr* layer."""
+    items = _layer_items(layers.get("asr"))
+    if items:
+        return items
+    for name in sorted(layers):
+        if name.lower().startswith("asr"):
+            items = _layer_items(layers[name])
+            if items:
+                return items
+    return []
+
+
+def _overlapping_items(items, start_ms, end_ms):
+    out = []
+    for it in items:
+        if not isinstance(it, dict):
+            continue
+        s = it.get("start_ms")
+        if s is None:
+            continue
+        e = it.get("end_ms")
+        if e is None:
+            e = s
+        if e >= start_ms and s <= end_ms:
+            out.append(it)
+    return out
+
+
+def _is_visual_row(q):
+    return bool((q.get("v6") or {}).get("visual_evidence")) \
+        or q.get("modalities_required") == ["visual"]
+
+
+def build_oracle_evidence(q, index_data):
+    """Matched-evidence ceiling: build answerer context directly from the
+    benchmark row's source_segment_times, with no policy loop.
+
+    ASR text overlapping each span is always included. For visual rows
+    (v6.visual_evidence present or modalities_required == ["visual"]),
+    visual-evidence text stored in the index (OCR / text_focus / caption
+    layers) for those spans is added, plus the row's stored
+    v6.visual_evidence string when present.
+    """
+    layers = index_data.get("layers", {})
+    asr_items = _primary_asr_items(layers)
+    visual = _is_visual_row(q)
+    evidence = []
+
+    for span in q.get("source_segment_times") or []:
+        if not isinstance(span, dict):
+            continue
+        start_ms = int(span.get("start_ms") or 0)
+        end_ms = int(span.get("end_ms") or start_ms)
+
+        lines = []
+        for it in _overlapping_items(asr_items, start_ms, end_ms):
+            txt = (it.get("text") or "").strip()
+            if txt:
+                lines.append(f"[{_format_ms(it.get('start_ms'))}] {txt}")
+        text = "\n".join(lines)
+        if len(text) > ORACLE_SPAN_CHAR_CAP:
+            text = text[:ORACLE_SPAN_CHAR_CAP] + "\n... [truncated]"
+        if text:
+            evidence.append({
+                "tool": "oracle_asr",
+                "params": {"start_ms": start_ms, "end_ms": end_ms},
+                "result": text,
+                "execution_mode": "oracle_evidence",
+            })
+
+        if visual:
+            vis_lines = []
+            for lname in sorted(layers):
+                ll = lname.lower()
+                if not ("ocr" in ll or "text_focus" in ll or ll.startswith("caption")):
+                    continue
+                for it in _overlapping_items(_layer_items(layers[lname]), start_ms, end_ms):
+                    txt = (it.get("text") or "").strip()
+                    if txt:
+                        vis_lines.append(
+                            f"[{_format_ms(it.get('start_ms'))}] ({lname}) {txt}")
+            vtext = "\n".join(vis_lines)
+            if len(vtext) > ORACLE_SPAN_CHAR_CAP:
+                vtext = vtext[:ORACLE_SPAN_CHAR_CAP] + "\n... [truncated]"
+            if vtext:
+                evidence.append({
+                    "tool": "oracle_visual",
+                    "params": {"start_ms": start_ms, "end_ms": end_ms},
+                    "result": vtext,
+                    "execution_mode": "oracle_evidence",
+                })
+
+    if visual:
+        stored = (q.get("v6") or {}).get("visual_evidence")
+        if stored:
+            evidence.append({
+                "tool": "oracle_stored_visual_evidence",
+                "params": {},
+                "result": str(stored)[:ORACLE_SPAN_CHAR_CAP],
+                "execution_mode": "oracle_evidence",
+            })
+
+    return evidence
+
+
+def build_rag_evidence(q, index_data):
+    """RAG baseline: no policy. Keyword retrieval over the index via
+    utils.ctx_retrieval.retrieve_context(doc, question, k=8, max_chars=3000)
+    plus the top ASR segments (token-overlap scored, time-ordered, with
+    timestamps)."""
+    question = q["question"]
+    evidence = []
+
+    ctx = retrieve_context(index_data, question, k=8, max_chars=3000)
+    if ctx:
+        evidence.append({
+            "tool": "rag_retrieval",
+            "params": {"k": 8, "max_chars": 3000},
+            "result": ctx,
+            "execution_mode": "rag",
+        })
+
+    q_toks = set(_toks(question))
+    scored = []
+    if q_toks:
+        for it in _primary_asr_items(index_data.get("layers", {})):
+            if not isinstance(it, dict):
+                continue
+            toks = set(_toks(it.get("text") or ""))
+            if not toks:
+                continue
+            overlap = len(q_toks & toks)
+            if overlap:
+                scored.append((overlap / (1 + len(toks) ** 0.5), it))
+    scored.sort(key=lambda x: -x[0])
+    top = [it for _, it in scored[:RAG_TOP_ASR]]
+    top.sort(key=lambda it: it.get("start_ms") or 0)
+    lines = []
+    seen = set()
+    for it in top:
+        txt = (it.get("text") or "").strip()
+        if not txt or txt[:60] in seen:
+            continue
+        seen.add(txt[:60])
+        lines.append(f"[{_format_ms(it.get('start_ms'))}] {txt}")
+    if lines:
+        evidence.append({
+            "tool": "rag_top_asr",
+            "params": {"top_k": RAG_TOP_ASR},
+            "result": "\n".join(lines),
+            "execution_mode": "rag",
+        })
+
+    return evidence
+
+
 SINGLE_AGENT_SYSTEM = """You are a video research agent. Use the available tools to find evidence in the video, then provide your final answer.
 
 When you have gathered enough evidence, respond with a JSON object (no tool call):
@@ -1010,7 +1188,27 @@ def main():
                              "before the ReAct loop. Agent uses its tool budget "
                              "to augment with OCR/visual/speaker; transcript is "
                              "free. Floor = full-transcript baseline.")
+    parser.add_argument("--oracle-evidence", action="store_true",
+                        help="Matched-evidence ceiling: skip the policy loop "
+                             "entirely and build answerer context directly from "
+                             "the benchmark row's source_segment_times (ASR text "
+                             "for those spans; plus stored/indexed visual "
+                             "evidence for visual rows), then call the answerer.")
+    parser.add_argument("--rag", action="store_true",
+                        help="RAG baseline: no policy. Build context via keyword "
+                             "retrieval over the index "
+                             "(utils.ctx_retrieval.retrieve_context, k=8, "
+                             "max_chars=3000) plus the top ASR segments, then "
+                             "call the answerer.")
     args = parser.parse_args()
+
+    if args.oracle_evidence and args.rag:
+        parser.error("--oracle-evidence and --rag are mutually exclusive")
+    context_mode = "oracle" if args.oracle_evidence else ("rag" if args.rag else None)
+    if context_mode and args.answerer_backend == "local-base":
+        parser.error(f"--{'oracle-evidence' if context_mode == 'oracle' else 'rag'} "
+                     "does not load a policy model, so --answerer-backend local-base "
+                     "is unavailable; use vllm or ollama.")
 
     with open(args.benchmark) as f:
         questions = [json.loads(l) for l in f]
@@ -1079,9 +1277,9 @@ def main():
             removed = artifact_registry.clear(run_id=cache_run_id)
             print(f"Cleared {len(removed)} cached artifacts for run_id={cache_run_id}")
 
-    # Load policy model
+    # Load policy model (skipped in policy-free modes: oracle / rag)
     policy_model, policy_tokenizer = None, None
-    if args.policy_backend == "local":
+    if args.policy_backend == "local" and context_mode is None:
         policy_model, policy_tokenizer = load_policy_model(
             args.policy_base, str(args.policy_adapter) if args.policy_adapter else None)
     answerer_backend = ANSWERER_BACKEND if args.answerer_backend == "env" else args.answerer_backend
@@ -1095,7 +1293,11 @@ def main():
         print("[blind-answerer] forcing --agent-mode two-stage", flush=True)
         args.agent_mode = "two-stage"
     single_agent = args.agent_mode == "single"
-    if single_agent:
+    if context_mode:
+        label = "Oracle-Evidence (matched-evidence ceiling)" if context_mode == "oracle" else "RAG (keyword retrieval)"
+        print(f"\n{label} Evaluation -- policy loop skipped")
+        print(f"Answerer: {args.answerer_model} via {answerer_backend}")
+    elif single_agent:
         print(f"\nSingle-Agent Evaluation")
         if args.policy_backend in ("ollama", "vllm"):
             print(f"Model: {args.policy_ollama_model} via {args.policy_backend}")
@@ -1141,56 +1343,85 @@ def main():
                 stats["no_index"] += 1
                 continue
 
-            # Stage 1: Policy gathers evidence
+            # Stage 1: Policy gathers evidence (skipped in oracle/rag modes)
             tool_executor = None
             v6_executor = None
             v7_executor = None
-            if resolved_schema_mode == "v7":
-                v7_executor = V7Executor(
-                    index_data=idx,
-                    video_id=video_id,
-                    execution_mode=args.v7_execution_mode,
-                )
-                tool_executor = v7_executor
-            elif resolved_schema_mode == "v6":
-                v6_executor = V6Executor(
-                    index_data=idx,
-                    video_id=video_id,
-                    grid_sampling=args.v6_grid_sampling,
-                    render_mode=v6_render_mode,
-                )
-                tool_executor = v6_executor
-            elif artifact_registry is not None:
-                # Clear artifacts from previous question so each starts cold
-                artifact_registry.clear(run_id=cache_run_id, save=True)
-                tool_executor = SimulatedArtifactExecutor(
-                    index_data=idx,
-                    video_id=video_id,
-                    registry=artifact_registry,
-                    run_id=cache_run_id,
-                )
-            # For single-agent mode, include MC options in the question
-            question_text = q["question"]
-            if single_agent and mc_options:
-                opts = "\n".join(f"  {k}. {v}" for k, v in sorted(mc_options.items()))
-                question_text = f"{question_text}\n\nOptions:\n{opts}"
+            if context_mode:
+                tool_calls, final_text = [], ""
+                if context_mode == "oracle":
+                    evidence = build_oracle_evidence(q, idx)
+                else:
+                    evidence = build_rag_evidence(q, idx)
+            else:
+                if resolved_schema_mode == "v7":
+                    v7_executor = V7Executor(
+                        index_data=idx,
+                        video_id=video_id,
+                        execution_mode=args.v7_execution_mode,
+                    )
+                    tool_executor = v7_executor
+                elif resolved_schema_mode == "v6":
+                    v6_executor = V6Executor(
+                        index_data=idx,
+                        video_id=video_id,
+                        grid_sampling=args.v6_grid_sampling,
+                        render_mode=v6_render_mode,
+                    )
+                    tool_executor = v6_executor
+                elif artifact_registry is not None:
+                    # Clear artifacts from previous question so each starts cold
+                    artifact_registry.clear(run_id=cache_run_id, save=True)
+                    tool_executor = SimulatedArtifactExecutor(
+                        index_data=idx,
+                        video_id=video_id,
+                        registry=artifact_registry,
+                        run_id=cache_run_id,
+                    )
+                # For single-agent mode, include MC options in the question
+                question_text = q["question"]
+                if single_agent and mc_options:
+                    opts = "\n".join(f"  {k}. {v}" for k, v in sorted(mc_options.items()))
+                    question_text = f"{question_text}\n\nOptions:\n{opts}"
 
-            tool_calls, evidence, final_text = gather_evidence(
-                policy_model, policy_tokenizer,
-                question_text, idx, max_turns=args.max_turns,
-                tool_executor=tool_executor,
-                tool_schemas=tool_schemas,
-                single_agent=single_agent,
-                policy_backend=args.policy_backend,
-                policy_model_name=args.policy_ollama_model,
-                ollama_url=OLLAMA_URL,
-                prefill_transcript=args.prefill_transcript,
-            )
+                tool_calls, evidence, final_text = gather_evidence(
+                    policy_model, policy_tokenizer,
+                    question_text, idx, max_turns=args.max_turns,
+                    tool_executor=tool_executor,
+                    tool_schemas=tool_schemas,
+                    single_agent=single_agent,
+                    policy_backend=args.policy_backend,
+                    policy_model_name=args.policy_ollama_model,
+                    ollama_url=OLLAMA_URL,
+                    prefill_transcript=args.prefill_transcript,
+                )
 
             cited_evidence = None
             rationale = None
 
-            if single_agent:
+            if context_mode:
+                # Policy-free modes: single answerer call over the built context.
+                if evidence:
+                    raw_answer = call_answerer(
+                        q["question"], evidence,
+                        mc_options=mc_options, model=args.answerer_model,
+                        backend=answerer_backend,
+                        ollama_url=OLLAMA_URL, vllm_url=VLLM_URL,
+                        max_chars_per_item=(ORACLE_SPAN_CHAR_CAP
+                                            if context_mode == "oracle"
+                                            else RAG_MAX_CHARS_PER_ITEM),
+                    )
+                    if isinstance(raw_answer, str) and raw_answer.startswith("Error:") and not args.allow_answerer_errors:
+                        raise RuntimeError(
+                            "Answerer call failed; aborting eval rather than writing invalid predictions. "
+                            f"Question {i + 1}/{len(questions)} ({q.get('id', f'q-{i}')}): {raw_answer}"
+                        )
+                else:
+                    raw_answer = "insufficient evidence"
+                predicted = raw_answer
+                if fmt == "multiple_choice":
+                    predicted = extract_mc_prediction(predicted)
+            elif single_agent:
                 # Single-agent: parse the model's own structured answer
                 raw_answer = final_text or ""
                 predicted, cited_evidence, rationale = parse_agent_answer(raw_answer, fmt)
@@ -1269,6 +1500,8 @@ def main():
                 "inline_correct": is_correct,
                 "needs_posthoc_scoring": fmt != "multiple_choice",
             }
+            if context_mode:
+                output["context_mode"] = context_mode
             if cited_evidence is not None:
                 output["cited_evidence"] = cited_evidence
                 output["rationale"] = rationale
