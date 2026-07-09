@@ -61,7 +61,14 @@ TF_JUNK = re.compile(r"no (visible )?text|does not contain|unable to (read|deter
 # incidental-appearance trivia (plan C.1: clothing colors, cymbal brands):
 # deterministic backstop behind the prompt instruction
 TRIVIA = re.compile(r"\b(colou?r|wearing|worn|shirt|tie|suit|jacket|dress|blouse|hat\b|"
-                    r"hairstyle|hair\b|glasses|necklace|earring|outfit|clothes|clothing)\b", re.I)
+                    r"hairstyle|hair\b|glasses|necklace|earring|outfit|clothes|clothing|"
+                    r"handwriting|cursive|font\b|typeface|style of (writing|text)|"
+                    r"repeated .{0,12}times)\b", re.I)
+
+# self-containment check for generated visual questions
+V_DEIXIS = re.compile(r"\b(this (broadcast|segment|program|video|episode)|the video\b|"
+                      r"the screen\b|the segment\b|the broadcast\b|shown during the segment|"
+                      r"the man being interviewed|the graphic shown|the crowd\b)", re.I)
 
 
 def _items(layer):
@@ -201,7 +208,7 @@ def gs_targets(doc, segs, min_agree=2):
 
 
 # ---------- generation + gates ----------
-def gen_question(t, setting, gcfg):
+def gen_question(t, setting, gcfg, gripe=""):
     sysm = ("You write ONE free-text question about an archival broadcast for a research "
             "benchmark. The question must be answerable ONLY BY WATCHING the video (the "
             "answer is something SEEN on screen: on-screen text, a graphic, a setting, a "
@@ -220,7 +227,8 @@ def gen_question(t, setting, gcfg):
     user = (f"Program: {setting}.\nSegment topic: {t['seg'].get('title')}\n"
             f"Scene label: {t['label']}\n"
             f"Visual evidence ({what}):\n{t['text']}\n\n"
-            f"Write the question and its answer grounded ONLY in this visual evidence.")
+            f"Write the question and its answer grounded ONLY in this visual evidence."
+            + (f"\nIMPORTANT: {gripe}" if gripe else ""))
     return json_out(chat(gcfg["url"], gcfg["model"], gcfg["api_key"], sysm, user,
                          temperature=0.7, max_tokens=300))
 
@@ -282,7 +290,7 @@ def main():
     if args.limit_videos:
         sal_files = sal_files[:args.limit_videos]
 
-    tot_targets = tot_kept = tot_speech = tot_visfail = tot_trivia = 0
+    tot_targets = tot_kept = tot_speech = tot_visfail = tot_trivia = tot_deixis = 0
     for sp in sal_files:
         vid = sp.stem
         outp = OUT_DIR / f"{vid}.json"
@@ -307,6 +315,7 @@ def main():
         setting = setting_for(prov, vid)
 
         rows = []
+        seen_answers = set()
         for t in targets:
             if args.dry_run:
                 rows.append({"video_id": vid, "cell": "Visual/L2", "w_role": "what",
@@ -319,13 +328,33 @@ def main():
                 continue
             out = gen_question(t, setting, gcfg)
             q, a = out.get("question"), out.get("answer")
+            if q and V_DEIXIS.search(q):
+                m = V_DEIXIS.search(q)
+                out2 = gen_question(t, setting, gcfg,
+                                    gripe=f"your previous question used the vague reference "
+                                          f"'{m.group(0)}' - identify the program by name and "
+                                          f"the segment by its topic instead")
+                if out2.get("question") and not V_DEIXIS.search(out2["question"]):
+                    out = out2
+                    q, a = out.get("question"), out.get("answer")
             if not q or not a:
+                continue
+            if V_DEIXIS.search(q):
+                tot_deixis += 1
+                if args.verbose:
+                    print(f"  [{vid[-14:]}] DEIXIS-drop: {str(q)[:70]!r}")
                 continue
             if TRIVIA.search(f"{q} {a}"):
                 tot_trivia += 1
                 if args.verbose:
                     print(f"  [{vid[-14:]}] TRIVIA-drop: {str(q)[:70]!r}")
                 continue
+            if len(re.sub(r"[^A-Za-z0-9]", "", str(a))) < 2:   # degenerate ("D")
+                continue
+            norm_a = re.sub(r"[^a-z0-9]", "", str(a).lower())
+            if norm_a in seen_answers:      # caption variants of the same card
+                continue
+            seen_answers.add(norm_a)
             gate = modality_gate(q, a, t, doc, vcfg)
             tot_kept += 1 if gate["keep"] else 0
             tot_speech += 1 if gate["speech_answerable"] else 0
@@ -347,7 +376,7 @@ def main():
 
     print(f"\ntargets: {tot_targets} | kept (visual-necessary): {tot_kept} | "
           f"rejected speech-answerable: {tot_speech} | visual round-trip failed: {tot_visfail} "
-          f"| trivia-dropped: {tot_trivia}")
+          f"| trivia-dropped: {tot_trivia} | deixis-dropped: {tot_deixis}")
     print(f"output -> {OUT_DIR}/")
 
 
