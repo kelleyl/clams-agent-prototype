@@ -58,6 +58,11 @@ LEAK_LINE = re.compile(r"^(drafting|the user wants|okay[, ]|let me|i need to|her
 TF_JUNK = re.compile(r"no (visible )?text|does not contain|unable to (read|determine)|"
                      r"^\d{1,2}:\d{2}(:\d{2})?$|^[a-z]{1,3}$", re.I)
 
+# incidental-appearance trivia (plan C.1: clothing colors, cymbal brands):
+# deterministic backstop behind the prompt instruction
+TRIVIA = re.compile(r"\b(colou?r|wearing|worn|shirt|tie|suit|jacket|dress|blouse|hat\b|"
+                    r"hairstyle|hair\b|glasses|necklace|earring|outfit|clothes|clothing)\b", re.I)
+
 
 def _items(layer):
     if layer is None:
@@ -202,8 +207,13 @@ def gen_question(t, setting, gcfg):
             "answer is something SEEN on screen: on-screen text, a graphic, a setting, a "
             "visual event), not from the audio. It must be SELF-CONTAINED: name the program "
             "and subject, no 'this segment/broadcast', no relative time. The ANSWER must be "
-            "concrete and short (the exact on-screen text, a name, an object). Do not begin "
-            'with "Based on". Return JSON: {"question", "answer", "rationale"}.')
+            "concrete and short (the exact on-screen text, a name, an object). "
+            "Ask about visually SIGNIFICANT content an archivist would catalog: on-screen "
+            "text and titles, identified people and places shown, depicted events, graphics "
+            "and their message. NEVER ask about incidental appearance (clothing, colors, "
+            "hairstyles, furniture, what someone is wearing). If the evidence offers only "
+            'incidental detail, return {"skip": true}. Do not begin with "Based on". '
+            'Return JSON: {"question", "answer", "rationale"}.')
     what = ("on-screen text captured from the video" if t["kind"] == "visual_text"
             else "two consecutive frame descriptions from the video (facts appearing in "
                  "BOTH are reliable; facts in only one may be hallucinated)")
@@ -272,7 +282,7 @@ def main():
     if args.limit_videos:
         sal_files = sal_files[:args.limit_videos]
 
-    tot_targets = tot_kept = tot_speech = tot_visfail = 0
+    tot_targets = tot_kept = tot_speech = tot_visfail = tot_trivia = 0
     for sp in sal_files:
         vid = sp.stem
         outp = OUT_DIR / f"{vid}.json"
@@ -311,6 +321,11 @@ def main():
             q, a = out.get("question"), out.get("answer")
             if not q or not a:
                 continue
+            if TRIVIA.search(f"{q} {a}"):
+                tot_trivia += 1
+                if args.verbose:
+                    print(f"  [{vid[-14:]}] TRIVIA-drop: {str(q)[:70]!r}")
+                continue
             gate = modality_gate(q, a, t, doc, vcfg)
             tot_kept += 1 if gate["keep"] else 0
             tot_speech += 1 if gate["speech_answerable"] else 0
@@ -331,7 +346,8 @@ def main():
                       open(outp, "w"), indent=2)
 
     print(f"\ntargets: {tot_targets} | kept (visual-necessary): {tot_kept} | "
-          f"rejected speech-answerable: {tot_speech} | visual round-trip failed: {tot_visfail}")
+          f"rejected speech-answerable: {tot_speech} | visual round-trip failed: {tot_visfail} "
+          f"| trivia-dropped: {tot_trivia}")
     print(f"output -> {OUT_DIR}/")
 
 
