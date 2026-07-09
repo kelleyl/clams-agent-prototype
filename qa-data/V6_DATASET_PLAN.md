@@ -71,6 +71,29 @@ Generate questions FROM what matters in a video, then curate FOR difficulty and 
     columnist); duplicate-answer-set dedupe collapses co-occurring occupations of the same
     people (political adviser / political analyst).
 
+### Visual VQA type (built 2026-07-08 overnight, after reviewer feedback)
+
+The slice-mode decision silently made v6 SPEECH-GROUNDED: need-down evidence came only
+from ASR windows, so no question required watching - unacceptable for a video benchmark
+(and it left plan C.3's cross-modal minority unimplemented). `scripts/generate_qa_visual.py`
+adds visually-necessary questions from the CLAMS tool outputs:
+
+- **visual_text**: on-screen text captured by the text-focus VLM captions on frames SWT
+  labels as text-bearing (chyrons, slates, headline cards, protest signs). The richest
+  visually-necessary material in archival broadcast; pilot targets include chyron
+  name/affiliation cards and headline graphics.
+- **visual_scene**: a visual fact corroborated by >=2 adjacent general-scene captions
+  inside a salient segment (single-frame captions hallucinate ~28%, so uncorroborated
+  captions never become gold).
+- **Modality gate, empirical and two-sided** (replaces the gamed `modality_fit`): the
+  verifier must (a) re-derive the answer from the visual evidence and (b) FAIL to derive
+  it from the ASR of the same span (+-60s). Speech-answerable questions are recorded and
+  dropped. Blind panel applies as usual.
+- **Anti-trivia**: prompt bans incidental appearance (clothing/colors) with a skip escape
+  hatch, backed by a deterministic filter (plan C.1).
+- Note: `scene_summary_v5_2` is EMPTY corpus-wide (verified local + aristotle), so
+  captions are the visual substrate until re-processing populates it.
+
 ### Chapter title coherence (found 2026-07-08, affects all v6 types)
 
 On some videos the chapters layer's TITLES are misaligned with their SPANS (e.g.
