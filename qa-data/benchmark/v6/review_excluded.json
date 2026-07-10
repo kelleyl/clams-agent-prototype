@@ -979,5 +979,32 @@
    "MISATTRIBUTED"
   ],
   "reason": "human catch + audit sibling verdict: quote is from Marilyn Quayle's convention speech"
+ },
+ {
+  "id": "v6-1a13e0567c-008",
+  "video_id": "cpb-aacip-507-n29p26qt59",
+  "question": "What key issue regarding military action does Richard Norton Smith repeatedly emphasize Colin Powell and Donald Rumsfeld will prioritize?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit r2: Norton Smith: Claim by panelist addressed as General; Smith in later historians panel"
+ },
+ {
+  "id": "v6-0c01c1acac-005",
+  "video_id": "cpb-aacip-526-f47gq6s533",
+  "question": "What street is featured in one of the photographs Steve Pistorius mentions?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit r2: Steve Pistorius: Baronne photos by streetcar photographer; Pistorius is the piano player"
+ },
+ {
+  "id": "v6-ea79b1a91c-000",
+  "video_id": "cpb-aacip-526-x34mk66j2p",
+  "question": "What does Lloyd Price repeatedly state he has never had?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit r2: Lloyd Price: Lyric sung before host introduces Price; preceding performer's song"
  }
 ]

@@ -1,0 +1,74 @@
+[
+ {
+  "id": "v6-d2204afef6-004",
+  "name": "Barbara Bush",
+  "verdict": "OK",
+  "reason": "Shields explicitly reports Barbara Bush's speech content; reported attribution holds"
+ },
+ {
+  "id": "v6-dcaade1e89-002",
+  "name": "Roger Wilkins",
+  "verdict": "OK",
+  "reason": "Wilkins himself says 'black and liberal Democrat' in span"
+ },
+ {
+  "id": "v6-a427824313-008",
+  "name": "Bill Beecher",
+  "verdict": "OK",
+  "reason": "Beecher states oil-prices-over-boycott concern himself"
+ },
+ {
+  "id": "v6-b8dc86abbd-009",
+  "name": "Patrick Leahy",
+  "verdict": "OK",
+  "reason": "Anchor introduces Leahy, who then names Thomas and Bork"
+ },
+ {
+  "id": "v6-a500651562-009",
+  "name": "Ted Gupp",
+  "verdict": "OK",
+  "reason": "Mislabeled Shields turn answers Lehrer's direct address to Gupp"
+ },
+ {
+  "id": "v6-1a13e0567c-008",
+  "name": "Norton Smith",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Claim by panelist addressed as General; Smith in later historians panel"
+ },
+ {
+  "id": "v6-167673f29f-010",
+  "name": "Charles Doucet",
+  "verdict": "OK",
+  "reason": "Drama character Doucet affirms Police Story appearance in dialogue"
+ },
+ {
+  "id": "v6-0c01c1acac-005",
+  "name": "Steve Pistorius",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Baronne photos by streetcar photographer; Pistorius is the piano player"
+ },
+ {
+  "id": "v6-ea79b1a91c-000",
+  "name": "Lloyd Price",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Lyric sung before host introduces Price; preceding performer's song"
+ },
+ {
+  "id": "v6-0587671f14-005",
+  "name": "Aaron Neville",
+  "verdict": "OK",
+  "reason": "SPEAKER_03 is Neville; same voice claims Tell It Like It Is"
+ },
+ {
+  "id": "v6-2673bfa56d-002",
+  "name": "Frederick Logan",
+  "verdict": "OK",
+  "reason": "Interviewer SPEAKER_07_seg1 is Logan per narrator framing of interviews"
+ },
+ {
+  "id": "v6-f33916f87b-007",
+  "name": "Jules Langsner",
+  "verdict": "OK",
+  "reason": "SPEAKER_06_seg1 is Langsner; he recalls artist's fear firsthand"
+ }
+]

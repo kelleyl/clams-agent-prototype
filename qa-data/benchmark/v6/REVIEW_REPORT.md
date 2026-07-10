@@ -78,3 +78,5 @@ every complaint against the full evidence window. Human sample review
 ## Attribution audit addendum (2026-07-09)
 
 Deterministic diarization/chyron audit + evidence-reading adjudication over 97 flagged attribution pairs: 57 OK, 5 garbled-name matches (kept), 3 non-person artifacts, 32 MISATTRIBUTED rows excluded (32 unique). Validated against 4 independent human catches (all 4 confirmed by the audit). Benchmark now 764 rows.
+
+Round-2 attribution sweep (widened verb patterns after a human catch): 12 new flags adjudicated, 3 more MISATTRIBUTED rows excluded (plus 1 human-caught sibling). Attribution exclusions total 36.
