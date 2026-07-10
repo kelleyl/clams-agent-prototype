@@ -685,12 +685,22 @@ def parse_tool_call(text):
 
 
 def _parse_time_ms(time_str):
-    """Parse MM:SS string to milliseconds."""
-    if not time_str:
+    """Parse a time value to milliseconds.
+
+    Accepts MM:SS (also H:MM:SS), bare numbers (seconds), and numeric types.
+    Weaker policies (e.g. ollama models) emit all of these."""
+    if time_str is None or time_str == "":
         return None
-    m = re.match(r'(\d+):(\d+)', str(time_str))
+    if isinstance(time_str, (int, float)):
+        return int(float(time_str) * 1000)
+    s = str(time_str).strip()
+    m = re.match(r'^(?:(\d+):)?(\d+):(\d+)', s)
     if m:
-        return (int(m.group(1)) * 60 + int(m.group(2))) * 1000
+        hours = int(m.group(1)) if m.group(1) else 0
+        return ((hours * 60 + int(m.group(2))) * 60 + int(m.group(3))) * 1000
+    m = re.match(r'^(\d+(?:\.\d+)?)$', s)
+    if m:
+        return int(float(m.group(1)) * 1000)
     return None
 
 
@@ -708,6 +718,13 @@ def execute_tool(func_name, params, index_data):
     timestamp_ms = _parse_time_ms(params.get("timestamp"))
     start_ms = _parse_time_ms(params.get("start_time"))
     end_ms = _parse_time_ms(params.get("end_time"))
+
+    # Defensive defaults: policies sometimes emit half a time range, which
+    # crashes the range comparisons inside simulate_tool_output.
+    if start_ms is not None and end_ms is None:
+        end_ms = start_ms + 60000
+    elif end_ms is not None and start_ms is None:
+        start_ms = max(0, end_ms - 60000)
 
     return simulate_tool_output(
         func_name, index_data,
@@ -1024,14 +1041,21 @@ def gather_evidence(
 
         func_name, params = parse_tool_call(response)
         if func_name:
-            if tool_executor:
-                tool_result = tool_executor.execute(func_name, params)
-                observation = tool_result.observation
-                trace_meta = tool_result.to_trace()
-            else:
-                observation = execute_tool(func_name, params, index_data)
+            try:
+                if tool_executor:
+                    tool_result = tool_executor.execute(func_name, params)
+                    observation = tool_result.observation
+                    trace_meta = tool_result.to_trace()
+                else:
+                    observation = execute_tool(func_name, params, index_data)
+                    tool_result = None
+                    trace_meta = {"execution_mode": "prebuilt_index"}
+            except Exception as exc:
+                # A malformed tool call must not abort a long eval run; show
+                # the error to the policy so it can retry with valid params.
+                observation = f"Error: tool call failed ({exc}). Check parameters and try again."
                 tool_result = None
-                trace_meta = {"execution_mode": "prebuilt_index"}
+                trace_meta = {"execution_mode": "prebuilt_index", "tool_error": str(exc)}
 
             tool_trace = {
                 "tool": func_name,
