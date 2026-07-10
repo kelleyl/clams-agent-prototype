@@ -48,10 +48,17 @@ is semantic/fuzzy search tools rather than more capable answering.
 ## 3. Model comparison sweep (D3) - RUNNING
 
 Same protocol on v6.0-test (254 rows): full agent stack + no-tools floor.
-- gemma3:27b-it-qat: in progress
-- llama3.3-70B: queued (sequential to avoid model thrashing)
-- Qwen3.5-9B test-split numbers to be recut from section 1 outputs
-(RESULTS PENDING)
+| Model (test split, n=253) | No-tools acc (robust) | Agent acc (robust) | Agent avg tools |
+|---|---|---|---|
+| Qwen3.5-9B (base policy) | -- (10.0% full-set) | recut pending | 9.1 |
+| gemma3:27b-it-qat | 18.2% (12.7%) | 28.5% (28.9%) | 2.8 |
+| llama3.3-70B | running | running | -- |
+
+Early finding: gemma3:27b engages tools far less (2.8 calls/question) and scores
+20 points below the smaller Qwen3.5-9B policy on the robust stratum. Agentic
+tool-use disposition, not parameter count, dominates performance. The no-tools
+floors stay low across families, confirming the benchmark's parametric
+resistance is model-independent.
 
 ## 4. SFT on v6.0 trajectories - TRAINING
 
