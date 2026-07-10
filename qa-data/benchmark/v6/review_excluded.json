@@ -1015,5 +1015,149 @@
    "MISATTRIBUTED"
   ],
   "reason": "human catch: advocacy passage (Schumer, quoting Hatch) credited to anchor Lehrer"
+ },
+ {
+  "id": "v6-ce9a297126-002",
+  "video_id": "cpb-aacip-114-881jx2h7",
+  "question": "What event hosts the annual clam bake described by John Peters, Bill Peters, the Mashby Wampanoags, Vernon Pocknett, and the Mashpee Wampano",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit r3: John Peters: Clam bake described entirely by narrator; Peters only introduces medicine man role"
+ },
+ {
+  "id": "v6-d2204afef6-008",
+  "video_id": "cpb-aacip-507-251fj2b03t",
+  "question": "Why does David Gergen believe the impact of Barbara Bush extended beyond her individual popularity?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit r3: David Gergen: 'This was family values' said by senator panelist, not Gergen"
+ },
+ {
+  "id": "v6-2d02e3544d-003",
+  "video_id": "cpb-aacip-507-4746q1t25k",
+  "question": "What area of policy does George W. Bush identify as particularly suited for bipartisan agreement during a press conference following his cab",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit r3: W. Bush: Transportation bipartisanship statement was Norm Mineta's, not Bush's"
+ },
+ {
+  "id": "v6-b04a9248a1-004",
+  "video_id": "cpb-aacip-507-4b2x34n67h",
+  "question": "Why does a U.S. Supreme Court spokesperson believe a Supreme Court ruling on affirmative action is overdue?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit r3: U.S. Supreme: Statement by Professor Edley, debate guest, not Court spokesperson"
+ },
+ {
+  "id": "v6-b494468686-006",
+  "video_id": "cpb-aacip-507-5q4rj49c6q",
+  "question": "What year did Jim Lehrer report that President Clinton halted contributions to the strategic petroleum reserve?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit r3: Jim Lehrer: Professor Lieber stated Clinton's 2000 SPR halt, not Lehrer."
+ },
+ {
+  "id": "v6-512e6593b0-003",
+  "video_id": "cpb-aacip-507-f47gq6rq94",
+  "question": "What organization does Andrew Natsios identify Refugees International as being, rather than a relief agency?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit r3: Andrew Natsios: Ken Bacon said Refugees International is advocacy agency, not Natsios."
+ },
+ {
+  "id": "v6-a500651562-005",
+  "video_id": "cpb-aacip-507-fj29883b24",
+  "question": "Why does Mark Shields believe the agency might have been willing to accept the risk of a 'false positive' regarding Iraq's WMDs?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit r3: Mark Shields: Intelligence panelist (Ted Gup) said it; Shields appears later segment."
+ },
+ {
+  "id": "v6-f1cc51dac0-008",
+  "video_id": "cpb-aacip-507-vm42r3pt6h",
+  "question": "What specific item of clothing did the witness state Jim Lehrer and John Baker reported the assailant pushed aside after pushing her dress u",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit r3: John Baker: Baker is Equifax VP in unrelated credit segment; panties testimony from trial witness"
+ },
+ {
+  "id": "v6-843cd04590-002",
+  "video_id": "cpb-aacip-507-z892805z01",
+  "question": "As stated by Jim Lehrer, which Arizona politician did not request any earmarks from the bill?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit r3: Jim Lehrer: Flake-earmark statement said by Congressman on House floor, not Lehrer"
+ },
+ {
+  "id": "v6-843cd04590-009",
+  "video_id": "cpb-aacip-507-z892805z01",
+  "question": "Why has Jim Lehrer heard reports of reasonable progress in parts of Iraq?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit r3: Jim Lehrer: Reasonable-progress statement said by David Brooks, not Lehrer the moderator"
+ },
+ {
+  "id": "v6-e0c377ee61-000",
+  "video_id": "cpb-aacip-526-125q815n1x",
+  "question": "According to the commentary by Adam Smith, what program does Adam Smith host?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit r3: Adam Smith: Program name stated in Rowan's introduction, not in Smith's commentary; circular question"
+ },
+ {
+  "id": "v6-8e9e456904-006",
+  "video_id": "cpb-aacip-526-cj87h1fq6v",
+  "question": "Why did newspapers repeatedly state they would not run the hypothetical advertisement described by Ralph Williamson?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit r3: Ralph Williamson: Hypothetical ad described by Hart; Williamson (ombudsman) introduced only afterward"
+ },
+ {
+  "id": "v6-62138b60c9-005",
+  "video_id": "cpb-aacip-526-sb3ws8js8p",
+  "question": "What was the young man's real name, as stated by Prince Aciel?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit r3: Prince Aciel: Seneca Wright named by mentor (spk14) in taped segment, not Prince Asiel"
+ },
+ {
+  "id": "v6-62138b60c9-006",
+  "video_id": "cpb-aacip-526-sb3ws8js8p",
+  "question": "What does Dr. Bell identify as a primary reason medical professionals may be hesitant to intervene in domestic violence cases?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit r3: Dr. Bell: 'For profit' said by minister spk1 rebutting Bell's doctor-intervention proposal"
+ },
+ {
+  "id": "v6-62138b60c9-009",
+  "video_id": "cpb-aacip-526-sb3ws8js8p",
+  "question": "Why does Dr. Bell believe reported rates of domestic violence may be lower in African American communities?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit r3: Dr. Bell: Underreporting claim by spk5 (Dr. Alexis), who cites Bell in third person"
+ },
+ {
+  "id": "v6-ea79b1a91c-008",
+  "video_id": "cpb-aacip-526-x34mk66j2p",
+  "question": "Why does Lloyd Price believe his band was successful with the material they were playing?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit r3: Lloyd Price: 'Ducks to water' said by host/bandleader before Lloyd Price is introduced"
  }
 ]

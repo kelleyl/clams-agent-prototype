@@ -1,0 +1,374 @@
+[
+ {
+  "id": "v6-0ef07153d7-010",
+  "name": "Historic Preservation",
+  "verdict": "NOT_A_PERSON",
+  "reason": "Organization: National Trust for Historic Preservation, extraction artifact"
+ },
+ {
+  "id": "v6-ce9a297126-002",
+  "name": "John Peters",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Clam bake described entirely by narrator; Peters only introduces medicine man role"
+ },
+ {
+  "id": "v6-2eeaee45a6-001",
+  "name": "Barney Frank",
+  "verdict": "OK",
+  "reason": "Frank admits it; correspondent reports he paid prostitute for sex"
+ },
+ {
+  "id": "v6-59e336b622-001",
+  "name": "Ron Homer",
+  "verdict": "OK",
+  "reason": "Homer's bank's plan; Kelly reports $25M first-time buyer share"
+ },
+ {
+  "id": "v6-59e336b622-007",
+  "name": "Ron Homer",
+  "verdict": "OK",
+  "reason": "Kelly describes Homer's Loan Pool plan; $100M renovation figure accurate"
+ },
+ {
+  "id": "v6-c235b72f65-004",
+  "name": "Donald Wilkinson",
+  "verdict": "OK",
+  "reason": "Anchor reports Wilkinson told WSJ problems outflanked worst-case planning"
+ },
+ {
+  "id": "v6-b95295228e-005",
+  "name": "Tim Gorey",
+  "verdict": "GARBLED_MATCH",
+  "reason": "Appears as ASR 'Tim Gory/Gori'; narrator reports his $360 worry"
+ },
+ {
+  "id": "v6-d2204afef6-008",
+  "name": "David Gergen",
+  "verdict": "MISATTRIBUTED",
+  "reason": "'This was family values' said by senator panelist, not Gergen"
+ },
+ {
+  "id": "v6-30c466bae7-009",
+  "name": "Louisiana Governor",
+  "verdict": "NOT_A_PERSON",
+  "reason": "Title artifact; Blanco reported statement on gas leaks is supported"
+ },
+ {
+  "id": "v6-2d02e3544d-003",
+  "name": "W. Bush",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Transportation bipartisanship statement was Norm Mineta's, not Bush's"
+ },
+ {
+  "id": "v6-b04a9248a1-004",
+  "name": "U.S. Supreme",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Statement by Professor Edley, debate guest, not Court spokesperson"
+ },
+ {
+  "id": "v6-161cae4fea-001",
+  "name": "W. Bush",
+  "verdict": "NOT_A_PERSON",
+  "reason": "Fragment of George W. Bush; Gorelick accurately reports his endorsement"
+ },
+ {
+  "id": "v6-a427824313-003",
+  "name": "Commerce Department",
+  "verdict": "NOT_A_PERSON",
+  "reason": "Organization artifact; Beecher's Friday report statement is supported"
+ },
+ {
+  "id": "v6-4146164883-006",
+  "name": "Jerry Jones",
+  "verdict": "OK",
+  "reason": "Direct address 'Mr. Jones'; he says arbitrators don't know mines"
+ },
+ {
+  "id": "v6-4146164883-007",
+  "name": "N. Bethell",
+  "verdict": "NOT_A_PERSON",
+  "reason": "Fragment of Thomas N. Bethell; Bethell states 8% figure himself"
+ },
+ {
+  "id": "v6-b494468686-003",
+  "name": "W. Bush",
+  "verdict": "NOT_A_PERSON",
+  "reason": "Fragment of 'George W. Bush'; Bush's Wisconsin claim accurately reported anyway."
+ },
+ {
+  "id": "v6-b494468686-006",
+  "name": "Jim Lehrer",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Professor Lieber stated Clinton's 2000 SPR halt, not Lehrer."
+ },
+ {
+  "id": "v6-fab8913b45-001",
+  "name": "Secretary Schultz",
+  "verdict": "OK",
+  "reason": "Witness accurately reports Shultz's 1985 acknowledgment in span."
+ },
+ {
+  "id": "v6-fab8913b45-009",
+  "name": "Marshall Goldman",
+  "verdict": "OK",
+  "reason": "Goldman answers Lehrer's direct question; 'worried same thing might happen' matches."
+ },
+ {
+  "id": "v6-acfc5684a7-001",
+  "name": "Four Modernizations",
+  "verdict": "NOT_A_PERSON",
+  "reason": "Policy/program name, not a person; extraction artifact."
+ },
+ {
+  "id": "v6-35d32310af-001",
+  "name": "Congressional Delegation",
+  "verdict": "NOT_A_PERSON",
+  "reason": "Institution, not a person; bill's 1.8M acres supported by narration."
+ },
+ {
+  "id": "v6-35d32310af-005",
+  "name": "Terry Tempest",
+  "verdict": "NOT_A_PERSON",
+  "reason": "Fragment of 'Terry Tempest Williams'; her quote supports answer anyway."
+ },
+ {
+  "id": "v6-e52df4d408-002",
+  "name": "National Symphony",
+  "verdict": "NOT_A_PERSON",
+  "reason": "Orchestra organization name, not a person attribution."
+ },
+ {
+  "id": "v6-512e6593b0-000",
+  "name": "Orrin Hatch",
+  "verdict": "OK",
+  "reason": "Schumer explicitly quotes Hatch's 1997 statement; accurately reported."
+ },
+ {
+  "id": "v6-512e6593b0-003",
+  "name": "Andrew Natsios",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Ken Bacon said Refugees International is advocacy agency, not Natsios."
+ },
+ {
+  "id": "v6-a500651562-005",
+  "name": "Mark Shields",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Intelligence panelist (Ted Gup) said it; Shields appears later segment."
+ },
+ {
+  "id": "v6-a500651562-006",
+  "name": "Prime Minister",
+  "verdict": "OK",
+  "reason": "Blair's own parliamentary-committee quote; matches prior -006 finding."
+ },
+ {
+  "id": "v6-8caebf6903-008",
+  "name": "Joe Escher",
+  "verdict": "OK",
+  "reason": "Narrator names lawyer Joe Escher; his prejudicing-juries claim in span."
+ },
+ {
+  "id": "v6-2394619be0-008",
+  "name": "Kenneth Lay",
+  "verdict": "OK",
+  "reason": "Reported speech about Lay's press conference; panelists accurately analyze his Fastow-is-villain stance"
+ },
+ {
+  "id": "v6-b21d9905dc-004",
+  "name": "Jimmy Carter",
+  "verdict": "OK",
+  "reason": "News anchor accurately reports Carter's AP statement urging flexibility"
+ },
+ {
+  "id": "v6-3ad921fcd6-004",
+  "name": "Ronald Steele",
+  "verdict": "OK",
+  "reason": "Steele directly addressed then answers; enrichment/passive claim is his turn"
+ },
+ {
+  "id": "v6-3ad921fcd6-005",
+  "name": "Charlene Hunter-Gault",
+  "verdict": "OK",
+  "reason": "Genuinely featured in broadcast; assertion attributed to broadcast, not her specifically"
+ },
+ {
+  "id": "v6-47d7f069cf-004",
+  "name": "Richard Rodriguez",
+  "verdict": "OK",
+  "reason": "Rodriguez genuinely delivers essay in broadcast; contextual framing accurate"
+ },
+ {
+  "id": "v6-47d7f069cf-005",
+  "name": "Richard Rodriguez",
+  "verdict": "OK",
+  "reason": "Eva Duarte actress/singer content spoken directly in Rodriguez's essay"
+ },
+ {
+  "id": "v6-69863b051b-002",
+  "name": "Bill Clinton",
+  "verdict": "OK",
+  "reason": "Jim Lehrer accurately reports Clinton's proposed medical-records privacy rules"
+ },
+ {
+  "id": "v6-f1cc51dac0-008",
+  "name": "John Baker",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Baker is Equifax VP in unrelated credit segment; panties testimony from trial witness"
+ },
+ {
+  "id": "v6-843cd04590-002",
+  "name": "Jim Lehrer",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Flake-earmark statement said by Congressman on House floor, not Lehrer"
+ },
+ {
+  "id": "v6-843cd04590-009",
+  "name": "Jim Lehrer",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Reasonable-progress statement said by David Brooks, not Lehrer the moderator"
+ },
+ {
+  "id": "v6-a65dc7edcf-004",
+  "name": "Mr. Adler",
+  "verdict": "OK",
+  "reason": "spk8 (addressed as garbled 'Mr. Arnold') is Adler; he cites the GAO study"
+ },
+ {
+  "id": "v6-e0c377ee61-000",
+  "name": "Adam Smith",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Program name stated in Rowan's introduction, not in Smith's commentary; circular question"
+ },
+ {
+  "id": "v6-0a1fbd7580-001",
+  "name": "Michael Aaron",
+  "verdict": "OK",
+  "reason": "Correspondent signs off 'I'm Michael Aaron'; 50 ports fact is in his report"
+ },
+ {
+  "id": "v6-0a1fbd7580-004",
+  "name": "Michael Aaron",
+  "verdict": "OK",
+  "reason": "4.5 million gallons stated within Aaron's own two-part special report"
+ },
+ {
+  "id": "v6-8e9e456904-006",
+  "name": "Ralph Williamson",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Hypothetical ad described by Hart; Williamson (ombudsman) introduced only afterward"
+ },
+ {
+  "id": "v6-62138b60c9-005",
+  "name": "Prince Aciel",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Seneca Wright named by mentor (spk14) in taped segment, not Prince Asiel"
+ },
+ {
+  "id": "v6-62138b60c9-006",
+  "name": "Dr. Bell",
+  "verdict": "MISATTRIBUTED",
+  "reason": "'For profit' said by minister spk1 rebutting Bell's doctor-intervention proposal"
+ },
+ {
+  "id": "v6-62138b60c9-009",
+  "name": "Dr. Bell",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Underreporting claim by spk5 (Dr. Alexis), who cites Bell in third person"
+ },
+ {
+  "id": "v6-8f80c3c2ea-003",
+  "name": "Dorothea Dix",
+  "verdict": "OK",
+  "reason": "Character self-identifies: 'My name is Dorothea Dix' in the drama"
+ },
+ {
+  "id": "v6-8fe0bca7b2-004",
+  "name": "Ralph Waldo",
+  "verdict": "NOT_A_PERSON",
+  "reason": "Fragment of Ralph Waldo Emerson; narrator properly attributes quoted proclamation"
+ },
+ {
+  "id": "v6-8fe0bca7b2-007",
+  "name": "Ralph Waldo",
+  "verdict": "NOT_A_PERSON",
+  "reason": "Fragment of Emerson's name; 'according to segment' quote framing is accurate"
+ },
+ {
+  "id": "v6-3782846bc7-000",
+  "name": "Development Administration",
+  "verdict": "NOT_A_PERSON",
+  "reason": "Fragment of ERDA agency name; report attribution accurate"
+ },
+ {
+  "id": "v6-3782846bc7-006",
+  "name": "Arthur Tamplin",
+  "verdict": "OK",
+  "reason": "spk24 answers immediately after narrator introduces Dr. Arthur Tamplin"
+ },
+ {
+  "id": "v6-3782846bc7-008",
+  "name": "Development Administration",
+  "verdict": "NOT_A_PERSON",
+  "reason": "Fragment of ERDA agency name; report attribution accurate"
+ },
+ {
+  "id": "v6-ea79b1a91c-008",
+  "name": "Lloyd Price",
+  "verdict": "MISATTRIBUTED",
+  "reason": "'Ducks to water' said by host/bandleader before Lloyd Price is introduced"
+ },
+ {
+  "id": "v6-2673bfa56d-002",
+  "name": "Professor Frederick",
+  "verdict": "OK",
+  "reason": "Fragment of Frederick Logan; interviewer Logan himself states high-school-age claim"
+ },
+ {
+  "id": "v6-2673bfa56d-006",
+  "name": "Professor Willard",
+  "verdict": "OK",
+  "reason": "Narrator introduces Downing; following turn states views-obliterated claim"
+ },
+ {
+  "id": "v6-f33916f87b-010",
+  "name": "Jules Langsner",
+  "verdict": "OK",
+  "reason": "Moderator Langsner (per priors) voices the order-within-chaos observation"
+ },
+ {
+  "id": "v6v-1279b012b8-004",
+  "name": "Environmental Protection",
+  "verdict": "NOT_A_PERSON",
+  "reason": "Department name in visual evidence, not a person"
+ },
+ {
+  "id": "v6v-5d2bc841e6-000",
+  "name": "Washington Post",
+  "verdict": "NOT_A_PERSON",
+  "reason": "Newspaper/organization; question asks authors of a Post article"
+ },
+ {
+  "id": "v6v-2832f15e21-002",
+  "name": "Geoffrey Kemp",
+  "verdict": "OK",
+  "reason": "Geoffrey Kemp equals ASR's Jeff Kemp; correct name, genuinely present, Carnegie Endowment correct"
+ },
+ {
+  "id": "v6v-0a1fbd7580-002",
+  "name": "Peabody Awards",
+  "verdict": "NOT_A_PERSON",
+  "reason": "Corpus/organization reference, extraction artifact, not a person attribution"
+ },
+ {
+  "id": "v6v-8e9e456904-002",
+  "name": "Peabody Awards",
+  "verdict": "NOT_A_PERSON",
+  "reason": "Corpus/organization reference, extraction artifact, not a person attribution"
+ },
+ {
+  "id": "v6v-62138b60c9-001",
+  "name": "Peabody Awards",
+  "verdict": "NOT_A_PERSON",
+  "reason": "Corpus/organization reference, extraction artifact, not a person attribution"
+ }
+]
