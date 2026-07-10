@@ -7,7 +7,20 @@ two-stage machine review, three attribution audits, 132-vote human ratification,
 and a calibrated machine pass transferring the human standard to unreviewed rows
 (details in qa-data/benchmark/v6/REVIEW_REPORT.md).
 
-## 1. Four-level decomposition (Qwen3.5-9B, full benchmark, pre-finalization run)
+## 1. Four-level decomposition (Qwen3.5-9B)
+
+Test-split recut (v6.0 test, n=253) for comparability with the model sweep and
+SFT head-to-head:
+
+| Config   | Acc    | Robust acc | Tools |
+|----------|--------|------------|-------|
+| No-tools | 14.6%  | 12.7%      | 0     |
+| RAG      | 58.5%  | 56.3%      | 0     |
+| Agent    | 51.8%  | 51.8%      | 8.5   |
+| Oracle   | 84.2%  | 88.3%      | 0     |
+
+Full-benchmark numbers from the pre-finalization run (n=743) below for the
+record:
 
 Scored by llama3.3 judge; acc = correctness >= 4/5; robust stratum = questions
 no blind panel model answered (n=539 of 744 at run time).
@@ -50,7 +63,7 @@ is semantic/fuzzy search tools rather than more capable answering.
 Same protocol on v6.0-test (254 rows): full agent stack + no-tools floor.
 | Model (test split, n=253) | No-tools acc (robust) | Agent acc (robust) | Agent avg tools |
 |---|---|---|---|
-| Qwen3.5-9B (base policy) | -- (10.0% full-set) | recut pending | 9.1 |
+| Qwen3.5-9B (base policy) | 14.6% (12.7%) | 51.8% (51.8%) | 8.5 |
 | gemma3:27b-it-qat | 18.2% (12.7%) | 28.5% (28.9%) | 2.8 |
 | llama3.3-70B | running | running | -- |
 
