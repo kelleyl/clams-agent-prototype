@@ -1159,5 +1159,1436 @@
    "MISATTRIBUTED"
   ],
   "reason": "attribution audit r3: Lloyd Price: 'Ducks to water' said by host/bandleader before Lloyd Price is introduced"
+ },
+ {
+  "id": "v6-0ef07153d7-000",
+  "video_id": "ABC_Network_-_Barbary_Coast_-_Funny_Money_-_WCVB_Channel_5_Complete_Broadcast_9_8_1975",
+  "question": "According to Cash Conover during the discussion of a game in the September 8, 1975 ABC Network broadcast, what is the am",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-0ef07153d7-007",
+  "video_id": "ABC_Network_-_Barbary_Coast_-_Funny_Money_-_WCVB_Channel_5_Complete_Broadcast_9_8_1975",
+  "question": "What item of clothing is repeatedly mentioned as being worn by the woman under observation in a story involving Cash Con",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-2313ada5a3-002",
+  "video_id": "ABC_Network_-_Future_Cop_-_The_Kansas_City_Kid_-_WCVB-TV_Complete_Broadcast_4_30_1977",
+  "question": "What brand approached Haven, Brighton, Dal, and Farah Fawcett with a business offer during the Poker Game Begins segment",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-2313ada5a3-005",
+  "video_id": "ABC_Network_-_Future_Cop_-_The_Kansas_City_Kid_-_WCVB-TV_Complete_Broadcast_4_30_1977",
+  "question": "What is the name Haven, Brighton, Dal, Farah Fawcett, and Gooder repeatedly use to refer to the young blackjack player d",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-2313ada5a3-009",
+  "video_id": "ABC_Network_-_Future_Cop_-_The_Kansas_City_Kid_-_WCVB-TV_Complete_Broadcast_4_30_1977",
+  "question": "Why do the commentators say it's unfortunate Haven/Brighton is not 'on our side' during the Poker Game Begins segment of",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-2313ada5a3-013",
+  "video_id": "ABC_Network_-_Future_Cop_-_The_Kansas_City_Kid_-_WCVB-TV_Complete_Broadcast_4_30_1977",
+  "question": "What does Haven suggest is the 'message' of the evening's events at the ABC Network YouTube uploads on 1977-04-30?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-a5f40a0d74-001",
+  "video_id": "ABC_Network_-_General_Hospital_Last_14_Minutes_11_20_1979",
+  "question": "According to Mitch, from whose office was the deposition stolen?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-a5f40a0d74-003",
+  "video_id": "ABC_Network_-_General_Hospital_Last_14_Minutes_11_20_1979",
+  "question": "What soap opera is mentioned most frequently in the ABC Network YouTube uploads segment from 1979-11-20?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-301701ac33-000",
+  "video_id": "ABC_Network_-_Let_s_Make_a_Deal_-_WLS_Channel_7_Pre-Show_Break_Opening_Moments_2_5_1976",
+  "question": "According to the announcer during a sale at Jule, how much does a pound of juicy sirloin steak cost?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-301701ac33-002",
+  "video_id": "ABC_Network_-_Let_s_Make_a_Deal_-_WLS_Channel_7_Pre-Show_Break_Opening_Moments_2_5_1976",
+  "question": "According to the 1976-02-05 archival public-broadcasting program, what is the name of the actor who plays Atholani in th",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-6a7b4b3ea1-004",
+  "video_id": "ABC_News_Nightline_-_Bitter_Cold_-_WLS_Channel_7_1st_16_Minutes_1_11_1982",
+  "question": "According to John Coleman, in what region did the Arctic air originate before moving into the U.S.? Ted, John Coleman, B",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-a9d4d2a640-006",
+  "video_id": "ABC_News_Weekend_Report_-_WLS_Channel_7_Complete_Broadcast_3_9_1980",
+  "question": "What score secured Kurt Thomas the win at the American Cup Gymnast Championships in New York?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-a9d4d2a640-008",
+  "video_id": "ABC_News_Weekend_Report_-_WLS_Channel_7_Complete_Broadcast_3_9_1980",
+  "question": "What specific ingredient does the advertisement repeatedly mention as being in Visine, as shown in a commercial during t",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-2eeaee45a6-001",
+  "video_id": "cpb-aacip-15-028pc2t52t",
+  "question": "Why did Barney Frank admit to paying Greg Davis?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-e9f0467442-000",
+  "video_id": "cpb-aacip-15-0v89g5gc4w",
+  "question": "According to Mabuza, what voting concept does the newly elected president not support?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-0169b45d48-003",
+  "video_id": "cpb-aacip-15-1c1td9n55n",
+  "question": "Why is Ernie Branch working with these kids at this particular age?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "demotion ledger"
+ },
+ {
+  "id": "v6-32a2efbe73-006",
+  "video_id": "cpb-aacip-15-2f7jq0tn9b",
+  "question": "Why did the Nashville Movement consider offering assistance to CORE\u2019s Freedom Riders?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-07eb4873de-005",
+  "video_id": "cpb-aacip-189-8279cwzq",
+  "question": "What location did Mel identify as the initial destination for the Mohawks after they left New York State?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-b95295228e-006",
+  "video_id": "cpb-aacip-507-1v5bc3tf81",
+  "question": "According to the segment, what regulations did Salt Lake City organizers potentially violate in order to secure the 19th",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6-b95295228e-011",
+  "video_id": "cpb-aacip-507-1v5bc3tf81",
+  "question": "Why did the House managers meet?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6-d2204afef6-012",
+  "video_id": "cpb-aacip-507-251fj2b03t",
+  "question": "What was the central political benefit represented by the scene featuring Barbara Bush and her family?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6-4f88c2da6f-003",
+  "video_id": "cpb-aacip-507-3f4kk94w29",
+  "question": "What specific company merger is cited as an example by Larry Goldstein during the PBS NewsHour discussion of oil company",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-dcaade1e89-001",
+  "video_id": "cpb-aacip-507-3x83j39n00",
+  "question": "According to the report, what event in the previous year prompted the continuation of these protests in Washington?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6-dcaade1e89-006",
+  "video_id": "cpb-aacip-507-3x83j39n00",
+  "question": "According to the PBS NewsHour (WGBH) broadcast, which two families are shown saying goodbye to each other at the Capitol",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6-dcaade1e89-011",
+  "video_id": "cpb-aacip-507-3x83j39n00",
+  "question": "Why did some demonstrators protest George W. Bush's method of gaining office?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6-dcaade1e89-015",
+  "video_id": "cpb-aacip-507-3x83j39n00",
+  "question": "What specific election outcome are protestors disagreeing with?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6-2d02e3544d-010",
+  "video_id": "cpb-aacip-507-4746q1t25k",
+  "question": "According to Senator Nichols, what quality distinguishes the individuals chosen for George W. Bush\u2019s cabinet?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-b04a9248a1-007",
+  "video_id": "cpb-aacip-507-4b2x34n67h",
+  "question": "According to the UN Government Spokesman during a the December 3, 2002 PBS NewsHour broadcast, what specific area is exp",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-bffa13e89e-004",
+  "video_id": "cpb-aacip-507-4f1mg7gc44",
+  "question": "Why does one Senator oppose the proposed legislation debated in Washington regarding overtime pay?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-a427824313-008",
+  "video_id": "cpb-aacip-507-4t6f18t15n",
+  "question": "What specific factor does Bill Beecher emphasize as being *more* concerning than a possible boycott, according to his re",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-a427824313-010",
+  "video_id": "cpb-aacip-507-4t6f18t15n",
+  "question": "According to Bill Beecher, what has been a source of frustration for Congress regarding actions by the executive departm",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-4146164883-001",
+  "video_id": "cpb-aacip-507-4t6f18t178",
+  "question": "According to Jerry Jones, what is the current process for handling grievances at the mine site?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-b494468686-009",
+  "video_id": "cpb-aacip-507-5q4rj49c6q",
+  "question": "Why has Standard & Poor's placed California on a positive credit watch?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-fab8913b45-001",
+  "video_id": "cpb-aacip-507-5x2599zp0m",
+  "question": "In what year did Secretary Schultz acknowledge knowing the President\u2019s decision was being discussed?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6-fab8913b45-005",
+  "video_id": "cpb-aacip-507-5x2599zp0m",
+  "question": "According to Marshall Goldman and Michel Oksenberg, whose vested interests make economic reform in China difficult?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6-fab8913b45-008",
+  "video_id": "cpb-aacip-507-5x2599zp0m",
+  "question": "Why does Marshall Goldman indicate he wasn't fully aware of the policy's progress?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6-fab8913b45-009",
+  "video_id": "cpb-aacip-507-5x2599zp0m",
+  "question": "Why does Marshall Goldman believe the events in China are so important to the Soviet Union, as discussed on the January ",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6-fab8913b45-012",
+  "video_id": "cpb-aacip-507-5x2599zp0m",
+  "question": "According to the testimony of Marshall Goldman, in what year did the Secretary of State acknowledge awareness of the pol",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6-e910571ac6-003",
+  "video_id": "cpb-aacip-507-6w96689725",
+  "question": "What is the title of the position held by Betsy Stingle, Associate Director of the Religious Coalition for Abortion Righ",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-e910571ac6-004",
+  "video_id": "cpb-aacip-507-6w96689725",
+  "question": "What specific rights, beyond the right to life, does Monsignor James McHugh state the Bishops consistently link their co",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-acfc5684a7-000",
+  "video_id": "cpb-aacip-507-7659c6sk7z",
+  "question": "According to Paul Barry in a the August 15, 1980 PBS NewsHour broadcast from the 1980s-2000s, what is one advantage Chin",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-acfc5684a7-001",
+  "video_id": "cpb-aacip-507-7659c6sk7z",
+  "question": "What month and year did Paul Barry report that China's Four Modernizations policy was announced?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-0e2312bb35-006",
+  "video_id": "cpb-aacip-507-9882j68s35",
+  "question": "Why does Jasper Neel suggest focusing on 'the fine points of grammar' requires students to perform two different mental ",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-35d32310af-003",
+  "video_id": "cpb-aacip-507-bz6154fc44",
+  "question": "What timeframe is mentioned as the target for holding elections by Jim Lehrer, Paul Gigot, Mark Shields, Forbes, Ken Sli",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-e52df4d408-006",
+  "video_id": "cpb-aacip-507-dj58c9rs7q",
+  "question": "According to Robert Rubin, what percentage of Americans experienced income tax increases as part of the deficit reductio",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-8fda9d1ec4-004",
+  "video_id": "cpb-aacip-507-dv1cj8881m",
+  "question": "What date did the fatal collision between a U.S. submarine and a Japanese fishing vessel occur?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6-8fda9d1ec4-007",
+  "video_id": "cpb-aacip-507-dv1cj8881m",
+  "question": "Why is Dr. David Pearl interviewed in the PBS NewsHour segment on Vice President Cheney's heart trouble, even though he ",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6-512e6593b0-000",
+  "video_id": "cpb-aacip-507-f47gq6rq94",
+  "question": "In what year did Orrin Hatch make a statement about the difficulty of determining which of President Clinton's nominees ",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6-a500651562-009",
+  "video_id": "cpb-aacip-507-fj29883b24",
+  "question": "What specific past nuclear programs does Ted Gupp mention as contributing to the agency's heightened sensitivity regardi",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-2394619be0-008",
+  "video_id": "cpb-aacip-507-jm23b5x19r",
+  "question": "Why did Kenneth Lay reportedly make such a big deal regarding the collapse of Enron?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "demotion ledger"
+ },
+ {
+  "id": "v6-3ad921fcd6-008",
+  "video_id": "cpb-aacip-507-nk3610wp6s",
+  "question": "According to Professor Kagan during the PBS NewsHour discussion of the Bosnia Peace Agreement, what was NATO 'chiefly ai",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-85c2976f06-002",
+  "video_id": "cpb-aacip-507-ns0ks6jx8k",
+  "question": "Which two officials are scheduled to meet in New York?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6-a65dc7edcf-004",
+  "video_id": "cpb-aacip-507-zk55d8pd1h",
+  "question": "What agency conducted the recent study mentioned by Mr. Adler regarding compliance with discharge permits?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-a65dc7edcf-005",
+  "video_id": "cpb-aacip-507-zk55d8pd1h",
+  "question": "What type of system does Dr. Axelrod propose as an alternative to the current adversarial system for compensating patien",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-56a204af9e-001",
+  "video_id": "cpb-aacip-507-zw18k75z4h",
+  "question": "According to John Hardin, what organization did he previously lead?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6-56a204af9e-002",
+  "video_id": "cpb-aacip-507-zw18k75z4h",
+  "question": "Following the changes described in the Depository Institutions Deregulation and Monetary Control Act of 1980, what speci",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6-56a204af9e-003",
+  "video_id": "cpb-aacip-507-zw18k75z4h",
+  "question": "What does Senator Jake Garn state is the most important thing Congress can do, according to this PBS NewsHour segment ab",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6-56a204af9e-005",
+  "video_id": "cpb-aacip-507-zw18k75z4h",
+  "question": "Why is the commercial banking industry concerned, according to John Hardin and speakers discussing changes effective Jan",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6-56a204af9e-010",
+  "video_id": "cpb-aacip-507-zw18k75z4h",
+  "question": "What organization did John Hardin most recently lead prior to being interviewed on PBS NewsHour regarding financial comm",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6-e14d550179-001",
+  "video_id": "cpb-aacip-516-6m3319sz98",
+  "question": "Why are the magnets shown in the demonstration by the Host relevant to viewers?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-e0c377ee61-005",
+  "video_id": "cpb-aacip-526-125q815n1x",
+  "question": "Why does Eric Schurenberg suggest the $500 billion savings and loan bailout won't be as impactful to individual househol",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-03362f7401-000",
+  "video_id": "cpb-aacip-526-183416tz0c",
+  "question": "According to Penny in the discussion about Machine Discussion, how much money is needed to operate the 'rhythms machine'",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-03362f7401-005",
+  "video_id": "cpb-aacip-526-183416tz0c",
+  "question": "Why does Penny question Jonathan about how he is talking?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-8508c8d612-003",
+  "video_id": "cpb-aacip-526-2f7jq0ts56",
+  "question": "What did Ruby say Marco did to solve his riddle?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-8508c8d612-004",
+  "video_id": "cpb-aacip-526-2f7jq0ts56",
+  "question": "Why does Ruby suggest they can learn how to play 'Wizard of War'?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-8508c8d612-005",
+  "video_id": "cpb-aacip-526-2f7jq0ts56",
+  "question": "Why does Ruby ask the students to remember what they talked about when discussing Reading Class?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-8508c8d612-007",
+  "video_id": "cpb-aacip-526-2f7jq0ts56",
+  "question": "What did Ruby compare Ruby's approach to figuring out 'Wizard of War' to?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-8508c8d612-008",
+  "video_id": "cpb-aacip-526-2f7jq0ts56",
+  "question": "What game are Ruby, Teacher, Zool, Lexor, Wizard of War, and Darth Vader planning to learn how to play?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-167673f29f-001",
+  "video_id": "cpb-aacip-526-2z12n50h89",
+  "question": "According to Cubby, what is the length and pay rate for the guaranteed work?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-167673f29f-005",
+  "video_id": "cpb-aacip-526-2z12n50h89",
+  "question": "What does Cubby's Father claim the other person is attempting to do with their child?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-167673f29f-006",
+  "video_id": "cpb-aacip-526-2z12n50h89",
+  "question": "What establishment does Cubby repeatedly suggest they visit?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-167673f29f-010",
+  "video_id": "cpb-aacip-526-2z12n50h89",
+  "question": "According to the conversation between Cubby's Father, Mr. Sigal, Ann Rogers, Mr. Strong, and Mrs. Coleman, what televisi",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-26d9ef8db9-008",
+  "video_id": "cpb-aacip-526-7s7hq3sz9x",
+  "question": "What specific example sentence does RB Bug decide to retain for the writing exercise?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-432196bd5b-001",
+  "video_id": "cpb-aacip-526-7w6736n449",
+  "question": "Roughly how many singers were left on the reservation fifteen years ago, according to Speaker 5?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-51240408bb-002",
+  "video_id": "cpb-aacip-526-8s4jm24g9m",
+  "question": "What did Marcus repeatedly declare he would do 'with this hand' while traveling in the desert?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-51240408bb-004",
+  "video_id": "cpb-aacip-526-8s4jm24g9m",
+  "question": "What specific amount of money does Marcus repeatedly request from Trina throughout this segment?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-8e9e456904-005",
+  "video_id": "cpb-aacip-526-cj87h1fq6v",
+  "question": "What two actions does Richard repeatedly advise the elected official to take in response to potentially harmful letters?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-8e9e456904-009",
+  "video_id": "cpb-aacip-526-cj87h1fq6v",
+  "question": "According to Richard, what was the common reason given by newspapers for refusing to run the hypothetical advertisement?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-8e9e456904-010",
+  "video_id": "cpb-aacip-526-cj87h1fq6v",
+  "question": "What hypothetical scenario did Ralph Williamson repeatedly present to newspapers?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-8e9e456904-011",
+  "video_id": "cpb-aacip-526-cj87h1fq6v",
+  "question": "What specific action does Richard repeatedly suggest would resolve the issue being discussed regarding a newspaper publi",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-0aecf2ea60-002",
+  "video_id": "cpb-aacip-526-d50ft8fn3n",
+  "question": "What month and year did the Chesapeake Bay Conference take place, according to Pete Schweitzer and Senator Charles Mathi",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "demotion ledger"
+ },
+ {
+  "id": "v6-0c01c1acac-002",
+  "video_id": "cpb-aacip-526-f47gq6s533",
+  "question": "How many years of service did Jim Bell's father complete at this location?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-0c01c1acac-008",
+  "video_id": "cpb-aacip-526-f47gq6s533",
+  "question": "From whom did the speaker obtain the original copy of \"Around the St. Charles Belt\"?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "demotion ledger"
+ },
+ {
+  "id": "v6-0c01c1acac-011",
+  "video_id": "cpb-aacip-526-f47gq6s533",
+  "question": "How many years did the speaker, discussing her family's history with New Orleans Public Service Streetcars, work at New ",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "demotion ledger"
+ },
+ {
+  "id": "v6-74cda69968-000",
+  "video_id": "cpb-aacip-526-fx73t9fc4v",
+  "question": "According to Participant, how many years had passed since a medical procedure when they were told the absence of childre",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-74cda69968-001",
+  "video_id": "cpb-aacip-526-fx73t9fc4v",
+  "question": "What two names does the participant mention as being associated with his former spouse?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-74cda69968-003",
+  "video_id": "cpb-aacip-526-fx73t9fc4v",
+  "question": "Why does Participant believe his ex-spouse\u2019s behavior ultimately led to the termination of the marriage?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-74cda69968-004",
+  "video_id": "cpb-aacip-526-fx73t9fc4v",
+  "question": "Why does Mike express disbelief about his past marriage to Mrs. Jekyll, Dr. Hyde?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-74cda69968-005",
+  "video_id": "cpb-aacip-526-fx73t9fc4v",
+  "question": "Why does Participant anticipate varied perspectives among the study participants?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-af5925f9b3-000",
+  "video_id": "cpb-aacip-526-gt5fb4xq7g",
+  "question": "According to John, what agency provided the advice they received before retiring early?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-af5925f9b3-002",
+  "video_id": "cpb-aacip-526-gt5fb4xq7g",
+  "question": "For how long did John attempt to manage his mother-in-law's care independently before enrolling her in a program?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-097a8ff5e3-005",
+  "video_id": "cpb-aacip-526-mk6542kh8x",
+  "question": "With what other recording did Daniel Barenboim\u2019s work on Wagner\u2019s Ring Cycle share pioneering status in the recording bu",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-07dbfee0fd-003",
+  "video_id": "cpb-aacip-526-s17sn02b08",
+  "question": "What specific type of rhetoric does Joyce Lee and John Tyndall equate to gaining publicity for a viewpoint?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-62138b60c9-004",
+  "video_id": "cpb-aacip-526-sb3ws8js8p",
+  "question": "What is Prince Aciel referencing when they state 'we are devoting large amounts of resources for security'?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-62138b60c9-014",
+  "video_id": "cpb-aacip-526-sb3ws8js8p",
+  "question": "What initial price does Prince Aciel state cocaine sold for when it was first introduced commercially?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-7261698190-006",
+  "video_id": "cpb-aacip-526-sj19k47399",
+  "question": "Why does Robbie Smith state she has knowledge of corporate racism?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-8f80c3c2ea-003",
+  "video_id": "cpb-aacip-526-sn00z72802",
+  "question": "What name does Dorothea Dix identify as her own during this discussion?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-3782846bc7-002",
+  "video_id": "cpb-aacip-526-v69862cp2j",
+  "question": "According to Dr. Arthur Tamplin, a staff scientist with the Natural Resources Defense Council, what will inevitably disa",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-3782846bc7-009",
+  "video_id": "cpb-aacip-526-v69862cp2j",
+  "question": "What did Conrad claim was the result of how information was controlled by agencies?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-cb5f3c46cd-002",
+  "video_id": "cpb-aacip-526-w66930q61q",
+  "question": "How far back in time are people now looking when they criticize past actions related to the 1968 Presidential Campaign?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-cb5f3c46cd-010",
+  "video_id": "cpb-aacip-526-w66930q61q",
+  "question": "What decision did George Wallace\u2019s wife ultimately make, despite his initial reservations?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-ea79b1a91c-005",
+  "video_id": "cpb-aacip-526-x34mk66j2p",
+  "question": "During a broadcast featuring Lloyd Price, Roger Road, Muscle Shoals, Sam Moore, and Muddy Waters, who does the speaker s",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "demotion ledger"
+ },
+ {
+  "id": "v6-ea79b1a91c-006",
+  "video_id": "cpb-aacip-526-x34mk66j2p",
+  "question": "Besides Paul Butterfield Blues Band, what other artists does the speaker specifically mention as originating from Chicag",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "demotion ledger"
+ },
+ {
+  "id": "v6-ea79b1a91c-010",
+  "video_id": "cpb-aacip-526-x34mk66j2p",
+  "question": "What repeated personal claim does Lloyd Price make throughout this performance?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-0587671f14-007",
+  "video_id": "cpb-aacip-526-x921c1vv2j",
+  "question": "Why does Darliwa repeatedly tell the listener 'before you do anything rash, baby' during a discussion about heartbreak?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-ff2cf7aaac-000",
+  "video_id": "cpb-aacip-55f35238947",
+  "question": "According to Cornell Mix's discussion of growing vegetables, how much salt should be used for each head of cabbage grate",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-ff2cf7aaac-003",
+  "video_id": "cpb-aacip-55f35238947",
+  "question": "Cornell Mix advises against purchasing beans specifically labeled for planting for what reason?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-f0dd22ea2f-001",
+  "video_id": "cpb-aacip-61992d38519",
+  "question": "What specific assurance does Medea's husband repeatedly ask of his friend regarding the letter?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-f0dd22ea2f-002",
+  "video_id": "cpb-aacip-61992d38519",
+  "question": "According to Medea's Husband, who does he credit with saving his life?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-f33916f87b-000",
+  "video_id": "cpb-aacip-75-30prrg9s",
+  "question": "According to Jules Langsner, what term did Jung use to describe the idea that myth extends beyond a single culture or tr",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-f33916f87b-002",
+  "video_id": "cpb-aacip-75-30prrg9s",
+  "question": "What kinds of materials does Jules Langsner identify as being used in this work?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-f33916f87b-006",
+  "video_id": "cpb-aacip-75-30prrg9s",
+  "question": "What artist's work does Jules Langsner contrast with a piece being discussed in terms of dimensionality?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-f33916f87b-008",
+  "video_id": "cpb-aacip-75-30prrg9s",
+  "question": "According to Willen Sandberg, director of the Stadlich Museum, Amsterdam, Holland, who arrived with the \"big tanks and j",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-f33916f87b-010",
+  "video_id": "cpb-aacip-75-30prrg9s",
+  "question": "Why does Jules Langsner believe artists like C\u00e9sar are indicating something within the chaos they depict?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-f33916f87b-011",
+  "video_id": "cpb-aacip-75-30prrg9s",
+  "question": "Why does Jules Langsner suggest these materials are reassembled?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-bfb42eb6d8-001",
+  "video_id": "cpb-aacip-75-72p5j4xx",
+  "question": "For how many days was Marcel Duchamp filmed for French television while visiting Edgar Var\u00e8se in Pasadena?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-bfb42eb6d8-009",
+  "video_id": "cpb-aacip-75-72p5j4xx",
+  "question": "According to the segment about Marcel Duchamp and Edgar Var\u00e8se, where did the French television crew film Duchamp?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6-aa46dfce16-005",
+  "video_id": "cpb-aacip-75-87brvgkp",
+  "question": "Why does the AAPB cpb-aacip-75 collection broadcast repeatedly emphasize Philadelphia as a city of dedicated people, giv",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "demotion ledger"
+ },
+ {
+  "id": "v6-aa46dfce16-009",
+  "video_id": "cpb-aacip-75-87brvgkp",
+  "question": "What specific year do Pat Senyon, Sam Maiton, Walter L. Wolfe, and Bertha von Maschisker explicitly connect to experimen",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6v-0ef07153d7-003",
+  "video_id": "ABC_Network_-_Barbary_Coast_-_Funny_Money_-_WCVB_Channel_5_Complete_Broadcast_9_8_1975",
+  "question": "Within the 'Lord Beverly's Daughter' broadcast, what brand of denture adhesive is advertised on screen?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6v-e708482fb1-000",
+  "video_id": "cpb-aacip-4f036fc316b",
+  "question": "In the on-screen graphic, what name is underlined?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6v-e708482fb1-003",
+  "video_id": "cpb-aacip-4f036fc316b",
+  "question": "In the visual text displayed, what phrase immediately follows \"CASTELO BRANCO\"?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6v-e708482fb1-005",
+  "video_id": "cpb-aacip-4f036fc316b",
+  "question": "In the introductory segment for Ambassador Lincoln Gordon, what alphanumeric code is displayed on screen?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6v-4f88c2da6f-002",
+  "video_id": "cpb-aacip-507-3f4kk94w29",
+  "question": "What price is displayed on the gas station sign for unleaded gasoline?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6v-dcaade1e89-000",
+  "video_id": "cpb-aacip-507-3x83j39n00",
+  "question": "What is the full text displayed on the on-screen graphic?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6v-dcaade1e89-001",
+  "video_id": "cpb-aacip-507-3x83j39n00",
+  "question": "During the PBS NewsHour protest coverage, what phrase appears on-screen as a central tenet, listed alongside 'The State ",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6v-e910571ac6-003",
+  "video_id": "cpb-aacip-507-6w96689725",
+  "question": "In the PBS NewsHour segment about Abortion as a Presidential Issue, what location is identified on the chyron?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6v-272c8b8e13-000",
+  "video_id": "cpb-aacip-507-7659c6sk9k",
+  "question": "In the PBS NewsHour broadcast about Philadelphia Neighborhoods, what is the first listed authorization granted to the Pr",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6v-2394619be0-001",
+  "video_id": "cpb-aacip-507-jm23b5x19r",
+  "question": "What is the main headline displayed on the on-screen graphic?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6v-3ad921fcd6-001",
+  "video_id": "cpb-aacip-507-nk3610wp6s",
+  "question": "In the PBS NewsHour report on the Gergen Dialogue with Bill Gates, what college is identified as the location of John Lu",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6v-85c2976f06-002",
+  "video_id": "cpb-aacip-507-ns0ks6jx8k",
+  "question": "According to the on-screen text from the PBS NewsHour broadcast, what dollar amount is offered as a reward?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6v-85c2976f06-003",
+  "video_id": "cpb-aacip-507-ns0ks6jx8k",
+  "question": "In the PBS NewsHour segment on regulating bounty hunters in Arizona, what phrase appears on the 'WANTED' poster displaye",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6v-2832f15e21-001",
+  "video_id": "cpb-aacip-507-ws8hd7pn8f",
+  "question": "During the August 19, 1987 PBS NewsHour broadcast about Elvis Presley's 10th Anniversary Death, what title is displayed ",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6v-2832f15e21-002",
+  "video_id": "cpb-aacip-507-ws8hd7pn8f",
+  "question": "During the August 19, 1987 PBS NewsHour broadcast about the FDA proposal, what organization is Geoffrey Kemp identified ",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6v-8508c8d612-000",
+  "video_id": "cpb-aacip-526-2f7jq0ts56",
+  "question": "What is the exact text of the headline displayed on screen?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "demotion ledger"
+ },
+ {
+  "id": "v6v-0a1fbd7580-001",
+  "video_id": "cpb-aacip-526-bz6154ft6b",
+  "question": "What phrase is printed on the bottle label?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6v-0a1fbd7580-002",
+  "video_id": "cpb-aacip-526-bz6154ft6b",
+  "question": "In the Peabody Awards corpus broadcast concerning the Seba Gagi Chemical Company, what is the title of the book shown on",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6v-0aecf2ea60-001",
+  "video_id": "cpb-aacip-526-d50ft8fn3n",
+  "question": "What is the title of Section 5 as presented on-screen?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6v-0c01c1acac-003",
+  "video_id": "cpb-aacip-526-f47gq6s533",
+  "question": "In the on-screen graphic, what is the address associated with 'TAXI CALOP'?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6v-097a8ff5e3-003",
+  "video_id": "cpb-aacip-526-mk6542kh8x",
+  "question": "What is the headline from the newspaper article shown on screen?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6v-3782846bc7-000",
+  "video_id": "cpb-aacip-526-v69862cp2j",
+  "question": "In the Peabody Awards corpus broadcast on Nuclear Power and Plutonium, what name is displayed on the sign visible in the",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6v-cb5f3c46cd-000",
+  "video_id": "cpb-aacip-526-w66930q61q",
+  "question": "What name appears in quotation marks on screen alongside the phrase 'No March From Selma'?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "calibrated machine pass (human-standard transfer)"
+ },
+ {
+  "id": "v6x-2313ada5a3-000",
+  "video_id": "ABC_Network_-_Future_Cop_-_The_Kansas_City_Kid_-_WCVB-TV_Complete_Broadcast_4_30_1977",
+  "question": "Which segments of the April 30, 1977 ABC Network broadcast from Chicago discuss Nancy Drew, or discuss her?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6x-a5f40a0d74-001",
+  "video_id": "ABC_Network_-_General_Hospital_Last_14_Minutes_11_20_1979",
+  "question": "Within the ABC Network YouTube uploads from 1979-11-20, identify the segments that discuss Bobby Spencer.",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6x-a9d4d2a640-000",
+  "video_id": "ABC_News_Weekend_Report_-_WLS_Channel_7_Complete_Broadcast_3_9_1980",
+  "question": "Which segments of the March 9, 1980 ABC News Weekend Report broadcast discuss Ted Kennedy?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6x-b95295228e-000",
+  "video_id": "cpb-aacip-507-1v5bc3tf81",
+  "question": "Which segments of this PBS NewsHour broadcast focus on the Khmer Rouge, either through direct discussion, interviews, or",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6x-30c466bae7-000",
+  "video_id": "cpb-aacip-507-3b5w669q04",
+  "question": "Which segments of the August 30, 2005 PBS NewsHour broadcast discuss Pacific Life, either as a topic of discussion, thro",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6x-2d02e3544d-000",
+  "video_id": "cpb-aacip-507-4746q1t25k",
+  "question": "Which segments of this PBS NewsHour broadcast discuss John Ashcroft?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6x-2d02e3544d-002",
+  "video_id": "cpb-aacip-507-4746q1t25k",
+  "question": "Which segments of this PBS NewsHour broadcast discuss discussion of, or reporting on, the United States Department of Ju",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6x-a427824313-000",
+  "video_id": "cpb-aacip-507-4t6f18t15n",
+  "question": "Which segments of this PBS NewsHour broadcast discuss discussion of or reporting related to The Boston Globe?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6x-fab8913b45-001",
+  "video_id": "cpb-aacip-507-5x2599zp0m",
+  "question": "Which segments of the January 16, 1987 PBS NewsHour broadcast discuss the United States Department of State, either as a",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6x-35d32310af-001",
+  "video_id": "cpb-aacip-507-bz6154fc44",
+  "question": "Identify the segments within this PBS NewsHour broadcast that discuss Bill Clinton?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6x-35d32310af-002",
+  "video_id": "cpb-aacip-507-bz6154fc44",
+  "question": "Within this PBS NewsHour broadcast, identify the segments that discuss, mention, or discuss the Dunblane massacre?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6x-512e6593b0-000",
+  "video_id": "cpb-aacip-507-f47gq6rq94",
+  "question": "Which segments of the February 26, 2003 PBS NewsHour broadcast feature Jim Lehrer, either as a speaker or as a main subj",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6x-a500651562-001",
+  "video_id": "cpb-aacip-507-fj29883b24",
+  "question": "Which segments of this PBS NewsHour broadcast feature Jim Lehrer prominently, either as a speaker, subject, or in a sign",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6x-52a336e6d9-001",
+  "video_id": "cpb-aacip-507-v11vd6pz5w",
+  "question": "Which segments of this PBS NewsHour broadcast focus on or discuss the United States Senate Committee on Foreign Relation",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6x-a65dc7edcf-001",
+  "video_id": "cpb-aacip-507-zk55d8pd1h",
+  "question": "Which segments of this PBS NewsHour broadcast discuss Kwame Holman?",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6x-8e9e456904-000",
+  "video_id": "cpb-aacip-526-cj87h1fq6v",
+  "question": "Identify the segments within this NJN broadcast that discuss Jesse Jackson, either through his appearance, speech, or as",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
+ },
+ {
+  "id": "v6x-f33916f87b-000",
+  "video_id": "cpb-aacip-75-30prrg9s",
+  "question": "Which segments within this AAPB cpb-aacip-75 broadcast discuss Willem de Kooning, discuss him as a primary topic, or inc",
+  "tags": [
+   "V60_FINALIZATION"
+  ],
+  "reason": "human ratification"
  }
 ]

@@ -82,3 +82,7 @@ Deterministic diarization/chyron audit + evidence-reading adjudication over 97 f
 Round-2 attribution sweep (widened verb patterns after a human catch): 12 new flags adjudicated, 3 more MISATTRIBUTED rows excluded (plus 1 human-caught sibling). Attribution exclusions total 36.
 
 Round-3 maximal attribution sweep: 62 flags adjudicated (26 OK, 19 regex artifacts, 1 garbled-match), 16 MISATTRIBUTED excluded. Attribution exclusions across all rounds: 53. The class is now swept across every syntactic attribution form present in the benchmark.
+
+## v6.0 finalization (2026-07-10, user decision)
+
+585 questions. Removals: human ratification rejections, demotion ledger, and the calibrated machine pass (110/622, 17.7%, human-standard transfer from 132 labeled votes). The 50-row verification sample was waived by the dataset owner; the calibrated pass rate is reported as the quality estimate. Video-stratified splits 50/10/40 (seed 42).
