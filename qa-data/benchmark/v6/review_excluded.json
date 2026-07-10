@@ -682,5 +682,293 @@
   ],
   "reason": "credit reports segment doesn't mention William Kennedy Smith",
   "confirmation": "no full_evidence to refute; credit-reports segment unrelated to WKS"
+ },
+ {
+  "id": "v6-0ef07153d7-008",
+  "video_id": "ABC_Network_-_Barbary_Coast_-_Funny_Money_-_WCVB_Channel_5_Complete_Broadcast_9_8_1975",
+  "question": "According to Cash Conover, what is one supposed benefit of people believing he killed his customers?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit: Cash Conover: 'Good for business' said by Wanter to Conover"
+ },
+ {
+  "id": "v6-9b95482ca4-002",
+  "video_id": "ABC_News_Special_Report_-_The_President_at_the_United_Nations_-_WLS-TV_1985",
+  "question": "According to Sam Donaldson, what was the reason behind the Reagan administration's policy shift during the speech given on October 11, 1985?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit: Sam Donaldson: Policy-shift explanation given by correspondent 'Luciaffe'"
+ },
+ {
+  "id": "v6-0169b45d48-008",
+  "video_id": "cpb-aacip-15-1c1td9n55n",
+  "question": "What activity does James lose access to if he doesn't complete his homework, according to Ernie Branch?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit: Ernie Branch: Homework/karate claim spoken by James' father, not Branch"
+ },
+ {
+  "id": "v6-d2204afef6-007",
+  "video_id": "cpb-aacip-507-251fj2b03t",
+  "question": "Why does Barbara Bush state that women\u2019s lives are different from men\u2019s lives?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit: Barbara Bush: Quote is from Marilyn Quayle's convention speech"
+ },
+ {
+  "id": "v6-2d02e3544d-000",
+  "video_id": "cpb-aacip-507-4746q1t25k",
+  "question": "According to Gwen Ifill, Raslan Sukar, and Eddie Barkiel on PBS NewsHour, how did the speed of George W. Bush's cabinet appointments compare to those of other modern presidents?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit: Gwen Ifill: Claim is Ray Suarez's; Ifill not in this segment"
+ },
+ {
+  "id": "v6-b04a9248a1-000",
+  "video_id": "cpb-aacip-507-4b2x34n67h",
+  "question": "According to Jim Lehrer, for how long has the U.S. Supreme Court been avoiding a ruling on University of Michigan affirmative action cases?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit: Jim Lehrer: Segment run by correspondent SPEAKER_25; claim not Lehrer's"
+ },
+ {
+  "id": "v6-fab8913b45-000",
+  "video_id": "cpb-aacip-507-5x2599zp0m",
+  "question": "According to Marshall Goldman, what three specific changes constitute 'political reforms' being debated in China?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit: Marshall Goldman: Political-reforms list from China panelists; Goldman not in span"
+ },
+ {
+  "id": "v6-fab8913b45-011",
+  "video_id": "cpb-aacip-507-5x2599zp0m",
+  "question": "What two main areas of change are currently debated among factions within China, according to Marshall Goldman during the PBS NewsHour broadcast?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit: Marshall Goldman: Reform-debate framing by Oksenberg panel; Goldman absent from span"
+ },
+ {
+  "id": "v6-b8dc86abbd-006",
+  "video_id": "cpb-aacip-507-6h4cn6zj6q",
+  "question": "Why did Senator Robert Torricelli state that Christine Todd Whitman would face 'absolutely no learning curve' as EPA administrator?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit: Robert Torricelli: Hearing introducer unnamed; Torricelli never mentioned in ASR"
+ },
+ {
+  "id": "v6-0e2312bb35-001",
+  "video_id": "cpb-aacip-507-9882j68s35",
+  "question": "According to Jasper Neel, what figure does he invoke to illustrate a point about excessive grammatical correctness?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit: Jasper Neel: Churchill line spoken by host Robert MacNeil, not Neel"
+ },
+ {
+  "id": "v6-0e2312bb35-005",
+  "video_id": "cpb-aacip-507-9882j68s35",
+  "question": "Why does James Scanlon suggest the term 'crisis' might be misleading when discussing student writing on PBS NewsHour in the 1980s-2000s?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit: James Scanlon: Span speakers are Neel, Gray, host; Scanlon absent"
+ },
+ {
+  "id": "v6-0e2312bb35-010",
+  "video_id": "cpb-aacip-507-9882j68s35",
+  "question": "According to James Scanlon during a PBS NewsHour discussion, what foundational skill does every student possess upon entering college?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit: James Scanlon: 'Basic grasp of grammar' said by Jasper Neel"
+ },
+ {
+  "id": "v6-e52df4d408-000",
+  "video_id": "cpb-aacip-507-dj58c9rs7q",
+  "question": "According to Robert Rubin during a PBS NewsHour discussion, which country is permitted to participate in the efforts despite denying access to their air bases?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit: Robert Rubin: Turkey point from Waxman-Secretary debate; Rubin not in span"
+ },
+ {
+  "id": "v6-e52df4d408-010",
+  "video_id": "cpb-aacip-507-dj58c9rs7q",
+  "question": "According to Robert Rubin, what is one country that is permitted to participate in bidding on contracts despite actions he views as unhelpful to US interests?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit: Robert Rubin: Same debate; neither debater is Rubin"
+ },
+ {
+  "id": "v6-8fda9d1ec4-006",
+  "video_id": "cpb-aacip-507-dv1cj8881m",
+  "question": "Why does Jim Lehrer suggest the skipper might have 'cut a corner here or there'?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit: Jim Lehrer: Interviewer is Ray Suarez, addressed as Ray in span"
+ },
+ {
+  "id": "v6-3ad921fcd6-007",
+  "video_id": "cpb-aacip-507-nk3610wp6s",
+  "question": "According to Donald Kagan, what is a key condition for NATO to remain useful in its current form?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit: Donald Kagan: Condition-for-NATO claim matches Ronald Steel's turn"
+ },
+ {
+  "id": "v6-47d7f069cf-000",
+  "video_id": "cpb-aacip-507-pc2t43js98",
+  "question": "According to Dr. Scott McIver's statements in a PBS NewsHour report, what university is he affiliated with?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit: Dr. Scott: Affiliation stated by narrator, not by McIver himself"
+ },
+ {
+  "id": "v6-a65dc7edcf-000",
+  "video_id": "cpb-aacip-507-zk55d8pd1h",
+  "question": "According to Mr. Adler, when did the negotiations officially begin?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit: Mr. Adler: Negotiations content from Ortega interview, not Adler"
+ },
+ {
+  "id": "v6-a65dc7edcf-009",
+  "video_id": "cpb-aacip-507-zk55d8pd1h",
+  "question": "Why does Alejandro Acevedo state the Contras would need to remain active for the time being?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit: Alejandro Acevedo: Contra position reported by interviewer; Acevedo absent from ASR"
+ },
+ {
+  "id": "v6-8e9e456904-000",
+  "video_id": "cpb-aacip-526-cj87h1fq6v",
+  "question": "According to Ralph Williamson, who serves as the ombudsman for the Home News?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit: Ralph Williamson: Ombudsman title stated by narrator; circular question"
+ },
+ {
+  "id": "v6-0aecf2ea60-003",
+  "video_id": "cpb-aacip-526-d50ft8fn3n",
+  "question": "What industry does Pete Schweitzer suggest is supported by the Chesapeake Bay even in Western Maryland?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit: Pete Schweitzer: Coal remark by student panelist; Schweitzer is a waterman elsewhere"
+ },
+ {
+  "id": "v6-0aecf2ea60-007",
+  "video_id": "cpb-aacip-526-d50ft8fn3n",
+  "question": "According to Senator Mathias, what concern arises once the federal government begins funding a project initially seen as a local problem?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit: Senator Mathias: Funding-control question posed by classroom moderator"
+ },
+ {
+  "id": "v6-0aecf2ea60-008",
+  "video_id": "cpb-aacip-526-d50ft8fn3n",
+  "question": "What central difficulty arises when the federal government becomes involved in the Chesapeake Bay cleanup, according to Senator Mathias in December 1983?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit: Senator Mathias: Same moderator remark; Mathias only mentioned in narration"
+ },
+ {
+  "id": "v6-0c01c1acac-014",
+  "video_id": "cpb-aacip-526-f47gq6s533",
+  "question": "Why are most of the parts for the streetcars handmade, according to Steve Pistorius and Jim Bell during a discussion of streetcar maintenance and repair?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit: Steve Pistorius: Handmade-parts claim by shop worker; Pistorius is a piano player"
+ },
+ {
+  "id": "v6-097a8ff5e3-009",
+  "video_id": "cpb-aacip-526-mk6542kh8x",
+  "question": "According to Daniel Barenboim describing his early guest conducting appearances, how long ago did he first conduct with the Chicago orchestra?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit: Daniel Barenboim: '20 years ago' said by orchestra musician; Barenboim label covers narrator"
+ },
+ {
+  "id": "v6-07dbfee0fd-009",
+  "video_id": "cpb-aacip-526-s17sn02b08",
+  "question": "Why does Joyce Lee state the teachers' union opposed his candidacy?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit: Joyce Lee: Interviewee rhetoric matches John Tyndall; question even says 'his'"
+ },
+ {
+  "id": "v6-07dbfee0fd-011",
+  "video_id": "cpb-aacip-526-s17sn02b08",
+  "question": "According to Joyce Lee and John Tyndall, where has research been conducted to map and graph leftover pools?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit: Joyce Lee: Leftover-pools research described by ICR geologist"
+ },
+ {
+  "id": "v6-62138b60c9-002",
+  "video_id": "cpb-aacip-526-sb3ws8js8p",
+  "question": "According to Prince Aciel, what percentage of homicides in Chicago would remain even if all gang-related murders were stopped?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit: Prince Aciel: 85% homicide statistic delivered by Dr. Bell"
+ },
+ {
+  "id": "v6-62138b60c9-003",
+  "video_id": "cpb-aacip-526-sb3ws8js8p",
+  "question": "According to Prince Aciel, how many people were killed in Chicago in 1991?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit: Prince Aciel: 925 killed stat spoken by congressman SPEAKER_12, addressing Prince"
+ },
+ {
+  "id": "v6-62138b60c9-007",
+  "video_id": "cpb-aacip-526-sb3ws8js8p",
+  "question": "According to Prince Aciel, what proportion of murders in Chicago occur within families?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit: Prince Aciel: 25% within-family stat is Dr. Bell's"
+ },
+ {
+  "id": "v6-ea79b1a91c-002",
+  "video_id": "cpb-aacip-526-x34mk66j2p",
+  "question": "According to Lloyd Price, in what type of society were the records he discusses cut?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit: Lloyd Price: Host SPEAKER_07 says it; same voice later introduces Price"
+ },
+ {
+  "id": "v6-f33916f87b-003",
+  "video_id": "cpb-aacip-75-30prrg9s",
+  "question": "According to Jules Langsner during a discussion of Science and Perception, Order in Art, Silene's Portrait, The Invisible in Art, and Dubuffet's Influence, which two Danish artists specifically influenced the Dutch group?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "attribution audit: Jules Langsner: Danish artists detail given by Sandberg, not Langsner"
  }
 ]

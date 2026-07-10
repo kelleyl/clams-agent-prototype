@@ -74,3 +74,7 @@ every complaint against the full evidence window. Human sample review
 - `v6v-2673bfa56d-000` [GARBLED] price '3-1' is OCR-mangled, baked verbatim into gold answer
 - `v6x-046a36efb6-004` [MISMATCH] Retrieved speaker is a commentator, not a "political adviser."
 - `v6x-f1cc51dac0-000` [MISMATCH] credit reports segment doesn't mention William Kennedy Smith
+
+## Attribution audit addendum (2026-07-09)
+
+Deterministic diarization/chyron audit + evidence-reading adjudication over 97 flagged attribution pairs: 57 OK, 5 garbled-name matches (kept), 3 non-person artifacts, 32 MISATTRIBUTED rows excluded (32 unique). Validated against 4 independent human catches (all 4 confirmed by the audit). Benchmark now 764 rows.

@@ -1,0 +1,584 @@
+[
+ {
+  "id": "v6-0169b45d48-006",
+  "name": "Ernie Branch",
+  "verdict": "OK",
+  "reason": "SPEAKER_02 is Branch speaking first-person; narrator turns mislabeled"
+ },
+ {
+  "id": "v6-0169b45d48-008",
+  "name": "Ernie Branch",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Homework/karate claim spoken by James' father, not Branch"
+ },
+ {
+  "id": "v6-097a8ff5e3-009",
+  "name": "Daniel Barenboim",
+  "verdict": "MISATTRIBUTED",
+  "reason": "'20 years ago' said by orchestra musician; Barenboim label covers narrator"
+ },
+ {
+  "id": "v6-0aecf2ea60-003",
+  "name": "Pete Schweitzer",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Coal remark by student panelist; Schweitzer is a waterman elsewhere"
+ },
+ {
+  "id": "v6-0c01c1acac-014",
+  "name": "Steve Pistorius",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Handmade-parts claim by shop worker; Pistorius is a piano player"
+ },
+ {
+  "id": "v6-0e2312bb35-001",
+  "name": "Jasper Neel",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Churchill line spoken by host Robert MacNeil, not Neel"
+ },
+ {
+  "id": "v6-0e2312bb35-004",
+  "name": "Jasper Neel",
+  "verdict": "OK",
+  "reason": "SPEAKER_14_seg1 addressed as Dr. Neel states the claim"
+ },
+ {
+  "id": "v6-0e2312bb35-005",
+  "name": "James Scanlon",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Span speakers are Neel, Gray, host; Scanlon absent"
+ },
+ {
+  "id": "v6-0e2312bb35-006",
+  "name": "Jasper Neel",
+  "verdict": "OK",
+  "reason": "Neel speaks in span as SPEAKER_14_seg2; content matches his argument"
+ },
+ {
+  "id": "v6-0e2312bb35-010",
+  "name": "James Scanlon",
+  "verdict": "MISATTRIBUTED",
+  "reason": "'Basic grasp of grammar' said by Jasper Neel"
+ },
+ {
+  "id": "v6-0ef07153d7-008",
+  "name": "Cash Conover",
+  "verdict": "MISATTRIBUTED",
+  "reason": "'Good for business' said by Wanter to Conover"
+ },
+ {
+  "id": "v6-2394619be0-005",
+  "name": "Jim Lehrer",
+  "verdict": "GARBLED_MATCH",
+  "reason": "Speaker self-identifies as 'Jim Lara', ASR-garbled Lehrer"
+ },
+ {
+  "id": "v6-2673bfa56d-010",
+  "name": "Professor Willard",
+  "verdict": "OK",
+  "reason": "SPEAKER_04, introduced as Willard Downing, states the claim"
+ },
+ {
+  "id": "v6-2832f15e21-004",
+  "name": "Charles Glass",
+  "verdict": "OK",
+  "reason": "SPEAKER_08_seg1 addressed as Mr. Glass, first-person hostage account"
+ },
+ {
+  "id": "v6-3ad921fcd6-008",
+  "name": "Professor Kagan",
+  "verdict": "OK",
+  "reason": "Kagan speaks in span; NATO Cold War point matches his remarks"
+ },
+ {
+  "id": "v6-4146164883-001",
+  "name": "Jerry Jones",
+  "verdict": "OK",
+  "reason": "SPEAKER_03_seg1 answers direct address to Mr. Jones"
+ },
+ {
+  "id": "v6-4146164883-004",
+  "name": "Jerry Jones",
+  "verdict": "OK",
+  "reason": "SPEAKER_03_seg2 answers direct address to Jerry"
+ },
+ {
+  "id": "v6-512e6593b0-006",
+  "name": "Jim Lehrer",
+  "verdict": "OK",
+  "reason": "SPEAKER_15_seg3 self-identifies as Jim Lehrer in span"
+ },
+ {
+  "id": "v6-56a204af9e-003",
+  "name": "Jake Garn",
+  "verdict": "OK",
+  "reason": "Labeled Senator Jake Garn speaks the claim in span"
+ },
+ {
+  "id": "v6-56a204af9e-004",
+  "name": "John Hardin",
+  "verdict": "OK",
+  "reason": "SPEAKER_06_seg1 answers direct address to Mr. Hardin"
+ },
+ {
+  "id": "v6-56a204af9e-005",
+  "name": "John Hardin",
+  "verdict": "OK",
+  "reason": "Banker cites shared concern 'like Mr. Hardin'; reported attribution holds"
+ },
+ {
+  "id": "v6-59e336b622-002",
+  "name": "Ron Homer",
+  "verdict": "OK",
+  "reason": "Adjacent unnamed turns are same interviewee, Homer"
+ },
+ {
+  "id": "v6-5d2bc841e6-005",
+  "name": "Mark Shields",
+  "verdict": "OK",
+  "reason": "Shields also invokes 'last four years' in his span turn"
+ },
+ {
+  "id": "v6-62138b60c9-001",
+  "name": "Prince Aciel",
+  "verdict": "OK",
+  "reason": "SPEAKER_07_seg3 is Prince Asiel, the peace-summit organizer"
+ },
+ {
+  "id": "v6-62138b60c9-002",
+  "name": "Prince Aciel",
+  "verdict": "MISATTRIBUTED",
+  "reason": "85% homicide statistic delivered by Dr. Bell"
+ },
+ {
+  "id": "v6-62138b60c9-003",
+  "name": "Prince Aciel",
+  "verdict": "MISATTRIBUTED",
+  "reason": "925 killed stat spoken by congressman SPEAKER_12, addressing Prince"
+ },
+ {
+  "id": "v6-62138b60c9-007",
+  "name": "Prince Aciel",
+  "verdict": "MISATTRIBUTED",
+  "reason": "25% within-family stat is Dr. Bell's"
+ },
+ {
+  "id": "v6-62138b60c9-014",
+  "name": "Prince Aciel",
+  "verdict": "OK",
+  "reason": "Cocaine price claim by SPEAKER_07_seg3, who is Prince Asiel"
+ },
+ {
+  "id": "v6-7261698190-001",
+  "name": "Reverend Reddick",
+  "verdict": "GARBLED_MATCH",
+  "reason": "Speaks as 'George Riddick'; responds about Jordan and Spike Lee"
+ },
+ {
+  "id": "v6-8caebf6903-005",
+  "name": "Linda Lim",
+  "verdict": "OK",
+  "reason": "Answer follows direct address to Linda Lim; label misassigned"
+ },
+ {
+  "id": "v6-8ed152e35a-004",
+  "name": "Reverend Wilson",
+  "verdict": "OK",
+  "reason": "Answerer mislabeled Ed Nixon refers to Nixon third-person; is Wilson"
+ },
+ {
+  "id": "v6-9b95482ca4-002",
+  "name": "Sam Donaldson",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Policy-shift explanation given by correspondent 'Luciaffe'"
+ },
+ {
+  "id": "v6-a65dc7edcf-000",
+  "name": "Mr. Adler",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Negotiations content from Ortega interview, not Adler"
+ },
+ {
+  "id": "v6-a9d4d2a640-004",
+  "name": "George Bush",
+  "verdict": "OK",
+  "reason": "Bush's own third-person stump speech quote"
+ },
+ {
+  "id": "v6-b04a9248a1-000",
+  "name": "Jim Lehrer",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Segment run by correspondent SPEAKER_25; claim not Lehrer's"
+ },
+ {
+  "id": "v6-c235b72f65-001",
+  "name": "Donald Wilkinson",
+  "verdict": "OK",
+  "reason": "Anchor reports FCA head Wilkinson's statement; he speaks in segment"
+ },
+ {
+  "id": "v6-cb5f3c46cd-000",
+  "name": "George Wallace",
+  "verdict": "OK",
+  "reason": "First-person interview turn is Wallace; narrator turns mislabeled"
+ },
+ {
+  "id": "v6-cb5f3c46cd-005",
+  "name": "George Wallace",
+  "verdict": "OK",
+  "reason": "SPEAKER_14_seg1 answers interviewer; is Wallace reflecting"
+ },
+ {
+  "id": "v6-dcaade1e89-003",
+  "name": "Haynes Johnson",
+  "verdict": "OK",
+  "reason": "Speaker 'Haynes' answers question addressed to Haynes Johnson"
+ },
+ {
+  "id": "v6-e0c377ee61-001",
+  "name": "Hobart Rowan",
+  "verdict": "OK",
+  "reason": "Commentary mislabeled 'President Bush' is Rowan's own"
+ },
+ {
+  "id": "v6-e52df4d408-000",
+  "name": "Robert Rubin",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Turkey point from Waxman-Secretary debate; Rubin not in span"
+ },
+ {
+  "id": "v6-e52df4d408-010",
+  "name": "Robert Rubin",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Same debate; neither debater is Rubin"
+ },
+ {
+  "id": "v6-f33916f87b-000",
+  "name": "Jules Langsner",
+  "verdict": "OK",
+  "reason": "Moderator SPEAKER_04_seg1 is Langsner; makes Jung point"
+ },
+ {
+  "id": "v6-f33916f87b-003",
+  "name": "Jules Langsner",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Danish artists detail given by Sandberg, not Langsner"
+ },
+ {
+  "id": "v6-f33916f87b-014",
+  "name": "Jules Langsner",
+  "verdict": "OK",
+  "reason": "Interviewer SPEAKER_06_seg1, Langsner, states model-of-order point"
+ },
+ {
+  "id": "v6-fab8913b45-000",
+  "name": "Marshall Goldman",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Political-reforms list from China panelists; Goldman not in span"
+ },
+ {
+  "id": "v6-fab8913b45-005",
+  "name": "Marshall Goldman",
+  "verdict": "OK",
+  "reason": "Goldman speaks in span; joint attribution with Oksenberg plausible"
+ },
+ {
+  "id": "v6-fab8913b45-011",
+  "name": "Marshall Goldman",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Reform-debate framing by Oksenberg panel; Goldman absent from span"
+ },
+ {
+  "id": "v6-0023c33521-000",
+  "name": "Merrill Brown",
+  "verdict": "OK",
+  "reason": "SPEAKER_15, introduced as Meryl Brown, gives $18 figure"
+ },
+ {
+  "id": "v6-0023c33521-006",
+  "name": "Merrill Brown",
+  "verdict": "OK",
+  "reason": "Same introduced speaker cites conflicting cost estimates"
+ },
+ {
+  "id": "v6-07dbfee0fd-009",
+  "name": "Joyce Lee",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Interviewee rhetoric matches John Tyndall; question even says 'his'"
+ },
+ {
+  "id": "v6-07dbfee0fd-011",
+  "name": "Joyce Lee",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Leftover-pools research described by ICR geologist"
+ },
+ {
+  "id": "v6-07eb4873de-001",
+  "name": "Tinatonega Reservation",
+  "verdict": "NOT_A_PERSON",
+  "reason": "Reservation name, audit regex artifact"
+ },
+ {
+  "id": "v6-0aecf2ea60-007",
+  "name": "Senator Mathias",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Funding-control question posed by classroom moderator"
+ },
+ {
+  "id": "v6-0aecf2ea60-008",
+  "name": "Senator Mathias",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Same moderator remark; Mathias only mentioned in narration"
+ },
+ {
+  "id": "v6-161cae4fea-001",
+  "name": "Jamie Gorelick",
+  "verdict": "GARBLED_MATCH",
+  "reason": "Speaks as 'Jamie Gorelik'; says exactly this"
+ },
+ {
+  "id": "v6-161cae4fea-006",
+  "name": "Jamie Gorelick",
+  "verdict": "GARBLED_MATCH",
+  "reason": "Same garbled label; 'devil is in the details' is hers"
+ },
+ {
+  "id": "v6-167673f29f-007",
+  "name": "Charles Doucet",
+  "verdict": "OK",
+  "reason": "Drama character Dussette/Doucet gives the favor line"
+ },
+ {
+  "id": "v6-2832f15e21-000",
+  "name": "Jeff Kemp",
+  "verdict": "OK",
+  "reason": "SPEAKER_22 answers direct address to Jeff Kemp"
+ },
+ {
+  "id": "v6-2832f15e21-005",
+  "name": "Jeff Kemp",
+  "verdict": "OK",
+  "reason": "Same; 'because Glass was released' is Kemp's line"
+ },
+ {
+  "id": "v6-2d02e3544d-000",
+  "name": "Gwen Ifill",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Claim is Ray Suarez's; Ifill not in this segment"
+ },
+ {
+  "id": "v6-2d02e3544d-010",
+  "name": "Senator Nichols",
+  "verdict": "OK",
+  "reason": "SPEAKER_15 answers direct address to Senator Nichols (Nickles)"
+ },
+ {
+  "id": "v6-2eeaee45a6-003",
+  "name": "Greg Davis",
+  "verdict": "OK",
+  "reason": "Davis's claims reported via newspaper; question uses 'claim'"
+ },
+ {
+  "id": "v6-30c466bae7-005",
+  "name": "Patricia McGuire",
+  "verdict": "GARBLED_MATCH",
+  "reason": "Speaks as 'President Maguire' of Trinity"
+ },
+ {
+  "id": "v6-3782846bc7-002",
+  "name": "Dr. Arthur",
+  "verdict": "OK",
+  "reason": "SPEAKER_10 is Dr. Arthur Tamplin per intro; truncated-name flag"
+ },
+ {
+  "id": "v6-3ad921fcd6-000",
+  "name": "Ronald Steele",
+  "verdict": "OK",
+  "reason": "SPEAKER_06_seg1 answers direct address to Ronald Steele"
+ },
+ {
+  "id": "v6-3ad921fcd6-007",
+  "name": "Donald Kagan",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Condition-for-NATO claim matches Ronald Steel's turn"
+ },
+ {
+  "id": "v6-47d7f069cf-000",
+  "name": "Dr. Scott",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Affiliation stated by narrator, not by McIver himself"
+ },
+ {
+  "id": "v6-4f88c2da6f-008",
+  "name": "Wanda Scalba",
+  "verdict": "OK",
+  "reason": "SPEAKER_30 is Scalba per narrator intro"
+ },
+ {
+  "id": "v6-78a01f261d-009",
+  "name": "WGBH Boston",
+  "verdict": "NOT_A_PERSON",
+  "reason": "Organization; Paul Solman does explain options"
+ },
+ {
+  "id": "v6-85c2976f06-000",
+  "name": "Bill Clinton",
+  "verdict": "OK",
+  "reason": "Reported speech; question hedges 'according to the speaker'"
+ },
+ {
+  "id": "v6-8caebf6903-002",
+  "name": "Lawyer Escher",
+  "verdict": "OK",
+  "reason": "SPEAKER_15 is Reynolds lawyer Escher per narration"
+ },
+ {
+  "id": "v6-8e9e456904-000",
+  "name": "Ralph Williamson",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Ombudsman title stated by narrator; circular question"
+ },
+ {
+  "id": "v6-8f80c3c2ea-000",
+  "name": "Mr. Masterson",
+  "verdict": "OK",
+  "reason": "Masterson himself voices the warning in the drama"
+ },
+ {
+  "id": "v6-8fda9d1ec4-006",
+  "name": "Jim Lehrer",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Interviewer is Ray Suarez, addressed as Ray in span"
+ },
+ {
+  "id": "v6-8fe0bca7b2-002",
+  "name": "Henry James",
+  "verdict": "OK",
+  "reason": "Quoted author; question says 'according to the segment'"
+ },
+ {
+  "id": "v6-a02f8a4d03-004",
+  "name": "Dr. Jonathan",
+  "verdict": "OK",
+  "reason": "Dr. Mann speaks in span; partial-name flag only"
+ },
+ {
+  "id": "v6-a427824313-003",
+  "name": "Bill Beecher",
+  "verdict": "OK",
+  "reason": "Beecher speaks in span as SPEAKER_04_seg1"
+ },
+ {
+  "id": "v6-a427824313-009",
+  "name": "Bill Beecher",
+  "verdict": "OK",
+  "reason": "Labeled William Beecher gives the oil analysis"
+ },
+ {
+  "id": "v6-a427824313-010",
+  "name": "Bill Beecher",
+  "verdict": "OK",
+  "reason": "Beecher voices Senate frustration point himself"
+ },
+ {
+  "id": "v6-a500651562-001",
+  "name": "Prime Minister",
+  "verdict": "OK",
+  "reason": "Blair speaks in span as SPEAKER_23"
+ },
+ {
+  "id": "v6-a500651562-006",
+  "name": "Minister Blair",
+  "verdict": "OK",
+  "reason": "Blair's own parliamentary-committee quote"
+ },
+ {
+  "id": "v6-a500651562-010",
+  "name": "Prime Minister",
+  "verdict": "OK",
+  "reason": "Blair speaks; inquiry-scope quote is his"
+ },
+ {
+  "id": "v6-a65dc7edcf-009",
+  "name": "Alejandro Acevedo",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Contra position reported by interviewer; Acevedo absent from ASR"
+ },
+ {
+  "id": "v6-b8dc86abbd-006",
+  "name": "Robert Torricelli",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Hearing introducer unnamed; Torricelli never mentioned in ASR"
+ },
+ {
+  "id": "v6-bfb42eb6d8-002",
+  "name": "Gene Reynold",
+  "verdict": "OK",
+  "reason": "Speaker introduced by name card states the claim"
+ },
+ {
+  "id": "v6-c2df6d1e89-005",
+  "name": "W. Bush",
+  "verdict": "OK",
+  "reason": "SPEAKER_27 is President Bush speaking on budget"
+ },
+ {
+  "id": "v6-cb5f3c46cd-003",
+  "name": "Hubert Humphrey",
+  "verdict": "OK",
+  "reason": "Reported: speaker recounts asking Humphrey in Dec 1972"
+ },
+ {
+  "id": "v6-d2204afef6-007",
+  "name": "Barbara Bush",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Quote is from Marilyn Quayle's convention speech"
+ },
+ {
+  "id": "v6-e0c377ee61-005",
+  "name": "Eric Schurenberg",
+  "verdict": "OK",
+  "reason": "SPEAKER_00 delivers Schurenberg's introduced commentary"
+ },
+ {
+  "id": "v6-e0c377ee61-007",
+  "name": "Adam Smith",
+  "verdict": "OK",
+  "reason": "SPEAKER_03 delivers the introduced Adam Smith commentary"
+ },
+ {
+  "id": "v6-e52df4d408-001",
+  "name": "Justice Thomas",
+  "verdict": "OK",
+  "reason": "Thomas dissent accurately reported by court correspondent"
+ },
+ {
+  "id": "v6-e52df4d408-012",
+  "name": "Justice Thomas",
+  "verdict": "OK",
+  "reason": "Same reported dissent; freedom of press point is his"
+ },
+ {
+  "id": "v6-e910571ac6-005",
+  "name": "Jeffrey Pressman",
+  "verdict": "OK",
+  "reason": "Pressman speaks in span, mislabeled as Robin McNeil"
+ },
+ {
+  "id": "v6-e910571ac6-011",
+  "name": "James Baker",
+  "verdict": "OK",
+  "reason": "Host quotes Baker's statement to reporters; reported attribution"
+ },
+ {
+  "id": "v6-ea79b1a91c-002",
+  "name": "Lloyd Price",
+  "verdict": "MISATTRIBUTED",
+  "reason": "Host SPEAKER_07 says it; same voice later introduces Price"
+ },
+ {
+  "id": "v6-ff2cf7aaac-000",
+  "name": "Cornell Mix",
+  "verdict": "NOT_A_PERSON",
+  "reason": "ASR artifact from cooking terms in vegetable show"
+ }
+]
