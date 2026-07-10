@@ -970,5 +970,14 @@
    "MISATTRIBUTED"
   ],
   "reason": "attribution audit: Jules Langsner: Danish artists detail given by Sandberg, not Langsner"
+ },
+ {
+  "id": "v6-d2204afef6-010",
+  "video_id": "cpb-aacip-507-251fj2b03t",
+  "question": "What specific activity does Barbara Bush repeatedly mention as a common experience among her generation?",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "human catch + audit sibling verdict: quote is from Marilyn Quayle's convention speech"
  }
 ]
