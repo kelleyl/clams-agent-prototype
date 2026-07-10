@@ -1006,5 +1006,14 @@
    "MISATTRIBUTED"
   ],
   "reason": "attribution audit r2: Lloyd Price: Lyric sung before host introduces Price; preceding performer's song"
+ },
+ {
+  "id": "v6-512e6593b0-011",
+  "video_id": "cpb-aacip-507-f47gq6rq94",
+  "question": "What concern does Jim Lehrer express regarding Miguel Estrada's responses...",
+  "tags": [
+   "MISATTRIBUTED"
+  ],
+  "reason": "human catch: advocacy passage (Schumer, quoting Hatch) credited to anchor Lehrer"
  }
 ]
